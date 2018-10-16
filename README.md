@@ -1,6 +1,6 @@
 # CMIF Creator 2.0.0
 
-Creating a digital index of letters
+Creating a digital index of letters. Built files are found in the `dist`-folder.
 
 ## Copyright
 Developed by
