@@ -4,9 +4,17 @@ module.exports = {
   },
   extends: [
     'plugin:vue/recommended',
-    'standard'
+    'standard',
+    'airbnb',
   ],
   plugins: [
-    'vue'
-  ]
+    'vue',
+  ],
+  rules: {
+    'vue/v-on-style': 'off',
+    'vue/v-bind-style': 'off',
+    'max-len': 'off',
+    'no-console': 'off',
+    'no-useless-escape': 'off',
+  }
 }

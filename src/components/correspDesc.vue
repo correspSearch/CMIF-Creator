@@ -186,24 +186,20 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                               <b-col cols="3">
                                 <b-form-checkbox v-bind:id="type + 'Conjecture' + item.id + key"
                                                  v-model="s.conjecture"
-                                                 value="true"
-                                                 class="labelOnTop float-right"
-                                                 unchecked-value="false">{{ label.conjecture }}</b-form-checkbox>
+                                                 unchecked-value="false"
+                                                 class="labelOnTop float-right">{{ label.conjecture }}</b-form-checkbox>
                               </b-col>
                               <b-col cols="3">
                                 <b-form-checkbox v-bind:id="type + 'Uncertain' + item.id + key"
                                                  v-model="s.uncertain"
-                                                 value="true"
-                                                 class="labelOnTop float-right"
-                                                 unchecked-value="false">{{ label.uncertain }}</b-form-checkbox>
+                                                 unchecked-value="false"
+                                                 class="labelOnTop float-right">{{ label.uncertain }}</b-form-checkbox>
                              </b-col>
                              <b-col cols="3">
                                 <b-form-checkbox v-bind:id="type + 'Unknown' + item.id + key"
                                                  v-model="s.unknown"
                                                  v-on:change="setIdUnknown(type, item.id, key)"
-                                                 value="true"
-                                                 class="labelOnTop float-right"
-                                                 unchecked-value="false">{{ label.unknown }}</b-form-checkbox>
+                                                 class="labelOnTop float-right">{{ label.unknown }}</b-form-checkbox>
                                 </b-col>
                               </b-row>
                            </b-col>
@@ -314,17 +310,15 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                                 <b-form-checkbox v-bind:id="type + 'PlaceConjecture' + item.id + key"
                                                  v-bind:disabled="place.text === ''"
                                                  v-model="place.conjecture"
-                                                 value="true"
-                                                 class="labelOnTop float-right"
-                                                 unchecked-value="false">{{ label.conjecture }}</b-form-checkbox>
+                                                 unchecked-value="false"
+                                                 class="labelOnTop float-right">{{ label.conjecture }}</b-form-checkbox>
                               </b-col>
                               <b-col cols="3">
                                 <b-form-checkbox v-bind:id="type + 'PlaceUncertain' + item.id + key"
                                                  v-bind:disabled="place.text === ''"
                                                  v-model="place.uncertain"
-                                                 value="true"
-                                                 class="labelOnTop float-right"
-                                                 unchecked-value="false">{{ label.uncertain }}</b-form-checkbox>
+                                                 unchecked-value="false"
+                                                 class="labelOnTop float-right">{{ label.uncertain }}</b-form-checkbox>
                                </b-col>
                              </b-row>
                           </b-col>
@@ -426,16 +420,12 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                               <b-col cols="7" class="pr-0 pt-1">
                                 <b-form-checkbox v-bind:id="type + 'DateUncertain' + item.id"
                                                  v-model="item[type].dateCert.uncertain"
-                                                 value="true"
-                                                 class="labelOnTop float-right"
-                                                 unchecked-value="false">{{ label.conjecture }}</b-form-checkbox>
+                                                 class="labelOnTop float-right">{{ label.conjecture }}</b-form-checkbox>
                               </b-col>
                               <b-col class="pt-1">
                                 <b-form-checkbox v-bind:id="type + 'DateConjecture' + item.id"
                                                  v-model="item[type].dateCert.conjecture"
-                                                 value="true"
-                                                 class="labelOnTop float-right"
-                                                 unchecked-value="false">{{ label.uncertain }}</b-form-checkbox>
+                                                 class="labelOnTop float-right">{{ label.uncertain }}</b-form-checkbox>
                               </b-col>
                             </b-row>
                           </b-col>
@@ -677,7 +667,7 @@ export default {
     // Set Norm-ID for unknown person
     setIdUnknown(target, id, key) {
       this.$nextTick(() => {
-        if (this.correspDesc[id][target].persName[key].unknown === 'true') {
+        if (this.correspDesc[id][target].persName[key].unknown) {
           this.correspDesc[id][target].persName[key].ref =
           (
             this.correspDesc[id][target].persName[key].ref.trim() !== ''

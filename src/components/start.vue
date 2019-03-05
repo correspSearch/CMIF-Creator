@@ -18,57 +18,80 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <div class="start">
-    <b-container>
-      <b-row>
-        <b-col>
+    <BContainer>
+      <BRow>
+        <BCol>
           <h3>{{ label.head1 }}</h3>
           {{ label.startDesc }}
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
-          <b-alert variant="danger"
-                   class="mt-2"
-                   v-bind:show="error">{{ errorMsg }}</b-alert>
-        </b-col>
-      </b-row>
-      <b-row class="mt-2">
-        <b-col>
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol>
+          <BAlert
+            variant="danger"
+            class="mt-2"
+            v-bind:show="error"
+          >
+            {{ errorMsg }}
+          </BAlert>
+        </BCol>
+      </BRow>
+      <BRow class="mt-2">
+        <BCol>
           <h4>{{ label.startNew }}</h4>
-          <b-button v-on:click="startNew(); $parent.nav = 'meta';"
-                    v-if="!this.$parent.metaData.title"
-                    class="btn-block">{{ label.start }}</b-button>
-          <b-button v-b-modal.modalStartNew
-                    v-if="this.$parent.metaData.title"
-                    class="btn-block">{{ label.start }}</b-button>
-          <b-modal id="modalStartNew"
-             v-if="this.$parent.metaData.title"
-             ref="modal"
-             v-bind:title="label.alertrestarthead"
-             v-on:ok="startNew(); $parent.nav = 'meta';">
-             <b-alert show variant="danger">{{ label.alertrestart }}</b-alert>
-          </b-modal>
-        </b-col>
-        <b-col>
+          <BButton
+            v-if="!this.$parent.metaData.title"
+            class="btn-block"
+            v-on:click="startNew(); $parent.nav = 'meta';"
+          >
+            {{ label.start }}
+          </BButton>
+          <BButton
+            v-if="this.$parent.metaData.title"
+            v-b-modal.modalStartNew
+            class="btn-block"
+          >
+            {{ label.start }}
+          </BButton>
+          <BModal
+            v-if="this.$parent.metaData.title"
+            id="modalStartNew"
+            ref="modal"
+            v-bind:title="label.alertrestarthead"
+            v-on:ok="startNew(); $parent.nav = 'meta';"
+          >
+            <BAlert
+              show
+              variant="danger"
+            >
+              {{ label.alertrestart }}
+            </BAlert>
+          </BModal>
+        </BCol>
+        <BCol>
           <h4>{{ label.loadJson }}</h4>
-          <b-form-file accept=".xml, .json"
-                       v-model="file"
-                       class="file-upload-text-overflow"
-                       v-on:input="load"></b-form-file>
-        </b-col>
-      </b-row>
-    </b-container>
+          <BFormFile
+            v-model="file"
+            accept=".xml, .json"
+            class="file-upload-text-overflow"
+            v-on:input="load"
+          />
+        </BCol>
+      </BRow>
+    </BContainer>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'start',
+  name: 'Start',
   props: {
     labels: {
+      default: () => {},
       type: Object,
     },
     pArrays: {
+      default: () => {},
       type: Object,
       twoWays: true,
     },
@@ -496,7 +519,6 @@ export default {
     // Load JSON-Data to Step2
     loadJsonToBibl(json) {
       this.$parent.biblData = [];
-      // To DO: Why does a prop Array in a child not affect the parent?
       this.$parent.biblState = [];
       for (let i = 0; i < json.length; i += 1) {
         // Validation
@@ -513,7 +535,7 @@ export default {
             (json[i].type === 'print')
             && json[i].ref === ''
           ) ? null : (
-            json[i].ref !== undefined
+              json[i].ref !== undefined
             && this.$parent.check('url', json[i].ref.target)),
         });
         // /Validation
@@ -577,6 +599,7 @@ export default {
 
                       conjecture: (json[i].correspAction[t][a].evidence === 'conjecture'),
                       uncertain: (json[i].correspAction[t][a].cert === 'low'),
+                      unknown: (json[i].correspAction[t][a].ref === 'http://correspSearch.net/unknown'),
 
                       organisation: (a === 'orgName'),
 
@@ -599,13 +622,14 @@ export default {
                         ref: (typeof p === 'string') ? '' : p.ref,
 
                         conjecture: (
-                          json[i].correspAction[t][a][p]
-                          && json[i].correspAction[t][a][p].evidence === 'conjecture'
+                          p
+                          && p.evidence === 'conjecture'
                         ),
                         uncertain: (
-                          json[i].correspAction[t][a][p]
-                          && json[i].correspAction[t][a][p].cert === 'low'
+                          p
+                          && p.cert === 'low'
                         ),
+                        unknown: (p.ref === 'http://correspSearch.net/unknown'),
 
                         organisation: (a === 'orgName'),
 
@@ -633,6 +657,7 @@ export default {
 
                     conjecture: false,
                     uncertain: false,
+                    unknown: false,
 
                     organisation: (a === 'orgName'),
 
@@ -661,6 +686,7 @@ export default {
 
                 conjecture: false,
                 uncertain: false,
+                unknown: false,
 
                 organisation: '',
 
@@ -714,8 +740,8 @@ export default {
                   this.persons[this.persons.length - 1].ref === ''
                   || this.persons[this.persons.length - 1].ref === undefined
                 ) ? null : (
-                  this.$parent.check('person', this.persons[this.persons.length - 1].ref)
-                ),
+                    this.$parent.check('person', this.persons[this.persons.length - 1].ref)
+                  ),
               });
             }
           });
@@ -1022,18 +1048,8 @@ export default {
                 && json[i].correspAction[0].date
                 && json[i].correspAction[0].date.to
               ) ? json[i].correspAction[0].date.to : '',
-              dateAsText: (
-                json[i].correspAction
-                && json[i].correspAction[0]
-                && json[i].correspAction[0].date
-                && json[i].correspAction[0].date['#text']
-              ) ? json[i].correspAction[0].date['#text'] : '',
-              dateAsTextHidden: !(
-                json[i].correspAction
-                && json[i].correspAction[0]
-                && json[i].correspAction[0].date
-                && json[i].correspAction[0].date['#text']
-              ),
+              dateAsText: this.getDateAsTextSpecs(json[i], 0),
+              dateAsTextHidden: this.getDateAsTextSpecs(json[i], 0, 'bool'),
             },
             receiver: {
               persName: persNames.receiver,
@@ -1086,18 +1102,8 @@ export default {
                 && json[i].correspAction[1].date
                 && json[i].correspAction[1].date.to
               ) ? json[i].correspAction[1].date.to : '',
-              dateAsText: (
-                json[i].correspAction
-                && json[i].correspAction[1]
-                && json[i].correspAction[1].date
-                && json[i].correspAction[1].date['#text']
-              ) ? json[i].correspAction[1].date['#text'] : '',
-              dateAsTextHidden: !(
-                json[i].correspAction
-                && json[i].correspAction[1]
-                && json[i].correspAction[1].date
-                && json[i].correspAction[1].date['#text']
-              ),
+              dateAsText: this.getDateAsTextSpecs(json[i], 1),
+              dateAsTextHidden: this.getDateAsTextSpecs(json[i], 1, 'bool'),
             },
           });
         } catch (error) {
@@ -1105,6 +1111,31 @@ export default {
           this.errorMsg = `${this.label[`alertLoadError${(json[i].key) ? 'Key' : 'Id'}`]}${((json[i].key) ? json[i].key : i)}.`;
         }
       }
+    },
+
+    // Get dateAsText value and hidden-bool
+    getDateAsTextSpecs(json, who, type = 'value') {
+      if (type === 'value') {
+        let dateAsTextVal = '';
+        if (
+          json.correspAction
+          && json.correspAction[who]
+          && json.correspAction[who].date
+          && json.correspAction[who].date['#text'] !== ''
+        ) dateAsTextVal = json.correspAction[who].date['#text'];
+        else if (json.correspAction[who].date !== '') dateAsTextVal = json.correspAction[0].date;
+
+        return dateAsTextVal;
+      }
+      if (type === 'bool') {
+        return !(
+          json.correspAction
+          && json.correspAction[1]
+          && json.correspAction[1].date
+          && (json.correspAction[1].date['#text'] !== '' || json.correspAction[1].date !== '')
+        );
+      }
+      return 0;
     },
 
     // Get id from uuid

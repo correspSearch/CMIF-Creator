@@ -18,186 +18,229 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <div class="metaData">
-    <b-container>
-      <b-row>
-        <b-col>
+    <BContainer>
+      <BRow>
+        <BCol>
           <h3>{{ label.metaData }}</h3>
           {{ label.step1Desc }}
-        </b-col>
-      </b-row>
-      <b-row class="mt-2">
-        <b-col>
-          <b-form-group horizontal
-                        v-bind:label-cols="2"
-                        label-size="sm"
-                        v-bind:label="label.title + '*'"
-                        v-bind:invalid-feedback="label.errorMetaTitle"
-                        label-for="title">
-            <b-form-input id="title"
-                          size="sm"
-                          v-on:blur.native="state.title = setState(meta.title)"
-                          v-bind:state="state.title"
-                          v-model="meta.title"></b-form-input>
-          </b-form-group>
-          <b-card no-body class="mb-2"
-                  v-for="(editor, key) in meta.editor"
-                  v-bind:key="'editor_' + key">
-            <b-card-header>
-              <b-row align-h="end">
-                <b-col>
+        </BCol>
+      </BRow>
+      <BRow class="mt-2">
+        <BCol>
+          <BFormGroup
+            v-bind:label-cols="2"
+            label-size="sm"
+            v-bind:label="label.title + '*'"
+            v-bind:invalid-feedback="label.errorMetaTitle"
+            label-for="title"
+          >
+            <BFormInput
+              id="title"
+              v-model="meta.title"
+              size="sm"
+              v-bind:state="state.title"
+              v-on:blur.native="state.title = setState(meta.title)"
+            />
+          </BFormGroup>
+          <BCard
+            v-for="(editor, key) in meta.editor"
+            v-bind:key="'editor_' + key"
+            no-body
+            class="mb-2"
+          >
+            <BCardHeader>
+              <BRow align-h="end">
+                <BCol>
                   {{ label.editor }}
-                </b-col>
-                <b-col cols="1">
-                <b-button size="sm"
-                          class="w-100"
-                          v-on:click="rmEditor(key)"
-                          v-if="meta.editor.length > 1">
-                  <i class="fa fa-trash-alt"></i>
-                </b-button>
-                </b-col>
-              </b-row>
-            </b-card-header>
-            <b-card-body>
-              <b-form-group horizontal
-                            v-bind:label-cols="3"
-                            label-size="sm"
-                            v-bind:label="label.editor + '*'"
-                            v-bind:invalid-feedback="label.errorMetaEditor"
-                            label-for="editor">
-                <b-form-input id="editor"
-                              size="sm"
-                              v-on:blur.native="state.editor[key].name = setState(editor.name)"
-                              v-bind:state="state.editor[key].name"
-                              v-model="editor.name"></b-form-input>
-              </b-form-group>
-              <b-form-group horizontal
-                            v-bind:label-cols="3"
-                            label-size="sm"
-                            v-bind:label="label.editorEmail + '*'"
-                            v-bind:invalid-feedback="(!meta.editor[key].email) ? label.errorMetaEmailEmpty : label.errorMetaEmailFormat"
-                            label-for="editorEmail">
-                <b-form-input id="editorEmail"
-                              size="sm"
-                              v-on:blur.native="state.editor[key].email = setState(editor.email, 'email')"
-                              v-bind:state="state.editor[key].email"
-                              type="email"
-                              v-model="editor.email"></b-form-input>
-              </b-form-group>
-            </b-card-body>
-          </b-card>
-          <b-button v-on:click="addEditor"
+                </BCol>
+                <BCol cols="1">
+                  <BButton
+                    v-if="meta.editor.length > 1"
                     size="sm"
-                    variant="secondary">
-            <i class="fas fa-plus-circle"></i> {{ label.addEditor }}
-          </b-button>
-          <b-card no-body class="mb-2"
-                  v-for="(publisher, key) in meta.publisher"
-                  v-bind:key="'publisher_' + key">
-            <b-card-header>
-              <b-row align-h="end">
-                <b-col>
+                    class="w-100"
+                    v-on:click="rmEditor(key)"
+                  >
+                    <i class="fa fa-trash-alt" />
+                  </BButton>
+                </BCol>
+              </BRow>
+            </BCardHeader>
+            <BCardBody>
+              <BFormGroup
+                v-bind:label-cols="3"
+                v-bind:label="label.editor + '*'"
+                v-bind:invalid-feedback="label.errorMetaEditor"
+                label-size="sm"
+                label-for="editor"
+              >
+                <BFormInput
+                  id="editor"
+                  v-model="editor.name"
+                  size="sm"
+                  v-bind:state="state.editor[key].name"
+                  v-on:blur.native="state.editor[key].name = setState(editor.name)"
+                />
+              </BFormGroup>
+              <BFormGroup
+                v-bind:label-cols="3"
+                v-bind:label="label.editorEmail + '*'"
+                v-bind:invalid-feedback="(!meta.editor[key].email) ? label.errorMetaEmailEmpty : label.errorMetaEmailFormat"
+                label-size="sm"
+                label-for="editorEmail"
+              >
+                <BFormInput
+                  id="editorEmail"
+                  v-model="editor.email"
+                  size="sm"
+                  v-bind:state="state.editor[key].email"
+                  type="email"
+                  v-on:blur.native="state.editor[key].email = setState(editor.email, 'email')"
+                />
+              </BFormGroup>
+            </BCardBody>
+          </BCard>
+          <BButton
+            variant="secondary"
+            size="sm"
+            v-on:click="addEditor"
+          >
+            <i class="fas fa-plus-circle" /> {{ label.addEditor }}
+          </BButton>
+          <BCard
+            v-for="(publisher, key) in meta.publisher"
+            v-bind:key="'publisher_' + key"
+            no-body
+            class="mb-2"
+          >
+            <BCardHeader>
+              <BRow align-h="end">
+                <BCol>
                   {{ label.publisher }}
-                </b-col>
-                <b-col cols="1">
-                <b-button size="sm"
-                          class="w-100"
-                          v-on:click="rmPublisher(key)"
-                          v-if="meta.publisher.length > 1">
-                  <i class="fa fa-trash-alt"></i>
-                </b-button>
-                </b-col>
-              </b-row>
-            </b-card-header>
-            <b-card-body>
-              <b-form-group horizontal
-                            v-bind:label-cols="3"
-                            label-size="sm"
-                            v-bind:label="label.publisher + '*'"
-                            v-bind:invalid-feedback="label.errorMetaPublisher"
-                            label-for="publisher">
-                <b-form-input id="publisher"
-                              size="sm"
-                              v-on:blur.native="state.publisher[key].name = setState(publisher.name)"
-                              v-bind:state="state.publisher[key].name"
-                              v-model="publisher.name"></b-form-input>
-              </b-form-group>
-              <b-form-group horizontal
-                            v-bind:label-cols="3"
-                            label-size="sm"
-                            v-bind:label="label.publisherWebsite"
-                            v-bind:invalid-feedback="label.errorURLFormat"
-                            label-for="publisherWebsite">
-                <b-form-input id="publisherWebsite"
-                              size="sm"
-                              type="url"
-                              v-on:blur.native="state.publisher[key].url = setState(publisher.url, 'url', true)"
-                              v-bind:state="state.publisher[key].url"
-                              v-model="publisher.url"></b-form-input>
-              </b-form-group>
-            </b-card-body>
-          </b-card>
-          <b-button v-on:click="addPublisher"
+                </BCol>
+                <BCol cols="1">
+                  <BButton
+                    v-if="meta.publisher.length > 1"
                     size="sm"
-                    class="mb-2"
-                    variant="secondary">
-            <i class="fas fa-plus-circle"></i> {{ label.addPublisher }}
-          </b-button>
-          <b-form-group horizontal
-                        v-bind:label-cols="2"
-                        label-size="sm"
-                        v-bind:label="label.urlToXml"
-                        v-bind:invalid-feedback="label.errorURLFormat"
-                        label-for="urlToXml">
-            <b-form-input id="urlToXml"
-                          size="sm"
-                          type="url"
-                          v-on:blur.native="state.url = setState(meta.url, 'url', true)"
-                          v-bind:state="state.url"
-                          v-model="meta.url"></b-form-input>
-          </b-form-group>
-          <b-form-group horizontal
-                        v-bind:label-cols="2"
-                        label-size="sm"
-                        v-bind:label="label.licence + '*'"
-                        v-bind:invalid-feedback="label.errorMetaLicence"
-                        label-for="licence">
-            <b-form-select size="sm"
-                           v-on:blur.native="state.licence = setState(meta.licence)"
-                           v-bind:state="state.licence"
-                           v-model="meta.licence">
-              <option value="CC0">CC0</option>
-              <option value="CC-BY 4.0">CC-BY 4.0</option>
-            </b-form-select>
-          </b-form-group>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
-          <b-button v-on:click="$parent.navigate('bibl')"
-                    size="sm"
-                    variant="secondary"
-                    class="float-right">
+                    class="w-100"
+                    v-on:click="rmPublisher(key)"
+                  >
+                    <i class="fa fa-trash-alt" />
+                  </BButton>
+                </BCol>
+              </BRow>
+            </BCardHeader>
+            <BCardBody>
+              <BFormGroup
+                v-bind:label-cols="3"
+                v-bind:label="label.publisher + '*'"
+                v-bind:invalid-feedback="label.errorMetaPublisher"
+                label-size="sm"
+                label-for="publisher"
+              >
+                <BFormInput
+                  id="publisher"
+                  v-model="publisher.name"
+                  size="sm"
+                  v-bind:state="state.publisher[key].name"
+                  v-on:blur.native="state.publisher[key].name = setState(publisher.name)"
+                />
+              </BFormGroup>
+              <BFormGroup
+                v-bind:label-cols="3"
+                v-bind:label="label.publisherWebsite"
+                v-bind:invalid-feedback="label.errorURLFormat"
+                label-size="sm"
+                label-for="publisherWebsite"
+              >
+                <BFormInput
+                  id="publisherWebsite"
+                  v-model="publisher.url"
+                  size="sm"
+                  type="url"
+                  v-bind:state="state.publisher[key].url"
+                  v-on:blur.native="state.publisher[key].url = setState(publisher.url, 'url', true)"
+                />
+              </BFormGroup>
+            </BCardBody>
+          </BCard>
+          <BButton
+            variant="secondary"
+            size="sm"
+            class="mb-2"
+            v-on:click="addPublisher"
+          >
+            <i class="fas fa-plus-circle" /> {{ label.addPublisher }}
+          </BButton>
+          <BFormGroup
+            v-bind:label-cols="2"
+            v-bind:label="label.urlToXml"
+            v-bind:invalid-feedback="label.errorURLFormat"
+            label-size="sm"
+            label-for="urlToXml"
+          >
+            <BFormInput
+              id="urlToXml"
+              v-model="meta.url"
+              size="sm"
+              type="url"
+              v-bind:state="state.url"
+              v-on:blur.native="state.url = setState(meta.url, 'url', true)"
+            />
+          </BFormGroup>
+          <BFormGroup
+            v-bind:label-cols="2"
+            v-bind:label="label.licence + '*'"
+            v-bind:invalid-feedback="label.errorMetaLicence"
+            label-size="sm"
+            label-for="licence"
+          >
+            <BFormSelect
+              v-model="meta.licence"
+              size="sm"
+              v-bind:state="state.licence"
+              v-on:blur.native="state.licence = setState(meta.licence)"
+            >
+              <option value="CC0">
+                CC0
+              </option>
+              <option value="CC-BY 4.0">
+                CC-BY 4.0
+              </option>
+            </BFormSelect>
+          </BFormGroup>
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol>
+          <BButton
+            variant="secondary"
+            size="sm"
+            class="float-right"
+            v-on:click="$parent.navigate('bibl')"
+          >
             {{ label.continue }}
-          </b-button>
-        </b-col>
-      </b-row>
-    </b-container>
+          </BButton>
+        </BCol>
+      </BRow>
+    </BContainer>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'metaData',
+  name: 'MetaData',
   props: {
     labels: {
       type: Object,
-      default: () => ({}),
+      default: () => {},
     },
     metaData: {
+      default: () => {},
       type: Object,
       twoWays: true,
     },
     metaState: {
+      default: () => {},
       type: Object,
       twoWays: true,
     },
@@ -261,6 +304,5 @@ export default {
       return state;
     },
   },
-  computed: {},
 };
 </script>

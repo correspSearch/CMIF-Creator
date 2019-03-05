@@ -18,76 +18,105 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <div id="app">
-
     <BNav
       v-if="!isInternetExplorer"
       tabs
       class="ml-0"
     >
       <BNavItem
-        :active="(nav === 'start')"
-        @click="nav = 'start'"
+        v-bind:active="(nav === 'start')"
+        v-on:click="nav = 'start'"
       >
         {{ labels.start }}
       </BNavItem>
-      <b-nav-item v-on:click="nav ='meta'"
-                  v-bind:active="(nav === 'meta')">{{ labels.step1 }}</b-nav-item>
-      <b-nav-item v-on:click="nav = 'bibl'"
-                  v-bind:active="(nav === 'bibl')">{{ labels.step2 }}</b-nav-item>
-      <b-nav-item v-on:click="nav = 'correspDesc'"
-                  v-bind:active="(nav === 'correspDesc')">{{ labels.step3 }}</b-nav-item>
-      <b-nav-item v-on:click="nav = 'save'"
-                  v-bind:active="(nav === 'save')">{{ labels.step4 }}</b-nav-item>
+      <BNavItem
+        v-bind:active="(nav === 'meta')"
+        v-on:click="nav ='meta'"
+      >
+        {{ labels.step1 }}
+      </BNavItem>
+      <BNavItem
+        v-bind:active="(nav === 'bibl')"
+        v-on:click="nav = 'bibl'"
+      >
+        {{ labels.step2 }}
+      </BNavItem>
+      <BNavItem
+        v-bind:active="(nav === 'correspDesc')"
+        v-on:click="nav = 'correspDesc'"
+      >
+        {{ labels.step3 }}
+      </BNavItem>
+      <BNavItem
+        v-bind:active="(nav === 'save')"
+        v-on:click="nav = 'save'"
+      >
+        {{ labels.step4 }}
+      </BNavItem>
     </BNav>
 
-    <div class="container pt-5 pb-5 bg-white" v-if="!isInternetExplorer">
-      <start v-bind:labels="labels"
-             v-bind:pArrays="pArrays"
-             v-if="nav === 'start'"></start>
-     <metaData v-bind:labels="labels"
-               v-bind:metaData="metaData"
-               v-bind:metaState="metaState"
-               v-if="nav === 'meta'"></metaData>
-
-     <biblData v-bind:labels="labels"
-               v-bind:biblData="biblData"
-               v-bind:biblState="biblState"
-               v-if="nav === 'bibl'"></biblData>
-
-     <correspDesc v-bind:labels="labels"
-                     v-bind:correspDescData="correspDescData"
-                     v-bind:pArrays="pArrays"
-                     v-bind:filterSpecs="filter"
-                     v-bind:correspDescState="correspDescState"
-                     v-if="nav === 'correspDesc'"></correspDesc>
-
-     <save v-bind:labels="labels"
-           v-bind:metaData="metaData"
-           v-bind:biblData="biblData"
-           v-bind:correspDescData="correspDescData"
-           v-if="nav === 'save'"></save>
+    <div
+      v-if="!isInternetExplorer"
+      class="container pt-5 pb-5 bg-white"
+    >
+      <Start
+        v-if="nav === 'start'"
+        v-bind:labels="labels"
+        v-bind:p-arrays="pArrays"
+      />
+      <MetaData
+        v-if="nav === 'meta'"
+        v-bind:labels="labels"
+        v-bind:meta-data="metaData"
+        v-bind:meta-state="metaState"
+      />
+      <BiblData
+        v-if="nav === 'bibl'"
+        v-bind:labels="labels"
+        v-bind:bibl-data="biblData"
+        v-bind:bibl-state="biblState"
+      />
+      <CorrespDesc
+        v-if="nav === 'correspDesc'"
+        v-bind:labels="labels"
+        v-bind:corresp-desc-data="correspDescData"
+        v-bind:p-arrays="pArrays"
+        v-bind:filter-specs="filter"
+        v-bind:corresp-desc-state="correspDescState"
+      />
+      <Save
+        v-if="nav === 'save'"
+        v-bind:labels="labels"
+        v-bind:meta-data="metaData"
+        v-bind:bibl-data="biblData"
+        v-bind:corresp-desc-data="correspDescData"
+      />
     </div>
 
-    <b-alert v-if="isInternetExplorer" variant="warning" show>
+    <BAlert
+      v-if="isInternetExplorer"
+      variant="warning"
+      show
+    >
       {{ ieAlert[lang] }}
-    </b-alert>
+    </BAlert>
   </div>
 </template>
 
 <script>
-import start from './components/start.vue';
-import metaData from './components/meta.vue';
-import biblData from './components/bibl.vue';
-import correspDesc from './components/correspDesc.vue'
-import save from './components/save.vue';
+import Start from './components/start.vue';
+import MetaData from './components/meta.vue';
+import BiblData from './components/bibl.vue';
+import CorrespDesc from './components/correspDesc.vue';
+import Save from './components/save.vue';
 
 export default {
   components: {
-    start,
-    metaData,
-    biblData,
-    correspDesc,
-    save
+    Start,
+    MetaData,
+    BiblData,
+    CorrespDesc,
+    Save,
   },
   data() {
     return {
@@ -346,6 +375,39 @@ export default {
     };
   },
 
+  // Load labels from labels.xml according to language-parameter
+  beforeCreate() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'static/labels.xml');
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        this.lang = window.location.search.match(/\?l=en/) ? 'en' : 'de';
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(xhr.responseText, 'application/xml');
+        for (let i = 0; i < xml.children[0].children.length; i += 1) {
+          if (xml.children[0].children[i].attributes[0].value === String(this.lang)) {
+            for (let j = 0; j < xml.children[0].children[i].children.length; j += 1) {
+              this.labels[xml.children[0].children[i].children[j].attributes[0].value] = xml.children[0].children[i].children[j].innerHTML;
+            }
+          }
+        }
+      } else {
+        console.error(xhr.status);
+      }
+    };
+    xhr.send();
+  },
+
+  // Give Warning instead of CMIF Creator when Internet Explorer is detected
+  mounted() {
+    if (
+      navigator.userAgent.match(new RegExp('MSIE ([0-9]{1,}[\.0-9]{0,})'))
+      || navigator.userAgent.match(/Trident.*rv\:11\./)
+    ) {
+      this.isInternetExplorer = true;
+    }
+  },
+
   methods: {
     // Navigation
     navigate(target, filter = null) {
@@ -418,39 +480,7 @@ export default {
     },
   },
 
-  // Load labels from labels.xml according to language-parameter
-  beforeCreate() {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'static/labels.xml');
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        this.lang = window.location.search.match(/\?l\=en/) ? 'en' : 'de';
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(xhr.responseText, 'application/xml');
-        for (let i = 0; i < xml.children[0].children.length; i += 1) {
-          if (xml.children[0].children[i].attributes[0].value === String(this.lang)) {
-            for (let j = 0; j < xml.children[0].children[i].children.length; j += 1) {
-              this.labels[xml.children[0].children[i].children[j].attributes[0].value]
-              = xml.children[0].children[i].children[j].innerHTML;
-            }
-          }
-        }
-      } else {
-        console.error(xhr.status);
-      }
-    };
-    xhr.send();
-  },
 
-  // Give Warning instead of CMIF Creator when Internet Explorer is detected
-  mounted() {
-    if (
-      navigator.userAgent.match(new RegExp('MSIE ([0-9]{1,}[\.0-9]{0,})'))
-      || navigator.userAgent.match(/Trident.*rv\:11\./)
-    ) {
-      this.isInternetExplorer = true;
-    }
-  },
 };
 </script>
 
@@ -556,10 +586,10 @@ p {
 }
 
 .cs-contentBottom {
-	position: relative;
-	min-height: 45%;
-	padding: 1.5em 0 1em 0;
-	background-color: #EAEAEA;
+  position: relative;
+  min-height: 45%;
+  padding: 1.5em 0 1em 0;
+  background-color: #EAEAEA;
 }
 
 #app {
@@ -587,52 +617,52 @@ p {
 }
 
 .pagination {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .btn-sm {
-	font-size: 0.8rem;
+  font-size: 0.8rem;
 }
 
 .alert {
-	margin-bottom: 0.3rem;
-	padding: 0.3rem 0.5rem;
+  margin-bottom: 0.3rem;
+  padding: 0.3rem 0.5rem;
 }
 
 .card {
-	margin-top: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .card-body {
-	padding: 0.5rem;
-	background-color: rgba(0,0,0,.03);
+  padding: 0.5rem;
+  background-color: rgba(0,0,0,.03);
 }
 
 .card-body .custom-control-label {
-	font-size: .875rem;
+  font-size: .875rem;
 }
 
 .correspDescCardBody {
-	background-color: #fff;
+  background-color: #fff;
 }
 
 .card-header {
-	padding: 0.3rem 0.5rem;
-	background-color: #EAEAEA;
+  padding: 0.3rem 0.5rem;
+  background-color: #EAEAEA;
 }
 
 .card-header .custom-control-label {
-	padding-top: 0.1rem;
-	font-size: 0.8rem;
+  padding-top: 0.1rem;
+  font-size: 0.8rem;
 }
 
 .custom-select-sm {
-	padding-top: 0.2rem;
-	padding-bottom: 0.2rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
 }
 
 .form-group {
-	margin-bottom: 0.4rem;
+  margin-bottom: 0.4rem;
 }
 
 .p-px-11 {

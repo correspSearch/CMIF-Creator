@@ -18,109 +18,138 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <div class="biblData">
-    <b-container>
-      <b-row>
-        <b-col>
+    <BContainer>
+      <BRow>
+        <BCol>
           <h3>{{ label.bibInfo }}</h3>
           {{ label.step2Desc }}
-        </b-col>
-      </b-row>
-      <b-row class="mt-2">
-        <b-col>
-          <b-card v-for="(item, key) in bibl"
-                  v-bind:key="item.id"
-                  class="mb-2">
-            <b-row align-h="end"
-                   v-if="bibl.length > 1">
-              <b-col cols="1">
-                <b-button size="sm"
-                          class="w-100 mb-2"
-                          v-on:click="rmBiblItem(item.id)">
-                  <i class="fa fa-trash-alt"></i>
-                </b-button>
-              </b-col>
-            </b-row>
-            <b-form-group horizontal
-                          v-bind:label-cols="2"
-                          label-size="sm"
-                          v-bind:label="label.bibType"
-                          v-bind:invalid-feedback="label.errorBiblType"
-                          label-for="biblType">
-              <b-form-select id="biblType"
-                             v-model="item.type"
-                             v-on:blur.native="state[key].type = setState(item, 'type')"
-                             v-bind:state="state[key].type">
-                <option v-bind:value="null">{{ label.selectBibType }}</option>
-                <option value="online">{{ label.bibTypeOnline }}</option>
-                <option value="print">{{ label.bibTypePrint }}</option>
-                <option value="hybrid">{{ label.bibTypeHybrid }}</option>
-              </b-form-select>
-            </b-form-group>
-            <b-form-group horizontal
-                          v-bind:label-cols="2"
-                          label-size="sm"
-                          v-bind:label="label.bibTitle"
-                          v-bind:invalid-feedback="label.errorBibl"
-                          label-for="biblText">
-              <b-form-textarea id="biblText"
-                               v-model="item.text"
-                               v-bind:rows="3"
-                               v-bind:max-rows="3"
-                               v-on:blur.native="(state[key].text = setState(item, 'text'))"
-                               v-bind:state="state[key].text"></b-form-textarea>
-            </b-form-group>
-            <b-form-group horizontal
-                          v-if="item.type === 'online' || item.type === 'hybrid'"
-                          v-bind:label-cols="2"
-                          label-size="sm"
-                          v-bind:label="label.bibUrl"
-                          v-bind:invalid-feedback="label.errorURLFormat"
-                          label-for="biblUrl">
-              <b-form-input id="biblUrl"
-                            size="sm"
-                            v-model="item.url"
-                            v-on:blur.native="(state[key].url = setState(item, 'url'))"
-                            v-bind:state="state[key].url"></b-form-input>
-            </b-form-group>
-          </b-card>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
-          <b-button v-on:click="addBiblItem"
-                    size="sm"
-                    variant="secondary">
-            <i class="fas fa-plus-circle"></i> {{ label.addBib }}
-          </b-button>
-        </b-col>
-        <b-col>
-          <b-button v-on:click="$parent.navigate('correspDesc')"
-                    size="sm"
-                    variant="secondary"
-                    class="float-right">
+        </BCol>
+      </BRow>
+      <BRow class="mt-2">
+        <BCol>
+          <BCard
+            v-for="(item, key) in bibl"
+            v-bind:key="item.id"
+            class="mb-2"
+          >
+            <BRow
+              v-if="bibl.length > 1"
+              align-h="end"
+            >
+              <BCol cols="1">
+                <BButton
+                  size="sm"
+                  class="w-100 mb-2"
+                  v-on:click="rmBiblItem(item.id)"
+                >
+                  <i class="fa fa-trash-alt" />
+                </BButton>
+              </BCol>
+            </BRow>
+            <BFormGroup
+              v-bind:label-cols="2"
+              v-bind:label="label.bibType"
+              v-bind:invalid-feedback="label.errorBiblType"
+              label-size="sm"
+              label-for="biblType"
+            >
+              <BFormSelect
+                id="biblType"
+                v-model="item.type"
+                v-bind:state="state[key].type"
+                v-on:blur.native="state[key].type = setState(item, 'type')"
+              >
+                <option v-bind:value="null">
+                  {{ label.selectBibType }}
+                </option>
+                <option value="online">
+                  {{ label.bibTypeOnline }}
+                </option>
+                <option value="print">
+                  {{ label.bibTypePrint }}
+                </option>
+                <option value="hybrid">
+                  {{ label.bibTypeHybrid }}
+                </option>
+              </BFormSelect>
+            </BFormGroup>
+            <BFormGroup
+              v-bind:label-cols="2"
+              v-bind:label="label.bibTitle"
+              v-bind:invalid-feedback="label.errorBibl"
+              label-size="sm"
+              label-for="biblText"
+            >
+              <BFormTextarea
+                id="biblText"
+                v-model="item.text"
+                v-bind:rows="3"
+                v-bind:max-rows="3"
+                v-bind:state="state[key].text"
+                v-on:blur.native="(state[key].text = setState(item, 'text'))"
+              />
+            </BFormGroup>
+            <BFormGroup
+              v-if="item.type === 'online' || item.type === 'hybrid'"
+              v-bind:label-cols="2"
+              v-bind:label="label.bibUrl"
+              v-bind:invalid-feedback="label.errorURLFormat"
+              label-size="sm"
+              label-for="biblUrl"
+            >
+              <BFormInput
+                id="biblUrl"
+                v-model="item.url"
+                size="sm"
+                v-bind:state="state[key].url"
+                v-on:blur.native="(state[key].url = setState(item, 'url'))"
+              />
+            </BFormGroup>
+          </BCard>
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol>
+          <BButton
+            size="sm"
+            variant="secondary"
+            v-on:click="addBiblItem"
+          >
+            <i class="fas fa-plus-circle" /> {{ label.addBib }}
+          </BButton>
+        </BCol>
+        <BCol>
+          <BButton
+            size="sm"
+            variant="secondary"
+            class="float-right"
+            v-on:click="$parent.navigate('correspDesc')"
+          >
             {{ label.continue }}
-          </b-button>
-        </b-col>
-      </b-row>
-    </b-container>
+          </BButton>
+        </BCol>
+      </BRow>
+    </BContainer>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'biblData',
+  name: 'BiblData',
   props: {
     labels: {
       type: Object,
-      default: () => ({}),
+      default: () => {},
     },
     biblData: {
       type: Array,
       twoWays: true,
+      default: () => [],
     },
     biblState: {
       type: Array,
       twoWays: true,
+      default: () => [],
     },
   },
 
@@ -133,6 +162,11 @@ export default {
 
       state: this.biblState,
     };
+  },
+
+  // if there is no uuid yet (e.g. new project), set a new one
+  mounted() {
+    this.bibl[0].uuid = (this.bibl[0].uuid === '') ? this.uuid() : this.bibl[0].uuid;
   },
 
   methods: {
@@ -191,9 +225,5 @@ export default {
     },
   },
 
-  // if there is no uuid yet (e.g. new project), set a new one
-  mounted() {
-    this.bibl[0].uuid = (this.bibl[0].uuid === '') ? this.uuid() : this.bibl[0].uuid;
-  },
 };
 </script>

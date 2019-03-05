@@ -18,132 +18,220 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <div class="save">
-    <b-container>
-      <b-row>
-        <b-col>
+    <BContainer>
+      <BRow>
+        <BCol>
           {{ label.step4Desc }}
-        </b-col>
-      </b-row>
-      <b-row class="mt-3">
-        <b-col>
-          <b-list-group>
-            <b-list-group-item v-bind:variant="(validationResults.meta) ? 'success' : 'danger'">
-              <h3>{{ labels.step1 }}: <b-badge variant="light">{{ metaFails.length }}</b-badge> {{ label.errors }}
-                <i class="fas fa-check ml-3"
-                   v-if="validationResults.meta"></i>
+        </BCol>
+      </BRow>
+      <BRow class="mt-3">
+        <BCol>
+          <BListGroup>
+            <BListGroupItem v-bind:variant="(validationResults.meta) ? 'success' : 'danger'">
+              <h3>
+                {{ labels.step1 }}:
+                <BBadge
+                  variant="light"
+                  class="ml-1 mr-1"
+                >
+                  {{ metaFails.length }}
+                </BBadge>
+                {{ label.errors }}
+                <i
+                  v-if="validationResults.meta"
+                  class="fas fa-check ml-3"
+                />
               </h3>
               <ul v-if="metaFails.length > 0">
-                <li v-for="(item, errKey) in metaFails"
-                    v-bind:key="'meta' + errKey">
-                    <span class="font-weight-bold">{{ item.split(/:(.+)/)[0] }}:</span> {{ item.split(/:(.+)/)[1] }}
+                <li
+                  v-for="(item, errKey) in metaFails"
+                  v-bind:key="'meta' + errKey"
+                >
+                  <span class="font-weight-bold mr-1">
+                    {{ item.split(/:(.+)/)[0] }}:
+                  </span>
+                  {{ item.split(/:(.+)/)[1] }}
                 </li>
               </ul>
-              <b-button size="sm" variant="danger"
-                 v-on:click="$parent.navigate('meta')"
-                 class="text-white"
-                 v-if="!validationResults.meta">
-                <i class="fas fa-edit"></i> {{ label.jumpToMeta }}
-              </b-button>
-            </b-list-group-item>
-            <b-list-group-item v-bind:variant="(validationResults.bibl) ? 'success' : 'danger'">
-              <h3>{{ labels.step2 }}: <b-badge variant="light">{{ biblFails.length }}</b-badge> {{ label.errors }}
-              <i class="fas fa-check ml-3"
-                 v-if="validationResults.bibl"></i>
+              <BButton
+                v-if="!validationResults.meta"
+                size="sm"
+                variant="danger"
+                class="text-white"
+                v-on:click="$parent.navigate('meta')"
+              >
+                <i class="fas fa-edit" /> {{ label.jumpToMeta }}
+              </BButton>
+            </BListGroupItem>
+            <BListGroupItem v-bind:variant="(validationResults.bibl) ? 'success' : 'danger'">
+              <h3>
+                {{ labels.step2 }}:
+                <BBadge
+                  variant="light"
+                  class="ml-1 mr-1"
+                >
+                  {{ biblFails.length }}
+                </BBadge>
+                {{ label.errors }}
+                <i
+                  v-if="validationResults.bibl"
+                  class="fas fa-check ml-3"
+                />
               </h3>
               <ul v-if="biblFails.length > 0">
-                <li v-for="(item, errKey) in biblFails"
-                    v-bind:key="'bibl' + errKey">
-                    <span class="font-weight-bold">{{ item.split(/:(.+)/)[0] }}:</span> {{ item.split(/:(.+)/)[1] }}
+                <li
+                  v-for="(item, errKey) in biblFails"
+                  v-bind:key="'bibl' + errKey"
+                >
+                  <span class="font-weight-bold mr-1">
+                    {{ item.split(/:(.+)/)[0] }}:
+                  </span>
+                  {{ item.split(/:(.+)/)[1] }}
                 </li>
               </ul>
-              <b-button size="sm" variant="danger"
-                v-on:click="$parent.navigate('bibl')"
+              <BButton
+                v-if="!validationResults.bibl"
+                size="sm"
                 class="text-white"
-                v-if="!validationResults.bibl">
-                <i class="fas fa-edit"></i> {{ label.jumpToBibl }}
-              </b-button>
-            </b-list-group-item>
-            <b-list-group-item v-bind:variant="(validationResults.correspDesc) ? 'success' : 'danger'">
-              <h3>{{ labels.step3 }}: <b-badge variant="light">{{ correspDescFails.length }}</b-badge>
-              {{ (correspDescFails.length === 1) ? label.letterError : label.letterErrors }}
-                <i class="fas fa-check ml-3"
-                   v-if="validationResults.correspDesc"></i>
+                variant="danger"
+                v-on:click="$parent.navigate('bibl')"
+              >
+                <i class="fas fa-edit" /> {{ label.jumpToBibl }}
+              </BButton>
+            </BListGroupItem>
+            <BListGroupItem v-bind:variant="(validationResults.correspDesc) ? 'success' : 'danger'">
+              <h3>
+                {{ labels.step3 }}:
+                <BBadge
+                  variant="light"
+                  class="ml-1 mr-1"
+                >
+                  {{ correspDescFails.length }}
+                </BBadge>
+                {{ (correspDescFails.length === 1) ? label.letterError : label.letterErrors }}
+                <i
+                  v-if="validationResults.correspDesc"
+                  class="fas fa-check ml-3"
+                />
               </h3>
               <ul v-if="errorNoIds.place || errorNoIds.pers">
-                <li v-if="errorNoIds.pers">{{ label.errorNoPersId }}</li>
-                <li v-if="errorNoIds.place">{{ label.errorNoPlaceId }}</li>
+                <li v-if="errorNoIds.pers">
+                  {{ label.errorNoPersId }}
+                </li>
+                <li v-if="errorNoIds.place">
+                  {{ label.errorNoPlaceId }}
+                </li>
               </ul>
-              <b-button size="sm" variant="danger"
-                v-on:click="$parent.navigate('correspDesc')"
+              <BButton
+                v-if="!validationResults.correspDesc"
+                size="sm"
                 class="text-white mb-3"
-                v-if="!validationResults.correspDesc">
-                <i class="fas fa-edit"></i> {{ label.jumpToCd }}
-              </b-button>
-              <b-list-group v-if="correspDescFails.length > 0">
-                 <b-list-group-item v-for="(item, errKey) in correspDescFails"
-                                    variant="danger"
-                                    class="danger-light"
-                    v-bind:key="'correspDesc' + errKey">
-                    <span class="font-weight-bold">{{ (item.key) ? label.letterKey : label.id }} {{ (!item.key) ? item.id : '' }}</span>
-                    <span v-if="item.key !== ''"
-                          class="font-weight-bold">{{ item.key }}</span>
-                    <span v-if="item.sender !== ''">{{ label.headBy }}</span>
-                    <span v-if="item.sender !== ''"
-                          class="font-weight-bold">{{ item.sender }}</span>
-                    <span v-if="item.receiver !== ''">{{ label.headTo }}</span>
-                    <span v-if="item.receiver !== ''"
-                          class="font-weight-bold">{{ item.receiver }}</span>
-                    <ul v-if="item.fields.length">
-                      <li v-for="f in item.fields">
-                        <span class="font-weight-bold">{{ f.split(/:(.+)/)[0] }}</span>: {{ f.split(/:(.+)/)[1] }}
-                      </li>
-                    </ul>
-                  <b-button size="sm" variant="danger"
-                     v-on:click="goToInvalidLetter(item.id, item.key)"
-                     class="text-white ml-1">
-                    <i class="fas fa-edit"></i> {{ label.jumpToLetter }}
-                  </b-button>
-                </b-list-group-item>
-              </b-list-group>
-            </b-list-group-item>
-          </b-list-group>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col class="mt-3">
-          <b-form-checkbox id="downloadAsJSON"
-                           v-model="downloadType"
-                           value="json"
-                           unchecked-value="xml"
-                           v-on:change="">{{ label.downloadAsJson }}</b-form-checkbox>
-          <b-button v-bind:href='downloadLink[downloadType]'
-                    class="text-white btn-block mt-3"
-                    size="lg"
-                    v-bind:download='downloadFileName[downloadType]'>
+                variant="danger"
+                v-on:click="$parent.navigate('correspDesc')"
+              >
+                <i class="fas fa-edit" /> {{ label.jumpToCd }}
+              </BButton>
+              <BListGroup v-if="correspDescFails.length > 0">
+                <BListGroupItem
+                  v-for="(item, errKey) in correspDescFails"
+                  v-bind:key="'correspDesc' + errKey"
+                  variant="danger"
+                  class="danger-light"
+                >
+                  <span class="font-weight-bold">
+                    {{ (item.key) ? label.letterKey : label.id }} {{ (!item.key) ? item.id : '' }}
+                  </span>
+                  <span
+                    v-if="item.key !== ''"
+                    class="font-weight-bold"
+                  >
+                    {{ item.key }}
+                  </span>
+                  <span v-if="item.sender !== ''">
+                    {{ label.headBy }}
+                  </span>
+                  <span
+                    v-if="item.sender !== ''"
+                    class="font-weight-bold"
+                  >
+                    {{ item.sender }}
+                  </span>
+                  <span v-if="item.receiver !== ''">
+                    {{ label.headTo }}
+                  </span>
+                  <span
+                    v-if="item.receiver !== ''"
+                    class="font-weight-bold"
+                  >
+                    {{ item.receiver }}
+                  </span>
+                  <ul v-if="item.fields.length">
+                    <li
+                      v-for="f in item.fields"
+                      v-bind:key="item.fields.indexOf(f)"
+                    >
+                      <span class="font-weight-bold">
+                        {{ f.split(/:(.+)/)[0] }}
+                      </span>: {{ f.split(/:(.+)/)[1] }}
+                    </li>
+                  </ul>
+                  <BButton
+                    size="sm"
+                    variant="danger"
+                    class="text-white ml-1"
+                    v-on:click="goToInvalidLetter(item.id, item.key)"
+                  >
+                    <i class="fas fa-edit" /> {{ label.jumpToLetter }}
+                  </BButton>
+                </BListGroupItem>
+              </BListGroup>
+            </BListGroupItem>
+          </BListGroup>
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol class="mt-3">
+          <BFormCheckbox
+            id="downloadAsJSON"
+            v-model="downloadType"
+            value="json"
+            unchecked-value="xml"
+          >
+            {{ label.downloadAsJson }}
+          </BFormCheckbox>
+          <BButton
+            v-bind:href="downloadLink[downloadType]"
+            v-bind:download="downloadFileName[downloadType]"
+            class="text-white btn-block mt-3"
+            size="lg"
+          >
             {{ (validationResults.meta && validationResults.bibl && validationResults.correspDesc) ? label.download : label.draft }}
-          </b-button>
-        </b-col>
-      </b-row>
-    </b-container>
+          </BButton>
+        </BCol>
+      </BRow>
+    </BContainer>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'save',
+  name: 'Save',
   props: {
     labels: {
       type: Object,
-      default: () => ({}),
+      default: () => {},
     },
     metaData: {
       type: Object,
+      default: () => {},
     },
     biblData: {
       type: Array,
+      default: () => [],
     },
     correspDescData: {
       type: Array,
+      default: () => [],
     },
   },
   data() {
@@ -179,6 +267,16 @@ export default {
       },
     };
   },
+
+  mounted() {
+    // Validate and save feedback
+    this.validationResults.meta = this.validate('meta', true);
+    this.validationResults.bibl = this.validate('bibl', true);
+    this.validationResults.correspDesc = this.validate('correspDesc', true);
+
+    this.prepare();
+  },
+
   methods: {
     // Validate Values and in case of correspDesc Feedback, which fields are invalid
     validate(target, feedback = false) {
@@ -547,8 +645,8 @@ export default {
               persNames[t].push({
                 '#text': (this.correspDesc[i][t].persName[j].text) ? this.correspDesc[i][t].persName[j].text : 'Unknown',
                 ref: this.correspDesc[i][t].persName[j].ref,
-                evidence: (this.correspDesc[i][t].persName[j].conjecture === 'true') ? 'conjecture' : null,
-                cert: (this.correspDesc[i][t].persName[j].uncertain === 'true') ? 'low' : null,
+                evidence: (this.correspDesc[i][t].persName[j].conjecture) ? 'conjecture' : null,
+                cert: (this.correspDesc[i][t].persName[j].uncertain) ? 'low' : null,
               });
             }
           }
@@ -563,8 +661,8 @@ export default {
             placeNames[t].push({
               '#text': this.correspDesc[i][t].placeName[j].text,
               ref: this.correspDesc[i][t].placeName[j].ref,
-              evidence: (this.correspDesc[i][t].placeName[j].conjecture === 'true') ? 'conjecture' : null,
-              cert: (this.correspDesc[i][t].placeName[j].uncertain === 'true') ? 'low' : null,
+              evidence: (this.correspDesc[i][t].placeName[j].conjecture) ? 'conjecture' : null,
+              cert: (this.correspDesc[i][t].placeName[j].uncertain) ? 'low' : null,
             });
           }
         });
@@ -586,8 +684,8 @@ export default {
                 notBefore: (this.correspDesc[i].sender.date === 'nba') ? this.correspDesc[i].sender.notBefore : null,
                 notAfter: (this.correspDesc[i].sender.date === 'nba') ? this.correspDesc[i].sender.notAfter : null,
                 '#text': this.correspDesc[i].sender.dateAsText,
-                cert: (this.correspDesc[i].sender.dateCert.uncertain === 'true') ? 'low' : null,
-                evidence: (this.correspDesc[i].sender.dateCert.conjecture === 'true') ? 'conjecture' : null,
+                cert: (this.correspDesc[i].sender.dateCert.uncertain) ? 'low' : null,
+                evidence: (this.correspDesc[i].sender.dateCert.conjecture) ? 'conjecture' : null,
               },
             },
             {
@@ -602,8 +700,8 @@ export default {
                 notBefore: (this.correspDesc[i].receiver.date === 'nba') ? this.correspDesc[i].receiver.notBefore : null,
                 notAfter: (this.correspDesc[i].receiver.date === 'nba') ? this.correspDesc[i].receiver.notAfter : null,
                 '#text': this.correspDesc[i].receiver.dateAsText,
-                cert: (this.correspDesc[i].receiver.dateCert.uncertain === 'true') ? 'low' : null,
-                evidence: (this.correspDesc[i].receiver.dateCert.conjecture === 'true') ? 'conjecture' : null,
+                cert: (this.correspDesc[i].receiver.dateCert.uncertain) ? 'low' : null,
+                evidence: (this.correspDesc[i].receiver.dateCert.conjecture) ? 'conjecture' : null,
               },
             },
           ],
@@ -658,14 +756,6 @@ export default {
       }
       return 0;
     },
-  },
-  mounted() {
-    // Validate and save feedback
-    this.validationResults.meta = this.validate('meta', true);
-    this.validationResults.bibl = this.validate('bibl', true);
-    this.validationResults.correspDesc = this.validate('correspDesc', true);
-
-    this.prepare();
   },
 };
 </script>
