@@ -1,0 +1,42 @@
+{
+  "name": "csvisualization",
+  "version": "0.2.0",
+  "description": "Visualizing Correspondence Networks",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config build/webpack.config.prod.js",
+    "dev": "webpack-dev-server --config build/webpack.config.dev.js",
+    "lint": "eslint --ext .js,.vue src",
+    "lint:fix": "eslint --ext .js,.vue src --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://laackman@git.bbaw.de/srv/git/cs_visualization.git"
+  },
+  "author": "Jonas Müller-Laackman",
+  "license": "LGPL",
+  "devDependencies": {
+    "webpack": "^4.27.0",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10",
+    "vue": "^2.5.17",
+    "vue-template-compiler": "^2.5.17",
+    "vue-style-loader": "^4.1.2",
+    "vue-loader": "^15.4.2",
+    "html-webpack-plugin": "^3.2.0",
+    "css-loader": "^1.0.1",
+    "babel-loader": "^8.0.4",
+    "babel-eslint": "^10.0.1",
+    "@babel/core": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "eslint": "^5.9.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-loader": "^2.1.1",
+    "eslint-plugin-vue": "^5.0.0",
+    "copy-webpack-plugin": "^4.6.0"
+  }
+}

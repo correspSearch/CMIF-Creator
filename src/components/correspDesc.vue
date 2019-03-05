@@ -113,8 +113,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
             <b-collapse v-bind:id="'collapse' + k"
                         v-model="item.visible" role="tabpanel">
               <b-card-body class="correspDescCardBody">
-                <b-form-group horizontal
-                              v-bind:label-cols="2"
+                <b-form-group v-bind:label-cols="2"
                               label-size="sm"
                               v-bind:label="label.key"
                               v-bind:label-for="'correspDescKey' + item.id"
@@ -136,7 +135,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                     </b-button>
                   </b-col>
                 </b-row>
-                <b-form-group horizontal
+                <b-form-group
                               v-bind:label-cols="2"
                               label-size="sm"
                               v-bind:label="label.urlToXml"
@@ -151,7 +150,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                                 v-bind:state="state[item.id].urlToXml"
                                 ></b-form-input>
                 </b-form-group>
-                <b-form-group horizontal
+                <b-form-group
                               v-bind:label-cols="2"
                               label-size="sm"
                               v-bind:label="label.bibliography"
@@ -175,30 +174,38 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             class="mb-2">
                       <b-card-header>
                         <b-row align-h="between">
-                          <b-col cols="2">
+                          <b-col cols="3">
                             <b-button v-on:click="rmPerson(type, item.id, key)"
                                       size="sm"
                                       v-if="item[type].persName.length > 1">
                               <i class="fa fa-trash-alt"></i>
                             </b-button>
                           </b-col>
-                          <b-col class="text-right">
-                            <b-form-checkbox v-bind:id="type + 'Conjecture' + item.id + key"
-                                             v-model="s.conjecture"
-                                             value="true"
-                                             class="labelOnTop"
-                                             unchecked-value="false">{{ label.conjecture }}</b-form-checkbox>
-                            <b-form-checkbox v-bind:id="type + 'Uncertain' + item.id + key"
-                                             v-model="s.uncertain"
-                                             value="true"
-                                             class="labelOnTop"
-                                             unchecked-value="false">{{ label.uncertain }}</b-form-checkbox>
-                            <b-form-checkbox v-bind:id="type + 'Unknown' + item.id + key"
-                                             v-model="s.unknown"
-                                             v-on:change="setIdUnknown(type, item.id, key)"
-                                             value="true"
-                                             class="labelOnTop"
-                                             unchecked-value="false">{{ label.unknown }}</b-form-checkbox>
+                          <b-col>
+                            <b-row align-h="end">
+                              <b-col cols="3">
+                                <b-form-checkbox v-bind:id="type + 'Conjecture' + item.id + key"
+                                                 v-model="s.conjecture"
+                                                 value="true"
+                                                 class="labelOnTop float-right"
+                                                 unchecked-value="false">{{ label.conjecture }}</b-form-checkbox>
+                              </b-col>
+                              <b-col cols="3">
+                                <b-form-checkbox v-bind:id="type + 'Uncertain' + item.id + key"
+                                                 v-model="s.uncertain"
+                                                 value="true"
+                                                 class="labelOnTop float-right"
+                                                 unchecked-value="false">{{ label.uncertain }}</b-form-checkbox>
+                             </b-col>
+                             <b-col cols="3">
+                                <b-form-checkbox v-bind:id="type + 'Unknown' + item.id + key"
+                                                 v-model="s.unknown"
+                                                 v-on:change="setIdUnknown(type, item.id, key)"
+                                                 value="true"
+                                                 class="labelOnTop float-right"
+                                                 unchecked-value="false">{{ label.unknown }}</b-form-checkbox>
+                                </b-col>
+                              </b-row>
                            </b-col>
                         </b-row>
                       </b-card-header>
@@ -301,19 +308,25 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                               <i class="fa fa-trash-alt"></i>
                             </b-button>
                           </b-col>
-                          <b-col class="text-right">
-                            <b-form-checkbox v-bind:id="type + 'PlaceConjecture' + item.id + key"
-                                             v-bind:disabled="place.text === ''"
-                                             v-model="place.conjecture"
-                                             value="true"
-                                             class="labelOnTop"
-                                             unchecked-value="false">{{ label.conjecture }}</b-form-checkbox>
-                            <b-form-checkbox v-bind:id="type + 'PlaceUncertain' + item.id + key"
-                                             v-bind:disabled="place.text === ''"
-                                             v-model="place.uncertain"
-                                             value="true"
-                                             class="labelOnTop"
-                                             unchecked-value="false">{{ label.uncertain }}</b-form-checkbox>
+                          <b-col>
+                            <b-row align-h="end">
+                              <b-col cols="3">
+                                <b-form-checkbox v-bind:id="type + 'PlaceConjecture' + item.id + key"
+                                                 v-bind:disabled="place.text === ''"
+                                                 v-model="place.conjecture"
+                                                 value="true"
+                                                 class="labelOnTop float-right"
+                                                 unchecked-value="false">{{ label.conjecture }}</b-form-checkbox>
+                              </b-col>
+                              <b-col cols="3">
+                                <b-form-checkbox v-bind:id="type + 'PlaceUncertain' + item.id + key"
+                                                 v-bind:disabled="place.text === ''"
+                                                 v-model="place.uncertain"
+                                                 value="true"
+                                                 class="labelOnTop float-right"
+                                                 unchecked-value="false">{{ label.uncertain }}</b-form-checkbox>
+                               </b-col>
+                             </b-row>
                           </b-col>
                         </b-row>
                       </b-card-header>
@@ -407,19 +420,24 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                               <option value="na">{{ label.noDate }}</option>
                             </b-form-select>
                           </b-col>
-                          <b-col class="text-right"
-                                 v-bind:cols="(item[type].date === 'nba' || item[type].date === 'na' || item[type].date === '') ? '0' : '7'"
+                          <b-col v-bind:cols="(item[type].date === 'nba' || item[type].date === 'na' || item[type].date === '') ? '0' : '7'"
                                  v-if="(item[type].date !== 'nba' && item[type].date !== 'na' && item[type].date !== '')">
-                            <b-form-checkbox v-bind:id="type + 'DateUncertain' + item.id"
-                                             v-model="item[type].dateCert.uncertain"
-                                             value="true"
-                                             class="labelOnTop"
-                                             unchecked-value="false">{{ label.conjecture }}</b-form-checkbox>
-                            <b-form-checkbox v-bind:id="type + 'DateConjecture' + item.id"
-                                             v-model="item[type].dateCert.conjecture"
-                                             value="true"
-                                             class="labelOnTop"
-                                             unchecked-value="false">{{ label.uncertain }}</b-form-checkbox>
+                            <b-row align-h="end">
+                              <b-col cols="7" class="pr-0 pt-1">
+                                <b-form-checkbox v-bind:id="type + 'DateUncertain' + item.id"
+                                                 v-model="item[type].dateCert.uncertain"
+                                                 value="true"
+                                                 class="labelOnTop float-right"
+                                                 unchecked-value="false">{{ label.conjecture }}</b-form-checkbox>
+                              </b-col>
+                              <b-col class="pt-1">
+                                <b-form-checkbox v-bind:id="type + 'DateConjecture' + item.id"
+                                                 v-model="item[type].dateCert.conjecture"
+                                                 value="true"
+                                                 class="labelOnTop float-right"
+                                                 unchecked-value="false">{{ label.uncertain }}</b-form-checkbox>
+                              </b-col>
+                            </b-row>
                           </b-col>
                         </b-row>
                       </b-card-header>
@@ -537,7 +555,6 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
 
 <script>
 export default {
-  name: 'correspDescData',
   data() {
     return {
       label: this.labels,

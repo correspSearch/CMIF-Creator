@@ -19,9 +19,17 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
 <template>
   <div id="app">
 
-    <b-nav tabs class="ml-0" v-if="!isInternetExplorer">
-      <b-nav-item v-on:click="nav = 'start'"
-                  v-bind:active="(nav === 'start')">{{ labels.start }}</b-nav-item>
+    <BNav
+      v-if="!isInternetExplorer"
+      tabs
+      class="ml-0"
+    >
+      <BNavItem
+        :active="(nav === 'start')"
+        @click="nav = 'start'"
+      >
+        {{ labels.start }}
+      </BNavItem>
       <b-nav-item v-on:click="nav ='meta'"
                   v-bind:active="(nav === 'meta')">{{ labels.step1 }}</b-nav-item>
       <b-nav-item v-on:click="nav = 'bibl'"
@@ -30,35 +38,34 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                   v-bind:active="(nav === 'correspDesc')">{{ labels.step3 }}</b-nav-item>
       <b-nav-item v-on:click="nav = 'save'"
                   v-bind:active="(nav === 'save')">{{ labels.step4 }}</b-nav-item>
-    </b-nav>
+    </BNav>
 
     <div class="container pt-5 pb-5 bg-white" v-if="!isInternetExplorer">
       <start v-bind:labels="labels"
              v-bind:pArrays="pArrays"
              v-if="nav === 'start'"></start>
+     <metaData v-bind:labels="labels"
+               v-bind:metaData="metaData"
+               v-bind:metaState="metaState"
+               v-if="nav === 'meta'"></metaData>
 
-      <metaData v-bind:labels="labels"
-                v-bind:metaData="metaData"
-                v-bind:metaState="metaState"
-                v-if="nav === 'meta'"></metaData>
+     <biblData v-bind:labels="labels"
+               v-bind:biblData="biblData"
+               v-bind:biblState="biblState"
+               v-if="nav === 'bibl'"></biblData>
 
-      <biblData v-bind:labels="labels"
-                v-bind:biblData="biblData"
-                v-bind:biblState="biblState"
-                v-if="nav === 'bibl'"></biblData>
+     <correspDesc v-bind:labels="labels"
+                     v-bind:correspDescData="correspDescData"
+                     v-bind:pArrays="pArrays"
+                     v-bind:filterSpecs="filter"
+                     v-bind:correspDescState="correspDescState"
+                     v-if="nav === 'correspDesc'"></correspDesc>
 
-      <correspDescData v-bind:labels="labels"
-                v-bind:correspDescData="correspDescData"
-                v-bind:pArrays="pArrays"
-                v-bind:filterSpecs="filter"
-                v-bind:correspDescState="correspDescState"
-                v-if="nav === 'correspDesc'"></correspDescData>
-
-      <save v-bind:labels="labels"
-            v-bind:metaData="metaData"
-            v-bind:biblData="biblData"
-            v-bind:correspDescData="correspDescData"
-            v-if="nav === 'save'"></save>
+     <save v-bind:labels="labels"
+           v-bind:metaData="metaData"
+           v-bind:biblData="biblData"
+           v-bind:correspDescData="correspDescData"
+           v-if="nav === 'save'"></save>
     </div>
 
     <b-alert v-if="isInternetExplorer" variant="warning" show>
@@ -68,14 +75,20 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
 </template>
 
 <script>
-import start from './components/start';
-import metaData from './components/meta';
-import biblData from './components/bibl';
-import correspDescData from './components/correspDesc';
-import save from './components/save';
+import start from './components/start.vue';
+import metaData from './components/meta.vue';
+import biblData from './components/bibl.vue';
+import correspDesc from './components/correspDesc.vue'
+import save from './components/save.vue';
 
 export default {
-  name: 'app',
+  components: {
+    start,
+    metaData,
+    biblData,
+    correspDesc,
+    save
+  },
   data() {
     return {
       isInternetExplorer: false,
@@ -332,13 +345,7 @@ export default {
       ],
     };
   },
-  components: {
-    start,
-    metaData,
-    biblData,
-    correspDescData,
-    save,
-  },
+
   methods: {
     // Navigation
     navigate(target, filter = null) {
