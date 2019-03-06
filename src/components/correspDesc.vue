@@ -18,555 +18,718 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <div class="correspDescData">
-    <b-container>
-      <b-row>
-        <b-col>
+    <BContainer>
+      <BRow>
+        <BCol>
           <h2>{{ label.letterRecords }}</h2>
           {{ label.step3Desc }}
-        </b-col>
-      </b-row>
-      <b-row class="mt-3">
-        <b-col class="text-center">
-        {{ (
-            (filteredCorrespDesc.results.length < 10)
-            ? (((filteredCorrespDesc.results.length === 0) ? 0 : 1) + '-' + filteredCorrespDesc.results.length)
-            : ((((this.page*10)-10)+1) + '-' + (((this.page*10) > filteredCorrespDesc.results.length)
-                                                 ? filteredCorrespDesc.results.length
-                                                 : (this.page*10)))
+        </BCol>
+      </BRow>
+      <BRow class="mt-3">
+        <BCol class="text-center">
+          {{ (
+            /* eslint-disable vue/this-in-template */
+            (filteredCorrespDesc.results.length &lt; 10)
+              ? (((filteredCorrespDesc.results.length === 0) ? 0 : 1) + '-' + filteredCorrespDesc.results.length)
+              : ((((this.page*10)-10)+1) + '-' + (((this.page*10) > filteredCorrespDesc.results.length)
+                ? filteredCorrespDesc.results.length
+                : (this.page*10)))
           ) + '/' + filteredCorrespDesc.results.length
-        }}
-        <b-badge v-if="filter.text !== ''"
-                 class="csOrange">{{ label.filtered }}</b-badge>
-        </b-col>
-      </b-row>
-      <b-row class="mt-3">
-        <b-col>
-          <b-button size="sm"
-                    v-on:click="toggleAll"
-                    v-if="collapsed">
-            <i class="fa fa-angle-double-right"></i> {{ label.expandAll }}
-          </b-button>
-          <b-button size="sm"
-                    v-on:click="toggleAll"
-                    v-if="!collapsed">
-            <i class="fa fa-angle-double-down"></i> {{ label.collapseAll }}
-          </b-button>
-        </b-col>
-        <b-col>
-          <b-pagination align="center"
+          }}
+          <BBadge
+            v-if="filter.text !== ''"
+            class="csOrange"
+          >
+            {{ label.filtered }}
+          </BBadge>
+        </BCol>
+      </BRow>
+      <BRow class="mt-3">
+        <BCol>
+          <BButton
+            v-if="collapsed"
+            size="sm"
+            v-on:click="toggleAll"
+          >
+            <i class="fa fa-angle-double-right" /> {{ label.expandAll }}
+          </BButton>
+          <BButton
+            v-if="!collapsed"
+            size="sm"
+            v-on:click="toggleAll"
+          >
+            <i class="fa fa-angle-double-down" /> {{ label.collapseAll }}
+          </BButton>
+        </BCol>
+        <BCol>
+          <BPagination
+            v-model="page"
+            align="center"
+            size="sm"
+            v-bind:total-rows="filteredCorrespDesc.results.length"
+            v-bind:per-page="10"
+            v-on:change="closeAll"
+          />
+        </BCol>
+        <BCol>
+          <BInputGroup
+            size="sm"
+            prepend="Filter"
+          >
+            <BFormSelect v-model="filter.type">
+              <option value="name">
+                {{ label.byName }}
+              </option>
+              <option value="place">
+                {{ label.byPlace }}
+              </option>
+              <option value="date">
+                {{ label.byDate }}
+              </option>
+              <option value="key">
+                {{ label.byKey }}
+              </option>
+              <option value="id">
+                {{ label.byID }}
+              </option>
+            </BFormSelect>
+            <BFormInput v-model="filter.text" />
+          </BInputGroup>
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol role="tablist">
+          <BCard
+            v-for="(item, k) in filteredCorrespDesc.paginatedResults"
+            v-bind:id="item.id"
+            v-bind:key="'cd_' + item.id"
+            no-body
+            class="mb-2"
+          >
+            <BCardHeader
+              header-tag="header"
+              role="tab"
+              class="bg-white border-0"
+            >
+              <BRow>
+                <BCol cols="1">
+                  <BButtonToolbar>
+                    <BButtonGroup>
+                      <BButton
+                        v-bind:class="item.visible ? 'collapsed' : null"
+                        v-bind:aria-controls="'collapse' + k"
+                        v-bind:aria-expanded="item.visible ? 'true' : 'false'"
+                        class="border-right"
                         size="sm"
-                        v-bind:total-rows="filteredCorrespDesc.results.length"
-                        v-model="page"
-                        v-bind:per-page="10"
-                        v-on:change="closeAll"></b-pagination>
-        </b-col>
-        <b-col>
-          <b-input-group size="sm"
-                         prepend="Filter">
-            <b-form-select v-model="filter.type">
-              <option value="name">{{ label.byName }}</option>
-              <option value="place">{{ label.byPlace }}</option>
-              <option value="date">{{ label.byDate }}</option>
-              <option value="key">{{ label.byKey }}</option>
-              <option value="id">{{ label.byID }}</option>
-            </b-form-select>
-            <b-form-input v-model="filter.text"></b-form-input>
-          </b-input-group>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col role="tablist">
-          <b-card no-body v-for="(item, k) in filteredCorrespDesc.paginatedResults"
-                  v-bind:key="'cd_' + item.id"
-                  v-bind:id="item.id"
-                  class="mb-2">
-            <b-card-header header-tag="header"
-                           role="tab"
-                           class="bg-white border-0">
-              <b-row>
-                <b-col cols="1">
-                  <b-button-toolbar>
-                    <b-button-group>
-                      <b-button v-on:click="item.visible = !item.visible"
-                                v-bind:class="item.visible ? 'collapsed' : null"
-                                class="border-right"
-                                v-bind:aria-controls="'collapse' + k"
-                                v-bind:aria-expanded="item.visible ? 'true' : 'false'"
-                                size="sm">
-                        <i class="fa"
-                           v-bind:class="(item.visible) ? 'fa-angle-up' : 'fa-angle-down'"></i>
-                      </b-button>
-                      <b-button v-on:click="rmCorrespDescItem(item.id)"
-                                v-if="correspDesc.length > 1"
-                                size="sm"
-                                class="border-left">
-                        <i class="fa fa-trash-alt"></i>
-                      </b-button>
-                    </b-button-group>
-                  </b-button-toolbar>
-                </b-col>
-                <b-col class="float-left"
-                       v-html="item.header">
-                </b-col>
-              </b-row>
-            </b-card-header>
-            <b-collapse v-bind:id="'collapse' + k"
-                        v-model="item.visible" role="tabpanel">
-              <b-card-body class="correspDescCardBody">
-                <b-form-group v-bind:label-cols="2"
-                              label-size="sm"
-                              v-bind:label="label.key"
-                              v-bind:label-for="'correspDescKey' + item.id"
-                              class="mb-1">
-                  <b-form-input v-bind:id="'correspDescKey' + item.id"
-                                v-model="item.key"
-                                v-on:keyup.native="setHeader(item.id)"
-                                size="sm"
-                                ></b-form-input>
-                </b-form-group>
-                <b-row>
-                  <b-col sm="2"></b-col>
-                  <b-col class="p-px-11">
-                    <b-button size="sm"
-                              class="mb-1"
-                              v-on:click="item.refHidden = !item.refHidden">
-                      <i class="fa"
-                         v-bind:class="(item.refHidden) ? 'fa-angle-down' : 'fa-angle-up'"></i> {{ label.urlToXml }}
-                    </b-button>
-                  </b-col>
-                </b-row>
-                <b-form-group
-                              v-bind:label-cols="2"
-                              label-size="sm"
-                              v-bind:label="label.urlToXml"
-                              label-for="correspDescRef"
-                              v-if="!item.refHidden"
-                              v-bind:invalid-feedback="label.errorURLFormat">
-                  <b-form-input id="correspDescRef"
-                                v-model="item.ref"
-                                size="sm"
-                                type="url"
-                                v-on:blur.native="state[item.id].urlToXml = setState('urlToXml', item.id)"
-                                v-bind:state="state[item.id].urlToXml"
-                                ></b-form-input>
-                </b-form-group>
-                <b-form-group
-                              v-bind:label-cols="2"
-                              label-size="sm"
-                              v-bind:label="label.bibliography"
-                              label-for="correspDescBibl"
-                              v-if="$parent.biblData[0].text !== ''">
-                  <b-form-select v-model="item.bibl"
-                                 size="sm">
-                    <option v-for="bib in $parent.biblData"
-                            v-bind:key="'bib_' + item.id + bib.id"
-                            v-bind:value="bib.id">
-                            {{ (String(bib.text).length>100) ? String(bib.text).slice(0,100) + ' ...' : bib.text }}
+                        v-on:click="item.visible = !item.visible"
+                      >
+                        <i
+                          class="fa"
+                          v-bind:class="(item.visible) ? 'fa-angle-up' : 'fa-angle-down'"
+                        />
+                      </BButton>
+                      <BButton
+                        v-if="correspDesc.length > 1"
+                        size="sm"
+                        class="border-left"
+                        v-on:click="rmCorrespDescItem(item.id)"
+                      >
+                        <i class="fa fa-trash-alt" />
+                      </BButton>
+                    </BButtonGroup>
+                  </BButtonToolbar>
+                </BCol>
+                <BCol
+                  class="float-left"
+                  v-html="item.header"
+                />
+              </BRow>
+            </BCardHeader>
+            <BCollapse
+              v-bind:id="'collapse' + k"
+              v-model="item.visible"
+              role="tabpanel"
+            >
+              <BCardBody class="correspDescCardBody">
+                <BFormGroup
+                  v-bind:label-cols="2"
+                  v-bind:label="label.key"
+                  v-bind:label-for="'correspDescKey' + item.id"
+                  label-size="sm"
+                  class="mb-1"
+                >
+                  <BFormInput
+                    v-bind:id="'correspDescKey' + item.id"
+                    v-model="item.key"
+                    size="sm"
+                    v-on:keyup.native="setHeader(item.id)"
+                  />
+                </BFormGroup>
+                <BRow>
+                  <BCol sm="2" />
+                  <BCol class="p-px-11">
+                    <BButton
+                      size="sm"
+                      class="mb-1"
+                      v-on:click="item.refHidden = !item.refHidden"
+                    >
+                      <i
+                        class="fa"
+                        v-bind:class="(item.refHidden) ? 'fa-angle-down' : 'fa-angle-up'"
+                      /> {{ label.urlToXml }}
+                    </BButton>
+                  </BCol>
+                </BRow>
+                <BFormGroup
+                  v-if="!item.refHidden"
+                  v-bind:label-cols="2"
+                  v-bind:label="label.urlToXml"
+                  v-bind:invalid-feedback="label.errorURLFormat"
+                  label-size="sm"
+                  label-for="correspDescRef"
+                >
+                  <BFormInput
+                    id="correspDescRef"
+                    v-model="item.ref"
+                    size="sm"
+                    type="url"
+                    v-bind:state="state[item.id].urlToXml"
+                    v-on:blur.native="state[item.id].urlToXml = setState('urlToXml', item.id)"
+                  />
+                </BFormGroup>
+                <BFormGroup
+                  v-if="$parent.biblData[0].text !== ''"
+                  v-bind:label-cols="2"
+                  v-bind:label="label.bibliography"
+                  label-size="sm"
+                  label-for="correspDescBibl"
+                >
+                  <BFormSelect
+                    v-model="item.bibl"
+                    size="sm"
+                  >
+                    <option
+                      v-for="bib in $parent.biblData"
+                      v-bind:key="'bib_' + item.id + bib.id"
+                      v-bind:value="bib.id"
+                    >
+                      {{ (String(bib.text).length>100) ? String(bib.text).slice(0,100) + ' ...' : bib.text }}
                     </option>
-                  </b-form-select>
-                </b-form-group>
-                <b-row>
-                  <b-col v-for="(type, tKey) in type"
-                         v-bind:key="'t_' + item.id + tKey">
+                  </BFormSelect>
+                </BFormGroup>
+                <BRow>
+                  <BCol
+                    v-for="(type, tKey) in type"
+                    v-bind:key="'t_' + item.id + tKey"
+                  >
                     <h3>{{ label[type] }}</h3>
-                    <b-card no-body v-for="(s, key) in item[type].persName"
-                            v-bind:key="'ps_' + item.id + key"
-                            class="mb-2">
-                      <b-card-header>
-                        <b-row align-h="between">
-                          <b-col cols="3">
-                            <b-button v-on:click="rmPerson(type, item.id, key)"
-                                      size="sm"
-                                      v-if="item[type].persName.length > 1">
-                              <i class="fa fa-trash-alt"></i>
-                            </b-button>
-                          </b-col>
-                          <b-col>
-                            <b-row align-h="end">
-                              <b-col cols="3">
-                                <b-form-checkbox v-bind:id="type + 'Conjecture' + item.id + key"
-                                                 v-model="s.conjecture"
-                                                 unchecked-value="false"
-                                                 class="labelOnTop float-right">{{ label.conjecture }}</b-form-checkbox>
-                              </b-col>
-                              <b-col cols="3">
-                                <b-form-checkbox v-bind:id="type + 'Uncertain' + item.id + key"
-                                                 v-model="s.uncertain"
-                                                 unchecked-value="false"
-                                                 class="labelOnTop float-right">{{ label.uncertain }}</b-form-checkbox>
-                             </b-col>
-                             <b-col cols="3">
-                                <b-form-checkbox v-bind:id="type + 'Unknown' + item.id + key"
-                                                 v-model="s.unknown"
-                                                 v-on:change="setIdUnknown(type, item.id, key)"
-                                                 class="labelOnTop float-right">{{ label.unknown }}</b-form-checkbox>
-                                </b-col>
-                              </b-row>
-                           </b-col>
-                        </b-row>
-                      </b-card-header>
-                      <b-card-body>
-                        <b-form-group label-size="sm"
-                                      v-bind:label="label.name"
-                                      class="labelOnTop"
-                                      v-bind:label-for="type + 'PersName' + key"
-                                      v-bind:invalid-feedback="label.errorMetaEditor">
-                          <b-form-input v-bind:id="type + 'PersName' + key"
-                                        v-bind:state="state[item.id][type][key].name"
-                                        v-model="s.text"
-                                        size="sm"
-                                        v-on:blur.native="addPersonToPool(type, item.id, key); state[item.id][type][key].name = setState(type + 'Name', item.id, key)"
-                                        v-on:keyup.native="onInput(type, item.id, key, false); setHeader(item.id);"
-                                        v-on:keydown.esc.native="s.open = false"
-                                        v-on:keydown.down.native="moveDown(type, item.id, key)"
-                                        v-on:keydown.up.native="moveUp(type, item.id, key)"
-                                        v-on:keydown.enter.native="select(type, item.id, key)"
-                                        ></b-form-input>
-                        </b-form-group>
-                        <b-list-group v-if="s.open && s.text.length > 2">
-                          <b-list-group-item button v-for="(suggestion, suKey) in filterNames(type, item.id, key)"
-                                             v-bind:key="'pss_' + item.id + suKey"
-                                             v-bind:class="{'highlighted': suKey === s.highlighted}"
-                                             v-on:mousedown="select(type, item.id, key)"
-                                             v-on:mouseenter="s.highlighted = suKey">
-                              {{ suggestion }}
-                          </b-list-group-item>
-                        </b-list-group>
-                        <b-form-group label-size="sm"
-                                      v-bind:label="label[type + 'Authority']"
-                                      class="labelOnTop"
-                                      v-bind:label-for="type + 'PersID' + item.id + key">
-                          <b-input-group>
-                            <b-form-input v-bind:id="type + 'PersID' + item.id + key"
-                                          v-bind:ref="type + 'PersID' + item.id + key"
-                                          v-model="s.ref"
-                                          size="sm"
-                                          v-on:blur.native="addPersNorm(type, item.id, key); item[type].persName[key].gnd.open = false; state[item.id][type][key].id = setState(type + 'Authority', item.id, key)"
-                                          v-on:keydown.esc.native="item[type].persName[key].gnd.open = false"
-                                          v-bind:state="state[item.id][type][key].id"
-                                          ></b-form-input>
-                            <b-input-group-append>
-                              <b-btn variant="secondary"
-                                     v-bind:id="type + 'GetGndBtn' + item.id + key"
-                                     v-on:click="getGnd(type, item.id, key)"
-                                     v-bind:disabled="s.text === '' || s.unknown === true"
-                                     v-bind:title="label.gndBtnTitle"
-                                     target="_blank"
-                                     class="text-white">
-                                <i class="fa fa-address-card"></i>
-                              </b-btn>
-                            </b-input-group-append>
-                            <div class="invalid-feedback">{{ label.errorAuthorityID }}</div>
-                          </b-input-group>
-                        </b-form-group>
-                        <b-list-group v-if="item[type].persName[key].gnd.open">
-                          <b-list-group-item button v-for="(suggestion, k) in item[type].persName[key].gnd.suggestions"
-                                             v-bind:key="'gnd_' + item.id + k"
-                                             v-bind:class="{'highlighted': k === item[type].persName[key].gnd.highlighted}"
-                                             v-on:mousedown="selectGnd(type, item.id, key, suggestion)"
-                                             v-on:mouseenter="item[type].persName[key].gnd.highlighted = k">
-                              {{ suggestion.label }}
-                          </b-list-group-item>
-                          <b-list-group-item button key="gndMore"
-                                             v-if="item[type].persName[key].gnd.suggestions.length > 9"
-                                             class="bg-secondary text-white"
-                                             v-on:mousedown="getMoreGnd(type, item.id, key)">
-                              {{ label.more }}
-                          </b-list-group-item>
-                          <b-list-group-item button key="gndNoMatches"
-                                             v-if="item[type].persName[key].gnd.suggestions.length === 0">
-                              {{ label.gndNoMatches }}
-                          </b-list-group-item>
-                        </b-list-group>
-                        <b-form-checkbox v-bind:id="type + 'Organisation' + item.id + key"
-                                         v-model="s.organisation"
-                                         v-on:input="addOrg(type, item.id, key)"
-                                         value="true"
-                                         class="labelOnTop"
-                                         unchecked-value="false">{{ label.org }}</b-form-checkbox>
-                      </b-card-body>
-                    </b-card>
-                    <b-button v-on:click="addPerson(type, item.id);"
+                    <BCard
+                      v-for="(s, key) in item[type].persName"
+                      v-bind:key="'ps_' + item.id + key"
+                      no-body
+                      class="mb-2"
+                    >
+                      <BCardHeader>
+                        <BRow align-h="between">
+                          <BCol cols="3">
+                            <BButton
+                              v-if="item[type].persName.length > 1"
                               size="sm"
-                              variant="secondary">
-                      <i class="fas fa-plus-circle"></i> {{ label['add' + type.charAt(0).toUpperCase() + type.slice(1)] }}
-                    </b-button>
-                    <b-card no-body
-                            v-for="(place, key) in item[type].placeName"
-                            v-bind:key="'pl_' + item.id + key"
-                            class="mb-2">
-                      <b-card-header>
-                        <b-row align-h="between">
-                          <b-col cols="2">
-                            <b-button v-on:click="rmPlace(type, item.id, key)"
-                                      size="sm"
-                                      v-if="item[type].placeName.length > 1">
-                              <i class="fa fa-trash-alt"></i>
-                            </b-button>
-                          </b-col>
-                          <b-col>
-                            <b-row align-h="end">
-                              <b-col cols="3">
-                                <b-form-checkbox v-bind:id="type + 'PlaceConjecture' + item.id + key"
-                                                 v-bind:disabled="place.text === ''"
-                                                 v-model="place.conjecture"
-                                                 unchecked-value="false"
-                                                 class="labelOnTop float-right">{{ label.conjecture }}</b-form-checkbox>
-                              </b-col>
-                              <b-col cols="3">
-                                <b-form-checkbox v-bind:id="type + 'PlaceUncertain' + item.id + key"
-                                                 v-bind:disabled="place.text === ''"
-                                                 v-model="place.uncertain"
-                                                 unchecked-value="false"
-                                                 class="labelOnTop float-right">{{ label.uncertain }}</b-form-checkbox>
-                               </b-col>
-                             </b-row>
-                          </b-col>
-                        </b-row>
-                      </b-card-header>
-                      <b-card-body>
-                        <b-form-group label-size="sm"
-                                      v-bind:label="label.place"
-                                      class="labelOnTop"
-                                      v-bind:label-for="type + 'Place' + item.id + key">
-                          <b-form-input v-bind:id="type + 'Place' + item.id + key"
-                                        v-model="place.text"
-                                        size="sm"
-                                        v-on:blur.native="addPlaceToPool(type, item.id, key)"
-                                        v-on:keyup.native="onInput(type, item.id, key, true);"
-                                        v-on:keydown.esc.native="place.open = false"
-                                        v-on:keydown.down.native="moveDown(type, item.id, key, true)"
-                                        v-on:keydown.up.native="moveUp(type, item.id, key, true)"
-                                        v-on:keydown.enter.native="select(type, item.id, key, true)"
-                                        ></b-form-input>
-                        </b-form-group>
-                        <b-list-group v-if="place.open && place.text.length > 2">
-                          <b-list-group-item button v-for="(suggestion, suKey) in filterNames(type, item.id, key, true)"
-                                             v-bind:key="'psp_' + item.id + suKey"
-                                             v-bind:class="{'highlighted': suKey === place.highlighted}"
-                                             v-on:mousedown="select(type, item.id, key, true)"
-                                             v-on:mouseenter="place.highlighted = suKey">
-                              {{ suggestion }}
-                          </b-list-group-item>
-                        </b-list-group>
-                        <b-form-group label-size="sm"
-                                      v-bind:label="label.placeAuthority"
-                                      class="labelOnTop"
-                                      v-bind:label-for="type + 'PlaceID' + item.id + key">
-                          <b-input-group>
-                            <b-form-input v-bind:id="type + 'PlaceID' + item.id + key"
-                                          v-bind:ref="type + 'PlaceID' + item.id + key"
-                                          v-bind:state="state[item.id][type + 'Place'][key].id"
-                                          v-model="place.ref"
-                                          v-on:blur.native="addPlaceNorm(type, item.id, key); place.geo.open = false; state[item.id][type + 'Place'][key].id = setState(type + 'PlaceAuthority', item.id, key)"
-                                          v-on:keydown.esc.native="place.geo.open = false"
-                                          size="sm"
-                                          class="no-right-border"
-                                          ></b-form-input>
-                            <b-input-group-append>
-                              <b-form-select size="sm"
-                                          v-bind:disabled="place.text === ''"
-                                          v-model="place.geo.parameter">
-                                <option value="P">{{ label.geodataP }}</option>
+                              v-on:click="rmPerson(type, item.id, key)"
+                            >
+                              <i class="fa fa-trash-alt" />
+                            </BButton>
+                          </BCol>
+                          <BCol>
+                            <BRow align-h="end">
+                              <BCol cols="3">
+                                <BFormCheckbox
+                                  v-bind:id="type + 'Conjecture' + item.id + key"
+                                  v-model="s.conjecture"
+                                  unchecked-value="false"
+                                  class="labelOnTop float-right"
+                                >
+                                  {{ label.conjecture }}
+                                </BFormCheckbox>
+                              </BCol>
+                              <BCol cols="3">
+                                <BFormCheckbox
+                                  v-bind:id="type + 'Uncertain' + item.id + key"
+                                  v-model="s.uncertain"
+                                  unchecked-value="false"
+                                  class="labelOnTop float-right"
+                                >
+                                  {{ label.uncertain }}
+                                </BFormCheckbox>
+                              </BCol>
+                              <BCol cols="3">
+                                <BFormCheckbox
+                                  v-bind:id="type + 'Unknown' + item.id + key"
+                                  v-model="s.unknown"
+                                  class="labelOnTop float-right"
+                                  v-on:change="setIdUnknown(type, item.id, key)"
+                                >
+                                  {{ label.unknown }}
+                                </BFormCheckbox>
+                              </BCol>
+                            </BRow>
+                          </BCol>
+                        </BRow>
+                      </BCardHeader>
+                      <BCardBody>
+                        <BFormGroup
+                          label-size="sm"
+                          v-bind:label="label.name"
+                          v-bind:label-for="type + 'PersName' + key"
+                          v-bind:invalid-feedback="label.errorMetaEditor"
+                          class="labelOnTop"
+                        >
+                          <BFormInput
+                            v-bind:id="type + 'PersName' + key"
+                            v-model="s.text"
+                            v-bind:state="state[item.id][type][key].name"
+                            size="sm"
+                            v-on:blur.native="addPersonToPool(type, item.id, key); state[item.id][type][key].name = setState(type + 'Name', item.id, key)"
+                            v-on:keyup.native="onInput(type, item.id, key, false); setHeader(item.id);"
+                            v-on:keydown.esc.native="s.open = false"
+                            v-on:keydown.down.native="moveDown(type, item.id, key)"
+                            v-on:keydown.up.native="moveUp(type, item.id, key)"
+                            v-on:keydown.enter.native="select(type, item.id, key)"
+                          />
+                        </BFormGroup>
+                        <BListGroup v-if="s.open && s.text.length > 2">
+                          <BListGroupItem
+                            v-for="(suggestion, suKey) in filterNames(type, item.id, key)"
+                            v-bind:key="'pss_' + item.id + suKey"
+                            v-bind:class="{'highlighted': suKey === s.highlighted}"
+                            button
+                            v-on:mousedown="select(type, item.id, key)"
+                            v-on:mouseenter="s.highlighted = suKey"
+                          >
+                            {{ suggestion }}
+                          </BListGroupItem>
+                        </BListGroup>
+                        <BFormGroup
+                          label-size="sm"
+                          v-bind:label="label[type + 'Authority']"
+                          v-bind:label-for="type + 'PersID' + item.id + key"
+                          class="labelOnTop"
+                        >
+                          <BInputGroup>
+                            <BFormInput
+                              v-bind:id="type + 'PersID' + item.id + key"
+                              v-bind:ref="type + 'PersID' + item.id + key"
+                              v-model="s.ref"
+                              v-bind:state="state[item.id][type][key].id"
+                              size="sm"
+                              v-on:blur.native="addPersNorm(type, item.id, key); item[type].persName[key].gnd.open = false; state[item.id][type][key].id = setState(type + 'Authority', item.id, key)"
+                              v-on:keydown.esc.native="item[type].persName[key].gnd.open = false"
+                            />
+                            <BInputGroupAppend>
+                              <BButton
+                                v-bind:id="type + 'GetGndBtn' + item.id + key"
+                                variant="secondary"
+                                v-bind:disabled="s.text === '' || s.unknown === true"
+                                v-bind:title="label.gndBtnTitle"
+                                target="_blank"
+                                class="text-white"
+                                v-on:click="getGnd(type, item.id, key)"
+                              >
+                                <i class="fa fa-address-card" />
+                              </BButton>
+                            </BInputGroupAppend>
+                            <div class="invalid-feedback">
+                              {{ label.errorAuthorityID }}
+                            </div>
+                          </BInputGroup>
+                        </BFormGroup>
+                        <BListGroup v-if="item[type].persName[key].gnd.open">
+                          <BListGroupItem
+                            v-for="(suggestion, kee) in item[type].persName[key].gnd.suggestions"
+                            v-bind:key="'gnd_' + item.id + kee"
+                            v-bind:class="{'highlighted': kee === item[type].persName[key].gnd.highlighted}"
+                            button
+                            v-on:mousedown="selectGnd(type, item.id, key, suggestion)"
+                            v-on:mouseenter="item[type].persName[key].gnd.highlighted = kee"
+                          >
+                            {{ suggestion.label }}
+                          </BListGroupItem>
+                          <BListGroupItem
+                            v-if="item[type].persName[key].gnd.suggestions.length > 9"
+                            key="gndMore"
+                            button
+                            class="bg-secondary text-white"
+                            v-on:mousedown="getMoreGnd(type, item.id, key)"
+                          >
+                            {{ label.more }}
+                          </BListGroupItem>
+                          <BListGroupItem
+                            v-if="item[type].persName[key].gnd.suggestions.length === 0"
+                            key="gndNoMatches"
+                            button
+                          >
+                            {{ label.gndNoMatches }}
+                          </BListGroupItem>
+                        </BListGroup>
+                        <BFormCheckbox
+                          v-bind:id="type + 'Organisation' + item.id + key"
+                          v-model="s.organisation"
+                          class="labelOnTop"
+                          v-on:input="addOrg(type, item.id, key)"
+                        >
+                          {{ label.org }}
+                        </BFormCheckbox>
+                      </BCardBody>
+                    </BCard>
+                    <BButton
+                      size="sm"
+                      variant="secondary"
+                      v-on:click="addPerson(type, item.id);"
+                    >
+                      <i class="fas fa-plus-circle" /> {{ label['add' + type.charAt(0).toUpperCase() + type.slice(1)] }}
+                    </BButton>
+                    <BCard
+                      v-for="(place, key) in item[type].placeName"
+                      v-bind:key="'pl_' + item.id + key"
+                      no-body
+                      class="mb-2"
+                    >
+                      <BCardHeader>
+                        <BRow align-h="between">
+                          <BCol cols="2">
+                            <BButton
+                              v-if="item[type].placeName.length > 1"
+                              size="sm"
+                              v-on:click="rmPlace(type, item.id, key)"
+                            >
+                              <i class="fa fa-trash-alt" />
+                            </BButton>
+                          </BCol>
+                          <BCol>
+                            <BRow align-h="end">
+                              <BCol cols="3">
+                                <BFormCheckbox
+                                  v-bind:id="type + 'PlaceConjecture' + item.id + key"
+                                  v-model="place.conjecture"
+                                  v-bind:disabled="place.text === ''"
+                                  unchecked-value="false"
+                                  class="labelOnTop float-right"
+                                >
+                                  {{ label.conjecture }}
+                                </BFormCheckbox>
+                              </BCol>
+                              <BCol cols="3">
+                                <BFormCheckbox
+                                  v-bind:id="type + 'PlaceUncertain' + item.id + key"
+                                  v-model="place.uncertain"
+                                  v-bind:disabled="place.text === ''"
+                                  unchecked-value="false"
+                                  class="labelOnTop float-right"
+                                >
+                                  {{ label.uncertain }}
+                                </BFormCheckbox>
+                              </BCol>
+                            </BRow>
+                          </BCol>
+                        </BRow>
+                      </BCardHeader>
+                      <BCardBody>
+                        <BFormGroup
+                          label-size="sm"
+                          v-bind:label-for="type + 'Place' + item.id + key"
+                          v-bind:label="label.place"
+                          class="labelOnTop"
+                        >
+                          <BFormInput
+                            v-bind:id="type + 'Place' + item.id + key"
+                            v-model="place.text"
+                            size="sm"
+                            v-on:blur.native="addPlaceToPool(type, item.id, key)"
+                            v-on:keyup.native="onInput(type, item.id, key, true);"
+                            v-on:keydown.esc.native="place.open = false"
+                            v-on:keydown.down.native="moveDown(type, item.id, key, true)"
+                            v-on:keydown.up.native="moveUp(type, item.id, key, true)"
+                            v-on:keydown.enter.native="select(type, item.id, key, true)"
+                          />
+                        </BFormGroup>
+                        <BListGroup v-if="place.open && place.text.length > 2">
+                          <BListGroupItem
+                            v-for="(suggestion, suKey) in filterNames(type, item.id, key, true)"
+                            v-bind:key="'psp_' + item.id + suKey"
+                            button
+                            v-bind:class="{'highlighted': suKey === place.highlighted}"
+                            v-on:mousedown="select(type, item.id, key, true)"
+                            v-on:mouseenter="place.highlighted = suKey"
+                          >
+                            {{ suggestion }}
+                          </BListGroupItem>
+                        </BListGroup>
+                        <BFormGroup
+                          label-size="sm"
+                          v-bind:label="label.placeAuthority"
+                          class="labelOnTop"
+                          v-bind:label-for="type + 'PlaceID' + item.id + key"
+                        >
+                          <BInputGroup>
+                            <BFormInput
+                              v-bind:id="type + 'PlaceID' + item.id + key"
+                              v-bind:ref="type + 'PlaceID' + item.id + key"
+                              v-model="place.ref"
+                              v-bind:state="state[item.id][type + 'Place'][key].id"
+                              size="sm"
+                              class="no-right-border"
+                              v-on:blur.native="addPlaceNorm(type, item.id, key); place.geo.open = false; state[item.id][type + 'Place'][key].id = setState(type + 'PlaceAuthority', item.id, key)"
+                              v-on:keydown.esc.native="place.geo.open = false"
+                            />
+                            <BInputGroupAppend>
+                              <BFormSelect
+                                v-model="place.geo.parameter"
+                                size="sm"
+                                v-bind:disabled="place.text === ''"
+                              >
+                                <option value="P">
+                                  {{ label.geodataP }}
+                                </option>
                                 <!-- <option value="A">{{ label.geodataA }}</option> -->
                                 <!-- <option value="H">{{ label.geodataH }}</option> -->
-                                <option value="T">{{ label.geodataT }}</option>
+                                <option value="T">
+                                  {{ label.geodataT }}
+                                </option>
                                 <!-- <option value="V">{{ label.geodataV }}</option> -->
                                 <!-- <option value="L">{{ label.geodataL }}</option> -->
-                                <option value="S">{{ label.geodataS }}</option>
-                              </b-form-select>
-                              <b-btn variant="secondary"
-                                     v-bind:disabled="place.text === ''"
-                                     v-on:click="getGeodata(type, item.id, key)"
-                                     class="text-white">
-                                <i class="fa fa-globe"></i>
-                              </b-btn>
-                            </b-input-group-append>
-                            <div class="invalid-feedback">{{ label.errorGeoNames }}</div>
-                          </b-input-group>
-                        </b-form-group>
-                        <b-list-group v-if="place.geo.open">
-                          <b-list-group-item button v-for="(suggestion, suKey) in place.geo.suggestions"
-                                             v-bind:key="'geo_' + item.id + suKey"
-                                             v-bind:class="{'highlighted': suKey === place.geo.highlighted}"
-                                             v-on:mousedown="selectGeoname(type, item.id, key, suggestion)"
-                                             v-on:mouseenter="place.geo.highlighted = suKey">
-                              {{ suggestion.name }}, {{ suggestion.adminName1 }} ({{ suggestion.countryCode }})
-                          </b-list-group-item>
-                        </b-list-group>
-                      </b-card-body>
-                    </b-card>
-                    <b-button v-on:click="addPlace(type, item.id);"
+                                <option value="S">
+                                  {{ label.geodataS }}
+                                </option>
+                              </BFormSelect>
+                              <BButton
+                                variant="secondary"
+                                v-bind:disabled="place.text === ''"
+                                class="text-white"
+                                v-on:click="getGeodata(type, item.id, key)"
+                              >
+                                <i class="fa fa-globe" />
+                              </BButton>
+                            </BInputGroupAppend>
+                            <div class="invalid-feedback">
+                              {{ label.errorGeoNames }}
+                            </div>
+                          </BInputGroup>
+                        </BFormGroup>
+                        <BListGroup v-if="place.geo.open">
+                          <BListGroupItem
+                            v-for="(suggestion, suKey) in place.geo.suggestions"
+                            v-bind:key="'geo_' + item.id + suKey"
+                            button
+                            v-bind:class="{'highlighted': suKey === place.geo.highlighted}"
+                            v-on:mousedown="selectGeoname(type, item.id, key, suggestion)"
+                            v-on:mouseenter="place.geo.highlighted = suKey"
+                          >
+                            {{ suggestion.name }}, {{ suggestion.adminName1 }} ({{ suggestion.countryCode }})
+                          </BListGroupItem>
+                        </BListGroup>
+                      </BCardBody>
+                    </BCard>
+                    <BButton
+                      size="sm"
+                      variant="secondary"
+                      v-on:click="addPlace(type, item.id);"
+                    >
+                      <i class="fas fa-plus-circle" /> {{ label.addPlace }}
+                    </BButton>
+                    <BCard no-body>
+                      <BCardHeader>
+                        <BRow>
+                          <BCol v-bind:cols="(item[type].date === 'nba' || item[type].date === 'na' || item[type].date === '') ? '12' : '5'">
+                            <BFormSelect
+                              v-model="item[type].date"
                               size="sm"
-                              variant="secondary">
-                      <i class="fas fa-plus-circle"></i> {{ label.addPlace }}
-                    </b-button>
-                    <b-card no-body>
-                      <b-card-header>
-                        <b-row>
-                          <b-col v-bind:cols="(item[type].date === 'nba' || item[type].date === 'na' || item[type].date === '') ? '12' : '5'">
-                            <b-form-select v-model="item[type].date"
-                                           size="sm">
-                              <option value="">{{ label.dateForm }}</option>
-                              <option value="when">{{ label.dateWhen }}</option>
-                              <option value="nba">{{ label.dateNba }}</option>
-                              <option value="span">{{ label.dateSpan }}</option>
-                              <option value="na">{{ label.noDate }}</option>
-                            </b-form-select>
-                          </b-col>
-                          <b-col v-bind:cols="(item[type].date === 'nba' || item[type].date === 'na' || item[type].date === '') ? '0' : '7'"
-                                 v-if="(item[type].date !== 'nba' && item[type].date !== 'na' && item[type].date !== '')">
-                            <b-row align-h="end">
-                              <b-col cols="7" class="pr-0 pt-1">
-                                <b-form-checkbox v-bind:id="type + 'DateUncertain' + item.id"
-                                                 v-model="item[type].dateCert.uncertain"
-                                                 class="labelOnTop float-right">{{ label.conjecture }}</b-form-checkbox>
-                              </b-col>
-                              <b-col class="pt-1">
-                                <b-form-checkbox v-bind:id="type + 'DateConjecture' + item.id"
-                                                 v-model="item[type].dateCert.conjecture"
-                                                 class="labelOnTop float-right">{{ label.uncertain }}</b-form-checkbox>
-                              </b-col>
-                            </b-row>
-                          </b-col>
-                        </b-row>
-                      </b-card-header>
-                      <b-card-body>
-                        <b-alert variant="warning"
-                                 v-bind:show="item[type].date === ''" size="sm">
-                        {{ label.selectDateForm }}
-                        </b-alert>
-                        <b-form-group v-if="item[type].date === 'when'"
-                                      description="YYYY-MM-DD"
-                                      class="labelOnTop"
-                                      v-bind:invalid-feedback="label.errorDate">
-                          <b-form-input size="sm"
-                                        v-bind:id="type + 'DateWhen' + item.id"
-                                        v-on:blur.native="state[item.id][type + 'Date'].when = setState('when' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
-                                        v-bind:state="state[item.id][type + 'Date'].when"
-                                        v-model="item[type].when">
-                          </b-form-input>
-                        </b-form-group>
-                        <b-form-group v-if="item[type].date === 'nba'"
-                                      description="YYYY-MM-DD"
-                                      class="labelOnTop"
-                                      v-bind:label="label.dateNb"
-                                      v-bind:label-for="type + 'DateNb' + item.id"
-                                      v-bind:invalid-feedback="label.errorDate">
-                          <b-form-input size="sm"
-                                        v-bind:id="type + 'DateNb' + item.id"
-                                        v-on:blur.native="state[item.id][type + 'Date'].notBefore = setState('notBefore' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
-                                        v-bind:state="state[item.id][type + 'Date'].notBefore"
-                                        v-model="item[type].notBefore">
-                          </b-form-input>
-                        </b-form-group>
-                        <b-form-group v-if="item[type].date === 'nba'"
-                                      description="YYYY-MM-DD"
-                                      class="labelOnTop"
-                                      v-bind:label="label.dateNa"
-                                      v-bind:label-for="type + 'DateNa' + item.id"
-                                      v-bind:invalid-feedback="label.errorDate">
-                          <b-form-input size="sm"
-                                        v-bind:id="type +'DateNa' + item.id"
-                                        v-on:blur.native="state[item.id][type + 'Date'].notAfter = setState('notAfter' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
-                                        v-bind:state="state[item.id][type + 'Date'].notAfter"
-                                        v-model="item[type].notAfter">
-                          </b-form-input>
-                        </b-form-group>
-                        <b-form-group v-if="item[type].date === 'span'"
-                                      description="YYYY-MM-DD"
-                                      class="labelOnTop"
-                                      v-bind:label="label.from"
-                                      v-bind:label-for="type + 'DateFrom' + item.id"
-                                      v-bind:invalid-feedback="label.errorDate">
-                          <b-form-input size="sm"
-                                        v-bind:id="type + 'DateFrom' + item.id"
-                                        v-on:blur.native="state[item.id][type + 'Date'].from = setState('spanFrom' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
-                                        v-bind:state="state[item.id][type + 'Date'].from"
-                                        v-model="item[type].spanFrom">
-                          </b-form-input>
-                        </b-form-group>
-                        <b-form-group v-if="item[type].date === 'span'"
-                                      description="YYYY-MM-DD"
-                                      class="labelOnTop"
-                                      v-bind:label="label.to"
-                                      v-bind:label-for="type + 'DateTo' + item.id"
-                                      v-bind:invalid-feedback="label.errorDate">
-                          <b-form-input size="sm"
-                                        v-bind:id="type + 'DateTo' + item.id"
-                                        v-on:blur.native="state[item.id][type + 'Date'].to = setState('spanTo' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
-                                        v-bind:state="state[item.id][type + 'Date'].to"
-                                        v-model="item[type].spanTo">
-                          </b-form-input>
-                        </b-form-group>
-                        <b-button size="sm"
-                                  class="mb-1"
-                                  v-on:click="item[type].dateAsTextHidden = !item[type].dateAsTextHidden">
-                          <i class="fa"
-                             v-bind:class="(item[type].dateAsTextHidden) ? 'fa-angle-down' : 'fa-angle-up'"></i> {{ label.dateText }}
-                        </b-button>
-                        <b-form-input size="sm"
-                                      v-bind:id="type + 'DateText' + item.id"
-                                      v-model="item[type].dateAsText"
-                                      v-if="!item[type].dateAsTextHidden">
-                        </b-form-input>
-                      </b-card-body>
-                    </b-card>
-                  </b-col>
-                </b-row>
-              </b-card-body>
-            </b-collapse>
-          </b-card>
-        </b-col>
-      </b-row>
-      <b-row class="mt-2">
-        <b-col>
-          <b-button v-on:click="addCorrespDescItem"
-                    size="sm"
-                    variant="secondary">
-            <i class="fas fa-plus-circle"></i> {{ label.addCdItem }}
-          </b-button>
-        </b-col>
-        <b-col>
-          <b-pagination align="center"
-                        size="sm"
-                        class="mb-0"
-                        v-bind:total-rows="filteredCorrespDesc.results.length"
-                        v-model="page"
-                        v-bind:per-page="10">
-          </b-pagination>
-        </b-col>
-        <b-col>
-        </b-col>
-      </b-row>
-    </b-container>
+                            >
+                              <option value="">
+                                {{ label.dateForm }}
+                              </option>
+                              <option value="when">
+                                {{ label.dateWhen }}
+                              </option>
+                              <option value="nba">
+                                {{ label.dateNba }}
+                              </option>
+                              <option value="span">
+                                {{ label.dateSpan }}
+                              </option>
+                              <option value="na">
+                                {{ label.noDate }}
+                              </option>
+                            </BFormSelect>
+                          </BCol>
+                          <BCol
+                            v-if="(item[type].date !== 'nba' && item[type].date !== 'na' && item[type].date !== '')"
+                            v-bind:cols="(item[type].date === 'nba' || item[type].date === 'na' || item[type].date === '') ? '0' : '7'"
+                          >
+                            <BRow align-h="end">
+                              <BCol
+                                cols="7"
+                                class="pr-0 pt-1"
+                              >
+                                <BFormCheckbox
+                                  v-bind:id="type + 'DateUncertain' + item.id"
+                                  v-model="item[type].dateCert.uncertain"
+                                  class="labelOnTop float-right"
+                                >
+                                  {{ label.conjecture }}
+                                </BFormCheckbox>
+                              </BCol>
+                              <BCol class="pt-1">
+                                <BFormCheckbox
+                                  v-bind:id="type + 'DateConjecture' + item.id"
+                                  v-model="item[type].dateCert.conjecture"
+                                  class="labelOnTop float-right"
+                                >
+                                  {{ label.uncertain }}
+                                </BFormCheckbox>
+                              </BCol>
+                            </BRow>
+                          </BCol>
+                        </BRow>
+                      </BCardHeader>
+                      <BCardBody>
+                        <BAlert
+                          variant="warning"
+                          v-bind:show="item[type].date === ''"
+                          size="sm"
+                        >
+                          {{ label.selectDateForm }}
+                        </BAlert>
+                        <BFormGroup
+                          v-if="item[type].date === 'when'"
+                          description="YYYY-MM-DD"
+                          class="labelOnTop"
+                          v-bind:invalid-feedback="label.errorDate"
+                        >
+                          <BFormInput
+                            v-bind:id="type + 'DateWhen' + item.id"
+                            v-model="item[type].when"
+                            size="sm"
+                            v-bind:state="state[item.id][type + 'Date'].when"
+                            v-on:blur.native="state[item.id][type + 'Date'].when = setState('when' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
+                          />
+                        </BFormGroup>
+                        <BFormGroup
+                          v-if="item[type].date === 'nba'"
+                          description="YYYY-MM-DD"
+                          class="labelOnTop"
+                          v-bind:label="label.dateNb"
+                          v-bind:label-for="type + 'DateNb' + item.id"
+                          v-bind:invalid-feedback="label.errorDate"
+                        >
+                          <BFormInput
+                            v-bind:id="type + 'DateNb' + item.id"
+                            v-model="item[type].notBefore"
+                            size="sm"
+                            v-bind:state="state[item.id][type + 'Date'].notBefore"
+                            v-on:blur.native="state[item.id][type + 'Date'].notBefore = setState('notBefore' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
+                          />
+                        </BFormGroup>
+                        <BFormGroup
+                          v-if="item[type].date === 'nba'"
+                          description="YYYY-MM-DD"
+                          class="labelOnTop"
+                          v-bind:label="label.dateNa"
+                          v-bind:label-for="type + 'DateNa' + item.id"
+                          v-bind:invalid-feedback="label.errorDate"
+                        >
+                          <BFormInput
+                            v-bind:id="type +'DateNa' + item.id"
+                            v-model="item[type].notAfter"
+                            size="sm"
+                            v-bind:state="state[item.id][type + 'Date'].notAfter"
+                            v-on:blur.native="state[item.id][type + 'Date'].notAfter = setState('notAfter' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
+                          />
+                        </BFormGroup>
+                        <BFormGroup
+                          v-if="item[type].date === 'span'"
+                          description="YYYY-MM-DD"
+                          class="labelOnTop"
+                          v-bind:label="label.from"
+                          v-bind:label-for="type + 'DateFrom' + item.id"
+                          v-bind:invalid-feedback="label.errorDate"
+                        >
+                          <BFormInput
+                            v-bind:id="type + 'DateFrom' + item.id"
+                            v-model="item[type].spanFrom"
+                            size="sm"
+                            v-bind:state="state[item.id][type + 'Date'].from"
+                            v-on:blur.native="state[item.id][type + 'Date'].from = setState('spanFrom' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
+                          />
+                        </BFormGroup>
+                        <BFormGroup
+                          v-if="item[type].date === 'span'"
+                          description="YYYY-MM-DD"
+                          class="labelOnTop"
+                          v-bind:label="label.to"
+                          v-bind:label-for="type + 'DateTo' + item.id"
+                          v-bind:invalid-feedback="label.errorDate"
+                        >
+                          <BFormInput
+                            v-bind:id="type + 'DateTo' + item.id"
+                            v-model="item[type].spanTo"
+                            size="sm"
+                            v-bind:state="state[item.id][type + 'Date'].to"
+                            v-on:blur.native="state[item.id][type + 'Date'].to = setState('spanTo' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
+                          />
+                        </BFormGroup>
+                        <BButton
+                          size="sm"
+                          class="mb-1"
+                          v-on:click="item[type].dateAsTextHidden = !item[type].dateAsTextHidden"
+                        >
+                          <i
+                            class="fa"
+                            v-bind:class="(item[type].dateAsTextHidden) ? 'fa-angle-down' : 'fa-angle-up'"
+                          /> {{ label.dateText }}
+                        </BButton>
+                        <BFormInput
+                          v-if="!item[type].dateAsTextHidden"
+                          v-bind:id="type + 'DateText' + item.id"
+                          v-model="item[type].dateAsText"
+                          size="sm"
+                        />
+                      </BCardBody>
+                    </BCard>
+                  </BCol>
+                </BRow>
+              </BCardBody>
+            </BCollapse>
+          </BCard>
+        </BCol>
+      </BRow>
+      <BRow class="mt-2">
+        <BCol>
+          <BButton
+            size="sm"
+            variant="secondary"
+            v-on:click="addCorrespDescItem"
+          >
+            <i class="fas fa-plus-circle" /> {{ label.addCdItem }}
+          </BButton>
+        </BCol>
+        <BCol>
+          <BPagination
+            v-model="page"
+            align="center"
+            size="sm"
+            class="mb-0"
+            v-bind:total-rows="filteredCorrespDesc.results.length"
+            v-bind:per-page="10"
+          />
+        </BCol>
+        <BCol />
+      </BRow>
+    </BContainer>
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      label: this.labels,
-
-      page: 1,
-      filter: this.filterSpecs,
-
-      type: ['sender', 'receiver'],
-
-      collapsed: (this.correspDescData.length > 1),
-
-      nextKey: (this.correspDescData.length > 1) ? (this.correspDescData.length) : 1,
-      correspDesc: this.correspDescData,
-
-      persons: this.pArrays.persons,
-      places: this.pArrays.places,
-
-      uriUnknown: 'http://correspSearch.net/unknown',
-
-      state: this.correspDescState,
-    };
-  },
   props: {
     labels: {
       type: Object,
@@ -592,14 +755,170 @@ export default {
     correspDescData: {
       type: Array,
       twoWays: true,
-    //  default() {
-    //    return this.$parent.correspDescData;
-    //  },
+      default: () => [],
     },
     correspDescState: {
       type: Array,
       twoWays: true,
+      default: () => [],
     },
+  },
+  data() {
+    return {
+      label: this.labels,
+
+      page: 1,
+      filter: this.filterSpecs,
+
+      type: ['sender', 'receiver'],
+
+      collapsed: (this.correspDescData.length > 1),
+
+      nextKey: (this.correspDescData.length > 1) ? (this.correspDescData.length) : 1,
+      correspDesc: this.correspDescData,
+
+      persons: this.pArrays.persons,
+      places: this.pArrays.places,
+
+      uriUnknown: 'http://correspSearch.net/unknown',
+
+      state: this.correspDescState,
+    };
+  },
+  computed: {
+    // Get filtered Results & Paginate them
+    filteredCorrespDesc() {
+      const results = [];
+      if (this.filter.text === '') {
+        this.correspDesc.forEach((e) => { results.push(e); });
+      }
+      if (this.filter.type === 'name' && this.filter.text !== '') {
+        for (let i = 0; i < this.correspDesc.length; i += 1) {
+          let match = false;
+          for (let j = 0; j < this.correspDesc[i].sender.persName.length; j += 1) {
+            if (this.correspDesc[i].sender.persName[j].text.toUpperCase().includes(this.filter.text.toUpperCase())) {
+              results.push(this.correspDesc[i]);
+              match = true;
+            }
+          }
+          for (let j = 0; j < this.correspDesc[i].receiver.persName.length; j += 1) {
+            if (this.correspDesc[i].receiver.persName[j].text.toUpperCase().includes(this.filter.text.toUpperCase())) {
+              if (!match) {
+                results.push(this.correspDesc[i]);
+              }
+            }
+          }
+        }
+      }
+      if (this.filter.type === 'place' && this.filter.text !== '') {
+        for (let i = 0; i < this.correspDesc.length; i += 1) {
+          let match = false;
+          for (let j = 0; j < this.correspDesc[i].sender.placeName.length; j += 1) {
+            if (this.correspDesc[i].sender.placeName[j].text
+                && this.correspDesc[i].sender.placeName[j].text.toUpperCase().includes(this.filter.text.toUpperCase())) {
+              results.push(this.correspDesc[i]);
+              match = true;
+            }
+          }
+          for (let j = 0; j < this.correspDesc[i].receiver.placeName.length; j += 1) {
+            if (this.correspDesc[i].receiver.placeName[j].text !== undefined
+                && this.correspDesc[i].receiver.placeName[j].text.toUpperCase().includes(this.filter.text.toUpperCase())) {
+              if (!match) results.push(this.correspDesc[i]);
+            }
+          }
+        }
+      }
+      if (this.filter.type === 'key' && this.filter.text !== '') {
+        for (let i = 0; i < this.correspDesc.length; i += 1) {
+          if (this.correspDesc[i].key === this.filter.text) {
+            results.push(this.correspDesc[i]);
+          }
+        }
+      }
+      if (this.filter.type === 'id' && this.filter.text !== '') {
+        results.push(this.correspDesc[this.filter.text]);
+      }
+      if (this.filter.type === 'date' && this.filter.text !== '') {
+        for (let i = 0; i < this.correspDesc.length; i += 1) {
+          let match = false;
+          if (this.correspDesc[i].sender.when && this.correspDesc[i].sender.when.includes(this.filter.text)) {
+            results.push(this.correspDesc[i]);
+            match = true;
+          }
+          if (
+            (
+              this.correspDesc[i].sender.notBefore
+              && this.correspDesc[i].sender.notBefore.includes(this.filter.text)
+            ) || (
+              this.correspDesc[i].sender.notAfter
+              && this.correspDesc[i].sender.notAfter.includes(this.filter.text)
+            ) || (this.correspDesc[i].sender.spanFrom
+              && this.correspDesc[i].sender.spanFrom.includes(this.filter.text)
+            ) || (this.correspDesc[i].sender.spanTo
+              && this.correspDesc[i].sender.spanTo.includes(this.filter.text)
+            ) || (
+              this.correspDesc[i].sender.dateAsText
+              && this.correspDesc[i].sender.dateAsText.includes(this.filter.text)
+            )
+          ) {
+            if (!match) {
+              results.push(this.correspDesc[i]);
+              match = true;
+            }
+          }
+          if (
+            (
+              this.correspDesc[i].receiver.when
+              && this.correspDesc[i].receiver.when.includes(this.filter.text)
+            ) || (this.correspDesc[i].receiver.notBefore
+              && this.correspDesc[i].receiver.notBefore.includes(this.filter.text)
+            ) || (this.correspDesc[i].receiver.notAfter
+              && this.correspDesc[i].receiver.notAfter.includes(this.filter.text)
+            ) || (this.correspDesc[i].receiver.spanFrom
+              && this.correspDesc[i].receiver.spanFrom.includes(this.filter.text)
+            ) || (this.correspDesc[i].receiver.spanTo
+              && this.correspDesc[i].receiver.spanTo.includes(this.filter.text)
+            ) || (this.correspDesc[i].receiver.dateAsText
+              && this.correspDesc[i].receiver.dateAsText.includes(this.filter.text)
+            )
+          ) {
+            if (!match) {
+              results.push(this.correspDesc[i]);
+              match = true;
+            }
+          }
+        }
+      }
+      const paginatedResults = results.slice((this.page === 1) ? 0 : ((this.page - 1) * 10), ((this.page === 1) ? 0 : ((this.page - 1) * 10)) + 10);
+      return {
+        paginatedResults,
+        results,
+      };
+    },
+  },
+  mounted() {
+    // Exclude all checkboxes from tabbing, not implemented yet in bootstrap-vue
+    document.querySelectorAll('input[type="checkbox"]').forEach((e) => {
+      e.setAttribute('tabindex', '-1');
+    });
+
+    // Open correspDesc-Element if there is only one
+    if (this.correspDesc.length === 1) this.correspDesc[0].visible = true;
+
+    // Focus Key field
+
+    if (this.filter.type !== 'id' && this.filter.type !== 'key') {
+      this.$nextTick(() => { document.getElementById('correspDescKey0').focus(); });
+    } else if (this.filter.type === 'key') {
+      for (let i = 0; i < this.correspDesc.length; i += 1) {
+        if (this.correspDesc[i].key === this.filter.text) {
+          this.correspDesc[i].visible = true;
+          break;
+        }
+      }
+    } else {
+      this.correspDesc[this.filter.text].visible = true;
+    }
   },
   methods: {
     // Wrapper for debug console
@@ -668,24 +987,20 @@ export default {
     setIdUnknown(target, id, key) {
       this.$nextTick(() => {
         if (this.correspDesc[id][target].persName[key].unknown) {
-          this.correspDesc[id][target].persName[key].ref =
-          (
+          this.correspDesc[id][target].persName[key].ref = (
             this.correspDesc[id][target].persName[key].ref.trim() !== ''
           ) ? this.correspDesc[id][target].persName[key].ref : this.uriUnknown;
-          this.correspDesc[id][target].persName[key].text =
-          (
+          this.correspDesc[id][target].persName[key].text = (
             this.correspDesc[id][target].persName[key].text.trim() !== ''
           ) ? this.correspDesc[id][target].persName[key].text : this.label.unknown;
           this.state[id][target][key].id = (this.correspDesc[id][target].persName[key].ref.trim() !== '');
           this.state[id][target][key].name = (this.correspDesc[id][target].persName[key].text.trim() !== '');
         } else {
-          this.correspDesc[id][target].persName[key].ref =
-          (
+          this.correspDesc[id][target].persName[key].ref = (
             this.correspDesc[id][target].persName[key].ref.trim() !== ''
             && this.correspDesc[id][target].persName[key].ref !== this.uriUnknown
           ) ? this.correspDesc[id][target].persName[key].ref : '';
-          this.correspDesc[id][target].persName[key].text =
-          (
+          this.correspDesc[id][target].persName[key].text = (
             this.correspDesc[id][target].persName[key].text.trim() !== ''
             && this.correspDesc[id][target].persName[key].text !== this.label.unknown
           ) ? this.correspDesc[id][target].persName[key].text : '';
@@ -767,16 +1082,16 @@ export default {
     // Get Data from Geonames
     getGeodata(target, id, key) {
       this.asyncDataRequest(`https://correspsearch.net/api/v1.1/services/getGeonames.xql?q=${this.correspDesc[id][target].placeName[key].text}&fc=${this.correspDesc[id][target].placeName[key].geo.parameter}`)
-      .then((json) => {
-        this.correspDesc[id][target].placeName[key].geo.suggestions = json.geonames;
-        this.correspDesc[id][target].placeName[key].geo.all = json.totalResultsCount;
-        if (json.totalResultsCount > 0) {
-          this.correspDesc[id][target].placeName[key].geo.open = true;
-        }
-        this.$nextTick(() => {
-          this.$refs[`${target}PlaceID${id}${key}`][0].$el.focus();
+        .then((json) => {
+          this.correspDesc[id][target].placeName[key].geo.suggestions = json.geonames;
+          this.correspDesc[id][target].placeName[key].geo.all = json.totalResultsCount;
+          if (json.totalResultsCount > 0) {
+            this.correspDesc[id][target].placeName[key].geo.open = true;
+          }
+          this.$nextTick(() => {
+            this.$refs[`${target}PlaceID${id}${key}`][0].$el.focus();
+          });
         });
-      });
       /*
       const xhr = new XMLHttpRequest();
       let json = '';
@@ -825,7 +1140,7 @@ export default {
         for (let i = 0; i < this.persons.length; i += 1) {
           if (
             this.persons[i].text.toUpperCase().match(regEx)
-        //  && this.persons[i].text.toUpperCase() !== persName.toUpperCase()
+            //  && this.persons[i].text.toUpperCase() !== persName.toUpperCase()
             && this.persons[i].text !== ''
           ) {
             results.push(this.persons[i].text);
@@ -1367,7 +1682,7 @@ export default {
         this.filteredCorrespDesc.paginatedResults[i].visible = false;
       }
       setTimeout(() => {
-        location.hash = `#${(this.nextKey - 1)}`;
+        window.location.hash = `#${(this.nextKey - 1)}`;
         document.getElementById(`correspDescKey${(this.nextKey - 1)}`).focus();
       }, 1000);
     },
@@ -1406,141 +1721,6 @@ export default {
         }
         this.collapsed = true;
       });
-    },
-  },
-  mounted() {
-    // Exclude all checkboxes from tabbing, not implemented yet in bootstrap-vue
-    document.querySelectorAll('input[type="checkbox"]').forEach((e) => {
-      e.setAttribute('tabindex', '-1');
-    });
-
-    // Open correspDesc-Element if there is only one
-    if (this.correspDesc.length === 1) this.correspDesc[0].visible = true;
-
-    // Focus Key field
-
-    if (this.filter.type !== 'id' && this.filter.type !== 'key') {
-      this.$nextTick(() => { document.getElementById('correspDescKey0').focus(); });
-    } else if (this.filter.type === 'key') {
-      for (let i = 0; i < this.correspDesc.length; i += 1) {
-        if (this.correspDesc[i].key === this.filter.text) {
-          this.correspDesc[i].visible = true;
-          break;
-        }
-      }
-    } else {
-      this.correspDesc[this.filter.text].visible = true;
-    }
-  },
-  computed: {
-    // Get filtered Results & Paginate them
-    filteredCorrespDesc() {
-      const results = [];
-      if (this.filter.text === '') {
-        this.correspDesc.forEach((e) => { results.push(e); });
-      }
-      if (this.filter.type === 'name' && this.filter.text !== '') {
-        for (let i = 0; i < this.correspDesc.length; i += 1) {
-          let match = false;
-          for (let j = 0; j < this.correspDesc[i].sender.persName.length; j += 1) {
-            if (this.correspDesc[i].sender.persName[j].text.toUpperCase().includes(this.filter.text.toUpperCase())) {
-              results.push(this.correspDesc[i]);
-              match = true;
-            }
-          }
-          for (let j = 0; j < this.correspDesc[i].receiver.persName.length; j += 1) {
-            if (this.correspDesc[i].receiver.persName[j].text.toUpperCase().includes(this.filter.text.toUpperCase())) {
-              if (!match) {
-                results.push(this.correspDesc[i]);
-              }
-            }
-          }
-        }
-      }
-      if (this.filter.type === 'place' && this.filter.text !== '') {
-        for (let i = 0; i < this.correspDesc.length; i += 1) {
-          let match = false;
-          for (let j = 0; j < this.correspDesc[i].sender.placeName.length; j += 1) {
-            if (this.correspDesc[i].sender.placeName[j].text
-                && this.correspDesc[i].sender.placeName[j].text.toUpperCase().includes(this.filter.text.toUpperCase())) {
-              results.push(this.correspDesc[i]);
-              match = true;
-            }
-          }
-          for (let j = 0; j < this.correspDesc[i].receiver.placeName.length; j += 1) {
-            if (this.correspDesc[i].receiver.placeName[j].text !== undefined
-                && this.correspDesc[i].receiver.placeName[j].text.toUpperCase().includes(this.filter.text.toUpperCase())) {
-              if (!match) results.push(this.correspDesc[i]);
-            }
-          }
-        }
-      }
-      if (this.filter.type === 'key' && this.filter.text !== '') {
-        for (let i = 0; i < this.correspDesc.length; i += 1) {
-          if (this.correspDesc[i].key === this.filter.text) {
-            results.push(this.correspDesc[i]);
-          }
-        }
-      }
-      if (this.filter.type === 'id' && this.filter.text !== '') {
-        results.push(this.correspDesc[this.filter.text]);
-      }
-      if (this.filter.type === 'date' && this.filter.text !== '') {
-        for (let i = 0; i < this.correspDesc.length; i += 1) {
-          let match = false;
-          if (this.correspDesc[i].sender.when && this.correspDesc[i].sender.when.includes(this.filter.text)) {
-            results.push(this.correspDesc[i]);
-            match = true;
-          }
-          if (
-            (
-              this.correspDesc[i].sender.notBefore
-              && this.correspDesc[i].sender.notBefore.includes(this.filter.text)
-            ) || (
-              this.correspDesc[i].sender.notAfter
-              && this.correspDesc[i].sender.notAfter.includes(this.filter.text)
-            ) || (this.correspDesc[i].sender.spanFrom
-              && this.correspDesc[i].sender.spanFrom.includes(this.filter.text)
-            ) || (this.correspDesc[i].sender.spanTo
-              && this.correspDesc[i].sender.spanTo.includes(this.filter.text)
-            ) || (
-              this.correspDesc[i].sender.dateAsText
-              && this.correspDesc[i].sender.dateAsText.includes(this.filter.text)
-            )
-          ) {
-            if (!match) {
-              results.push(this.correspDesc[i]);
-              match = true;
-            }
-          }
-          if (
-            (
-              this.correspDesc[i].receiver.when
-              && this.correspDesc[i].receiver.when.includes(this.filter.text)
-            ) || (this.correspDesc[i].receiver.notBefore
-              && this.correspDesc[i].receiver.notBefore.includes(this.filter.text)
-            ) || (this.correspDesc[i].receiver.notAfter
-              && this.correspDesc[i].receiver.notAfter.includes(this.filter.text)
-            ) || (this.correspDesc[i].receiver.spanFrom
-              && this.correspDesc[i].receiver.spanFrom.includes(this.filter.text)
-            ) || (this.correspDesc[i].receiver.spanTo
-              && this.correspDesc[i].receiver.spanTo.includes(this.filter.text)
-            ) || (this.correspDesc[i].receiver.dateAsText
-              && this.correspDesc[i].receiver.dateAsText.includes(this.filter.text)
-            )
-          ) {
-            if (!match) {
-              results.push(this.correspDesc[i]);
-              match = true;
-            }
-          }
-        }
-      }
-      const paginatedResults = results.slice((this.page === 1) ? 0 : ((this.page - 1) * 10), ((this.page === 1) ? 0 : ((this.page - 1) * 10)) + 10);
-      return {
-        paginatedResults,
-        results,
-      };
     },
   },
 };
