@@ -638,8 +638,8 @@ export default {
               orgNames[t].push({
                 '#text': (this.correspDesc[i][t].persName[j].text) ? this.correspDesc[i][t].persName[j].text : 'Unknown',
                 ref: this.correspDesc[i][t].persName[j].ref,
-                evidence: (this.correspDesc[i][t].persName[j].conjecture === 'true') ? 'conjecture' : null,
-                cert: (this.correspDesc[i][t].persName[j].uncertain === 'true') ? 'low' : null,
+                evidence: (this.correspDesc[i][t].persName[j].conjecture) ? 'conjecture' : null,
+                cert: (this.correspDesc[i][t].persName[j].uncertain) ? 'low' : null,
               });
             } else {
               persNames[t].push({

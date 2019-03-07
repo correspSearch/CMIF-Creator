@@ -13,6 +13,7 @@ module.exports = {
 	rules: {
 		'vue/v-on-style': 'off',
 		'vue/v-bind-style': 'off',
+		'vue/no-v-html': 'off',
 		'max-len': 'off',
 		'no-console': 'off',
 		'no-useless-escape': 'off',

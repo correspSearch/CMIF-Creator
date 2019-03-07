@@ -441,7 +441,7 @@ export default {
           return rp.test(string);
         }
         case 'date': {
-          rp = new RegExp(/^(([0-1][0-9][0-9][0-9])$)|^(([0-1][0-9][0-9][0-9])\-([0][1-9]|[1][0-2])$)|^(([0-1][0-9][0-9][0-9])\-([0][1-9]|[1][0-2])\-([0-9][1-9]|[1-2][0-9]|[3][0-1])$)/g);
+          rp = new RegExp(/^(([0-2][0-9][0-9][0-9])$)|^(([0-2][0-9][0-9][0-9])\-([0][1-9]|[1][0-2])$)|^(([0-2][0-9][0-9][0-9])\-([0][1-9]|[1][0-2])\-([0-9][1-9]|[1-2][0-9]|[3][0-1])$)/g);
           let result = rp.test(string);
           const date = string.split('-');
           if (date[1] !== undefined && date[2] !== undefined) {
@@ -472,7 +472,7 @@ export default {
               default: break;
             }
           }
-          return result;
+          return (date[0] === '0000') ? false : result;
         }
         default:
           return false;
@@ -622,6 +622,16 @@ p {
 
 .btn-sm {
   font-size: 0.8rem;
+}
+
+.input-warning  {
+  border-color: #ffc107 !important;
+  color: #ffc107 !important;
+}
+
+.feedback-warning {
+  font-size: 80%;
+  margin-top: .25rem;
 }
 
 .alert {

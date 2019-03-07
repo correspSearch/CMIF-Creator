@@ -219,12 +219,12 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                 </BFormGroup>
                 <BRow>
                   <BCol
-                    v-for="(type, tKey) in type"
+                    v-for="(tpe, tKey) in type"
                     v-bind:key="'t_' + item.id + tKey"
                   >
-                    <h3>{{ label[type] }}</h3>
+                    <h3>{{ label[tpe] }}</h3>
                     <BCard
-                      v-for="(s, key) in item[type].persName"
+                      v-for="(s, key) in item[tpe].persName"
                       v-bind:key="'ps_' + item.id + key"
                       no-body
                       class="mb-2"
@@ -233,9 +233,9 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                         <BRow align-h="between">
                           <BCol cols="3">
                             <BButton
-                              v-if="item[type].persName.length > 1"
+                              v-if="item[tpe].persName.length > 1"
                               size="sm"
-                              v-on:click="rmPerson(type, item.id, key)"
+                              v-on:click="rmPerson(tpe, item.id, key)"
                             >
                               <i class="fa fa-trash-alt" />
                             </BButton>
@@ -244,7 +244,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             <BRow align-h="end">
                               <BCol cols="3">
                                 <BFormCheckbox
-                                  v-bind:id="type + 'Conjecture' + item.id + key"
+                                  v-bind:id="tpe + 'Conjecture' + item.id + key"
                                   v-model="s.conjecture"
                                   unchecked-value="false"
                                   class="labelOnTop float-right"
@@ -254,7 +254,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                               </BCol>
                               <BCol cols="3">
                                 <BFormCheckbox
-                                  v-bind:id="type + 'Uncertain' + item.id + key"
+                                  v-bind:id="tpe + 'Uncertain' + item.id + key"
                                   v-model="s.uncertain"
                                   unchecked-value="false"
                                   class="labelOnTop float-right"
@@ -264,10 +264,10 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                               </BCol>
                               <BCol cols="3">
                                 <BFormCheckbox
-                                  v-bind:id="type + 'Unknown' + item.id + key"
+                                  v-bind:id="tpe + 'Unknown' + item.id + key"
                                   v-model="s.unknown"
                                   class="labelOnTop float-right"
-                                  v-on:change="setIdUnknown(type, item.id, key)"
+                                  v-on:change="setIdUnknown(tpe, item.id, key)"
                                 >
                                   {{ label.unknown }}
                                 </BFormCheckbox>
@@ -280,30 +280,30 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                         <BFormGroup
                           label-size="sm"
                           v-bind:label="label.name"
-                          v-bind:label-for="type + 'PersName' + key"
+                          v-bind:label-for="tpe + 'PersName' + key"
                           v-bind:invalid-feedback="label.errorMetaEditor"
                           class="labelOnTop"
                         >
                           <BFormInput
-                            v-bind:id="type + 'PersName' + key"
+                            v-bind:id="tpe + 'PersName' + key"
                             v-model="s.text"
-                            v-bind:state="state[item.id][type][key].name"
+                            v-bind:state="state[item.id][tpe][key].name"
                             size="sm"
-                            v-on:blur.native="addPersonToPool(type, item.id, key); state[item.id][type][key].name = setState(type + 'Name', item.id, key)"
-                            v-on:keyup.native="onInput(type, item.id, key, false); setHeader(item.id);"
+                            v-on:blur.native="addPersonToPool(tpe, item.id, key); state[item.id][tpe][key].name = setState(tpe + 'Name', item.id, key)"
+                            v-on:keyup.native="onInput(tpe, item.id, key, false); setHeader(item.id);"
                             v-on:keydown.esc.native="s.open = false"
-                            v-on:keydown.down.native="moveDown(type, item.id, key)"
-                            v-on:keydown.up.native="moveUp(type, item.id, key)"
-                            v-on:keydown.enter.native="select(type, item.id, key)"
+                            v-on:keydown.down.native="moveDown(tpe, item.id, key)"
+                            v-on:keydown.up.native="moveUp(tpe, item.id, key)"
+                            v-on:keydown.enter.native="select(tpe, item.id, key)"
                           />
                         </BFormGroup>
                         <BListGroup v-if="s.open && s.text.length > 2">
                           <BListGroupItem
-                            v-for="(suggestion, suKey) in filterNames(type, item.id, key)"
+                            v-for="(suggestion, suKey) in filterNames(tpe, item.id, key)"
                             v-bind:key="'pss_' + item.id + suKey"
                             v-bind:class="{'highlighted': suKey === s.highlighted}"
                             button
-                            v-on:mousedown="select(type, item.id, key)"
+                            v-on:mousedown="select(tpe, item.id, key)"
                             v-on:mouseenter="s.highlighted = suKey"
                           >
                             {{ suggestion }}
@@ -311,29 +311,29 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                         </BListGroup>
                         <BFormGroup
                           label-size="sm"
-                          v-bind:label="label[type + 'Authority']"
-                          v-bind:label-for="type + 'PersID' + item.id + key"
+                          v-bind:label="label[tpe + 'Authority']"
+                          v-bind:label-for="tpe + 'PersID' + item.id + key"
                           class="labelOnTop"
                         >
                           <BInputGroup>
                             <BFormInput
-                              v-bind:id="type + 'PersID' + item.id + key"
-                              v-bind:ref="type + 'PersID' + item.id + key"
+                              v-bind:id="tpe + 'PersID' + item.id + key"
+                              v-bind:ref="tpe + 'PersID' + item.id + key"
                               v-model="s.ref"
-                              v-bind:state="state[item.id][type][key].id"
+                              v-bind:state="state[item.id][tpe][key].id"
                               size="sm"
-                              v-on:blur.native="addPersNorm(type, item.id, key); item[type].persName[key].gnd.open = false; state[item.id][type][key].id = setState(type + 'Authority', item.id, key)"
-                              v-on:keydown.esc.native="item[type].persName[key].gnd.open = false"
+                              v-on:blur.native="addPersNorm(tpe, item.id, key); item[tpe].persName[key].gnd.open = false; state[item.id][tpe][key].id = setState(tpe + 'Authority', item.id, key)"
+                              v-on:keydown.esc.native="item[tpe].persName[key].gnd.open = false"
                             />
                             <BInputGroupAppend>
                               <BButton
-                                v-bind:id="type + 'GetGndBtn' + item.id + key"
+                                v-bind:id="tpe + 'GetGndBtn' + item.id + key"
                                 variant="secondary"
                                 v-bind:disabled="s.text === '' || s.unknown === true"
                                 v-bind:title="label.gndBtnTitle"
                                 target="_blank"
                                 class="text-white"
-                                v-on:click="getGnd(type, item.id, key)"
+                                v-on:click="getGnd(tpe, item.id, key)"
                               >
                                 <i class="fa fa-address-card" />
                               </BButton>
@@ -343,28 +343,28 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             </div>
                           </BInputGroup>
                         </BFormGroup>
-                        <BListGroup v-if="item[type].persName[key].gnd.open">
+                        <BListGroup v-if="item[tpe].persName[key].gnd.open">
                           <BListGroupItem
-                            v-for="(suggestion, kee) in item[type].persName[key].gnd.suggestions"
+                            v-for="(suggestion, kee) in item[tpe].persName[key].gnd.suggestions"
                             v-bind:key="'gnd_' + item.id + kee"
-                            v-bind:class="{'highlighted': kee === item[type].persName[key].gnd.highlighted}"
+                            v-bind:class="{'highlighted': kee === item[tpe].persName[key].gnd.highlighted}"
                             button
-                            v-on:mousedown="selectGnd(type, item.id, key, suggestion)"
-                            v-on:mouseenter="item[type].persName[key].gnd.highlighted = kee"
+                            v-on:mousedown="selectGnd(tpe, item.id, key, suggestion)"
+                            v-on:mouseenter="item[tpe].persName[key].gnd.highlighted = kee"
                           >
                             {{ suggestion.label }}
                           </BListGroupItem>
                           <BListGroupItem
-                            v-if="item[type].persName[key].gnd.suggestions.length > 9"
+                            v-if="item[tpe].persName[key].gnd.suggestions.length > 9"
                             key="gndMore"
                             button
                             class="bg-secondary text-white"
-                            v-on:mousedown="getMoreGnd(type, item.id, key)"
+                            v-on:mousedown="getMoreGnd(tpe, item.id, key)"
                           >
                             {{ label.more }}
                           </BListGroupItem>
                           <BListGroupItem
-                            v-if="item[type].persName[key].gnd.suggestions.length === 0"
+                            v-if="item[tpe].persName[key].gnd.suggestions.length === 0"
                             key="gndNoMatches"
                             button
                           >
@@ -372,10 +372,10 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                           </BListGroupItem>
                         </BListGroup>
                         <BFormCheckbox
-                          v-bind:id="type + 'Organisation' + item.id + key"
+                          v-bind:id="tpe + 'Organisation' + item.id + key"
                           v-model="s.organisation"
                           class="labelOnTop"
-                          v-on:input="addOrg(type, item.id, key)"
+                          v-on:input="addOrg(tpe, item.id, key)"
                         >
                           {{ label.org }}
                         </BFormCheckbox>
@@ -384,12 +384,12 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                     <BButton
                       size="sm"
                       variant="secondary"
-                      v-on:click="addPerson(type, item.id);"
+                      v-on:click="addPerson(tpe, item.id);"
                     >
-                      <i class="fas fa-plus-circle" /> {{ label['add' + type.charAt(0).toUpperCase() + type.slice(1)] }}
+                      <i class="fas fa-plus-circle" /> {{ label['add' + tpe.charAt(0).toUpperCase() + tpe.slice(1)] }}
                     </BButton>
                     <BCard
-                      v-for="(place, key) in item[type].placeName"
+                      v-for="(place, key) in item[tpe].placeName"
                       v-bind:key="'pl_' + item.id + key"
                       no-body
                       class="mb-2"
@@ -398,9 +398,9 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                         <BRow align-h="between">
                           <BCol cols="2">
                             <BButton
-                              v-if="item[type].placeName.length > 1"
+                              v-if="item[tpe].placeName.length > 1"
                               size="sm"
-                              v-on:click="rmPlace(type, item.id, key)"
+                              v-on:click="rmPlace(tpe, item.id, key)"
                             >
                               <i class="fa fa-trash-alt" />
                             </BButton>
@@ -409,7 +409,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             <BRow align-h="end">
                               <BCol cols="3">
                                 <BFormCheckbox
-                                  v-bind:id="type + 'PlaceConjecture' + item.id + key"
+                                  v-bind:id="tpe + 'PlaceConjecture' + item.id + key"
                                   v-model="place.conjecture"
                                   v-bind:disabled="place.text === ''"
                                   unchecked-value="false"
@@ -420,7 +420,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                               </BCol>
                               <BCol cols="3">
                                 <BFormCheckbox
-                                  v-bind:id="type + 'PlaceUncertain' + item.id + key"
+                                  v-bind:id="tpe + 'PlaceUncertain' + item.id + key"
                                   v-model="place.uncertain"
                                   v-bind:disabled="place.text === ''"
                                   unchecked-value="false"
@@ -436,29 +436,29 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                       <BCardBody>
                         <BFormGroup
                           label-size="sm"
-                          v-bind:label-for="type + 'Place' + item.id + key"
+                          v-bind:label-for="tpe + 'Place' + item.id + key"
                           v-bind:label="label.place"
                           class="labelOnTop"
                         >
                           <BFormInput
-                            v-bind:id="type + 'Place' + item.id + key"
+                            v-bind:id="tpe + 'Place' + item.id + key"
                             v-model="place.text"
                             size="sm"
-                            v-on:blur.native="addPlaceToPool(type, item.id, key)"
-                            v-on:keyup.native="onInput(type, item.id, key, true);"
+                            v-on:blur.native="addPlaceToPool(tpe, item.id, key)"
+                            v-on:keyup.native="onInput(tpe, item.id, key, true);"
                             v-on:keydown.esc.native="place.open = false"
-                            v-on:keydown.down.native="moveDown(type, item.id, key, true)"
-                            v-on:keydown.up.native="moveUp(type, item.id, key, true)"
-                            v-on:keydown.enter.native="select(type, item.id, key, true)"
+                            v-on:keydown.down.native="moveDown(tpe, item.id, key, true)"
+                            v-on:keydown.up.native="moveUp(tpe, item.id, key, true)"
+                            v-on:keydown.enter.native="select(tpe, item.id, key, true)"
                           />
                         </BFormGroup>
                         <BListGroup v-if="place.open && place.text.length > 2">
                           <BListGroupItem
-                            v-for="(suggestion, suKey) in filterNames(type, item.id, key, true)"
+                            v-for="(suggestion, suKey) in filterNames(tpe, item.id, key, true)"
                             v-bind:key="'psp_' + item.id + suKey"
                             button
                             v-bind:class="{'highlighted': suKey === place.highlighted}"
-                            v-on:mousedown="select(type, item.id, key, true)"
+                            v-on:mousedown="select(tpe, item.id, key, true)"
                             v-on:mouseenter="place.highlighted = suKey"
                           >
                             {{ suggestion }}
@@ -468,17 +468,17 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                           label-size="sm"
                           v-bind:label="label.placeAuthority"
                           class="labelOnTop"
-                          v-bind:label-for="type + 'PlaceID' + item.id + key"
+                          v-bind:label-for="tpe + 'PlaceID' + item.id + key"
                         >
                           <BInputGroup>
                             <BFormInput
-                              v-bind:id="type + 'PlaceID' + item.id + key"
-                              v-bind:ref="type + 'PlaceID' + item.id + key"
+                              v-bind:id="tpe + 'PlaceID' + item.id + key"
+                              v-bind:ref="tpe + 'PlaceID' + item.id + key"
                               v-model="place.ref"
-                              v-bind:state="state[item.id][type + 'Place'][key].id"
+                              v-bind:state="state[item.id][tpe + 'Place'][key].id"
                               size="sm"
                               class="no-right-border"
-                              v-on:blur.native="addPlaceNorm(type, item.id, key); place.geo.open = false; state[item.id][type + 'Place'][key].id = setState(type + 'PlaceAuthority', item.id, key)"
+                              v-on:blur.native="addPlaceNorm(tpe, item.id, key); place.geo.open = false; state[item.id][tpe + 'Place'][key].id = setState(tpe + 'PlaceAuthority', item.id, key)"
                               v-on:keydown.esc.native="place.geo.open = false"
                             />
                             <BInputGroupAppend>
@@ -505,7 +505,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                                 variant="secondary"
                                 v-bind:disabled="place.text === ''"
                                 class="text-white"
-                                v-on:click="getGeodata(type, item.id, key)"
+                                v-on:click="getGeodata(tpe, item.id, key)"
                               >
                                 <i class="fa fa-globe" />
                               </BButton>
@@ -521,7 +521,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-bind:key="'geo_' + item.id + suKey"
                             button
                             v-bind:class="{'highlighted': suKey === place.geo.highlighted}"
-                            v-on:mousedown="selectGeoname(type, item.id, key, suggestion)"
+                            v-on:mousedown="selectGeoname(tpe, item.id, key, suggestion)"
                             v-on:mouseenter="place.geo.highlighted = suKey"
                           >
                             {{ suggestion.name }}, {{ suggestion.adminName1 }} ({{ suggestion.countryCode }})
@@ -532,16 +532,16 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                     <BButton
                       size="sm"
                       variant="secondary"
-                      v-on:click="addPlace(type, item.id);"
+                      v-on:click="addPlace(tpe, item.id);"
                     >
                       <i class="fas fa-plus-circle" /> {{ label.addPlace }}
                     </BButton>
                     <BCard no-body>
                       <BCardHeader>
                         <BRow>
-                          <BCol v-bind:cols="(item[type].date === 'nba' || item[type].date === 'na' || item[type].date === '') ? '12' : '5'">
+                          <BCol v-bind:cols="(item[tpe].date === 'nba' || item[tpe].date === 'na' || item[tpe].date === '') ? '12' : '5'">
                             <BFormSelect
-                              v-model="item[type].date"
+                              v-model="item[tpe].date"
                               size="sm"
                             >
                               <option value="">
@@ -562,8 +562,8 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             </BFormSelect>
                           </BCol>
                           <BCol
-                            v-if="(item[type].date !== 'nba' && item[type].date !== 'na' && item[type].date !== '')"
-                            v-bind:cols="(item[type].date === 'nba' || item[type].date === 'na' || item[type].date === '') ? '0' : '7'"
+                            v-if="(item[tpe].date !== 'nba' && item[tpe].date !== 'na' && item[tpe].date !== '')"
+                            v-bind:cols="(item[tpe].date === 'nba' || item[tpe].date === 'na' || item[tpe].date === '') ? '0' : '7'"
                           >
                             <BRow align-h="end">
                               <BCol
@@ -571,8 +571,8 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                                 class="pr-0 pt-1"
                               >
                                 <BFormCheckbox
-                                  v-bind:id="type + 'DateUncertain' + item.id"
-                                  v-model="item[type].dateCert.uncertain"
+                                  v-bind:id="tpe + 'DateUncertain' + item.id"
+                                  v-model="item[tpe].dateCert.uncertain"
                                   class="labelOnTop float-right"
                                 >
                                   {{ label.conjecture }}
@@ -580,8 +580,8 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                               </BCol>
                               <BCol class="pt-1">
                                 <BFormCheckbox
-                                  v-bind:id="type + 'DateConjecture' + item.id"
-                                  v-model="item[type].dateCert.conjecture"
+                                  v-bind:id="tpe + 'DateConjecture' + item.id"
+                                  v-model="item[tpe].dateCert.conjecture"
                                   class="labelOnTop float-right"
                                 >
                                   {{ label.uncertain }}
@@ -594,103 +594,114 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                       <BCardBody>
                         <BAlert
                           variant="warning"
-                          v-bind:show="item[type].date === ''"
+                          v-bind:show="item[tpe].date === ''"
                           size="sm"
                         >
                           {{ label.selectDateForm }}
                         </BAlert>
                         <BFormGroup
-                          v-if="item[type].date === 'when'"
+                          v-if="item[tpe].date === 'when'"
                           description="YYYY-MM-DD"
                           class="labelOnTop"
                           v-bind:invalid-feedback="label.errorDate"
                         >
                           <BFormInput
-                            v-bind:id="type + 'DateWhen' + item.id"
-                            v-model="item[type].when"
+                            v-bind:id="tpe + 'DateWhen' + item.id"
+                            v-model="item[tpe].when"
                             size="sm"
-                            v-bind:state="state[item.id][type + 'Date'].when"
-                            v-on:blur.native="state[item.id][type + 'Date'].when = setState('when' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
+                            v-bind:class="(valiDateWarn(item[tpe].when) && state[item.id][tpe + 'Date'].when !== false) ? 'input-warning' : ''"
+                            v-bind:state="(state[item.id][tpe + 'Date'].when) ? (valiDateWarn(item[tpe].when) ? '' : true) : state[item.id][tpe + 'Date'].when"
+                            v-on:blur.native="state[item.id][tpe + 'Date'].when = setState('when' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
                           />
+                          <div
+                            v-if="valiDateWarn(item[tpe].when)"
+                            class="input-warning feedback-warning"
+                          >
+                            {{ label.feedbackWarning }}
+                          </div>
                         </BFormGroup>
                         <BFormGroup
-                          v-if="item[type].date === 'nba'"
+                          v-if="item[tpe].date === 'nba'"
                           description="YYYY-MM-DD"
                           class="labelOnTop"
                           v-bind:label="label.dateNb"
-                          v-bind:label-for="type + 'DateNb' + item.id"
+                          v-bind:label-for="tpe + 'DateNb' + item.id"
                           v-bind:invalid-feedback="label.errorDate"
                         >
                           <BFormInput
-                            v-bind:id="type + 'DateNb' + item.id"
-                            v-model="item[type].notBefore"
+                            v-bind:id="tpe + 'DateNb' + item.id"
+                            v-model="item[tpe].notBefore"
                             size="sm"
-                            v-bind:state="state[item.id][type + 'Date'].notBefore"
-                            v-on:blur.native="state[item.id][type + 'Date'].notBefore = setState('notBefore' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
+                            v-bind:class="(valiDateWarn(item[tpe].notBefore) && state[item.id][tpe + 'Date'].notBefore !== false) ? 'input-warning' : ''"
+                            v-bind:state="(state[item.id][tpe + 'Date'].notBefore) ? (valiDateWarn(item[tpe].notBefore) ? '' : true) : state[item.id][tpe + 'Date'].notBefore"
+                            v-on:blur.native="state[item.id][tpe + 'Date'].notBefore = setState('notBefore' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
                           />
                         </BFormGroup>
                         <BFormGroup
-                          v-if="item[type].date === 'nba'"
+                          v-if="item[tpe].date === 'nba'"
                           description="YYYY-MM-DD"
                           class="labelOnTop"
                           v-bind:label="label.dateNa"
-                          v-bind:label-for="type + 'DateNa' + item.id"
+                          v-bind:label-for="tpe + 'DateNa' + item.id"
                           v-bind:invalid-feedback="label.errorDate"
                         >
                           <BFormInput
-                            v-bind:id="type +'DateNa' + item.id"
-                            v-model="item[type].notAfter"
+                            v-bind:id="tpe +'DateNa' + item.id"
+                            v-model="item[tpe].notAfter"
                             size="sm"
-                            v-bind:state="state[item.id][type + 'Date'].notAfter"
-                            v-on:blur.native="state[item.id][type + 'Date'].notAfter = setState('notAfter' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
+                            v-bind:class="(valiDateWarn(item[tpe].notAfter) && state[item.id][tpe + 'Date'].notAfter !== false) ? 'input-warning' : ''"
+                            v-bind:state="(state[item.id][tpe + 'Date'].notAfter) ? (valiDateWarn(item[tpe].notAfter) ? '' : true) : state[item.id][tpe + 'Date'].notAfter"
+                            v-on:blur.native="state[item.id][tpe + 'Date'].notAfter = setState('notAfter' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
                           />
                         </BFormGroup>
                         <BFormGroup
-                          v-if="item[type].date === 'span'"
+                          v-if="item[tpe].date === 'span'"
                           description="YYYY-MM-DD"
                           class="labelOnTop"
                           v-bind:label="label.from"
-                          v-bind:label-for="type + 'DateFrom' + item.id"
+                          v-bind:label-for="tpe + 'DateFrom' + item.id"
                           v-bind:invalid-feedback="label.errorDate"
                         >
                           <BFormInput
-                            v-bind:id="type + 'DateFrom' + item.id"
-                            v-model="item[type].spanFrom"
+                            v-bind:id="tpe + 'DateFrom' + item.id"
+                            v-model="item[tpe].spanFrom"
                             size="sm"
-                            v-bind:state="state[item.id][type + 'Date'].from"
-                            v-on:blur.native="state[item.id][type + 'Date'].from = setState('spanFrom' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
+                            v-bind:class="(valiDateWarn(item[tpe].spanFrom) && state[item.id][tpe + 'Date'].spanFrom !== false) ? 'input-warning' : ''"
+                            v-bind:state="(state[item.id][tpe + 'Date'].spanFrom) ? (valiDateWarn(item[tpe].spanFrom) ? '' : true) : state[item.id][tpe + 'Date'].spanFrom"
+                            v-on:blur.native="state[item.id][tpe + 'Date'].from = setState('spanFrom' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
                           />
                         </BFormGroup>
                         <BFormGroup
-                          v-if="item[type].date === 'span'"
+                          v-if="item[tpe].date === 'span'"
                           description="YYYY-MM-DD"
                           class="labelOnTop"
                           v-bind:label="label.to"
-                          v-bind:label-for="type + 'DateTo' + item.id"
+                          v-bind:label-for="tpe + 'DateTo' + item.id"
                           v-bind:invalid-feedback="label.errorDate"
                         >
                           <BFormInput
-                            v-bind:id="type + 'DateTo' + item.id"
-                            v-model="item[type].spanTo"
+                            v-bind:id="tpe + 'DateTo' + item.id"
+                            v-model="item[tpe].spanTo"
                             size="sm"
-                            v-bind:state="state[item.id][type + 'Date'].to"
-                            v-on:blur.native="state[item.id][type + 'Date'].to = setState('spanTo' + type.charAt(0).toUpperCase() + type.slice(1), item.id)"
+                            v-bind:class="(valiDateWarn(item[tpe].spanTo) && state[item.id][tpe + 'Date'].spanTo !== false) ? 'input-warning' : ''"
+                            v-bind:state="(state[item.id][tpe + 'Date'].spanTo) ? (valiDateWarn(item[tpe].spanTo) ? '' : true) : state[item.id][tpe + 'Date'].spanTo"
+                            v-on:blur.native="state[item.id][tpe + 'Date'].to = setState('spanTo' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
                           />
                         </BFormGroup>
                         <BButton
                           size="sm"
                           class="mb-1"
-                          v-on:click="item[type].dateAsTextHidden = !item[type].dateAsTextHidden"
+                          v-on:click="item[tpe].dateAsTextHidden = !item[tpe].dateAsTextHidden"
                         >
                           <i
                             class="fa"
-                            v-bind:class="(item[type].dateAsTextHidden) ? 'fa-angle-down' : 'fa-angle-up'"
+                            v-bind:class="(item[tpe].dateAsTextHidden) ? 'fa-angle-down' : 'fa-angle-up'"
                           /> {{ label.dateText }}
                         </BButton>
                         <BFormInput
-                          v-if="!item[type].dateAsTextHidden"
-                          v-bind:id="type + 'DateText' + item.id"
-                          v-model="item[type].dateAsText"
+                          v-if="!item[tpe].dateAsTextHidden"
+                          v-bind:id="tpe + 'DateText' + item.id"
+                          v-model="item[tpe].dateAsText"
                           size="sm"
                         />
                       </BCardBody>
@@ -921,6 +932,13 @@ export default {
     }
   },
   methods: {
+    valiDateWarn(value) {
+      const date = value.split('-');
+      if (parseInt(date[0], 10) > 1999) {
+        return true;
+      }
+      return false;
+    },
     // Wrapper for debug console
     console(string) {
       console.log(string);
@@ -1174,17 +1192,17 @@ export default {
       }
       // ** Set other entries accordingly **
       // Optional: Comment out to increase performance
-      if (this.correspDesc[id][target].persName[persKey].text) {
-        for (let j = 0; j < this.correspDesc.length; j += 1) {
-          this.type.forEach((e) => {
-            for (let i = 0; i < this.correspDesc[j][e].persName.length; i += 1) {
-              if (this.correspDesc[j][e].persName[i].text === this.correspDesc[id][target].persName[persKey].text) {
-                this.correspDesc[j][e].persName[i].organisation = this.correspDesc[id][target].persName[persKey].organisation;
-              }
-            }
-          });
-        }
-      }
+      // if (this.correspDesc[id][target].persName[persKey].text) {
+      //   for (let j = 0; j < this.correspDesc.length; j += 1) {
+      //     this.type.forEach((e) => {
+      //       for (let i = 0; i < this.correspDesc[j][e].persName.length; i += 1) {
+      //         if (this.correspDesc[j][e].persName[i].ref === this.correspDesc[id][target].persName[persKey].ref) {
+      //           this.correspDesc[j][e].persName[i].organisation = this.correspDesc[id][target].persName[persKey].organisation;
+      //         }
+      //       }
+      //     });
+      //   }
+      // }
     },
 
     // Add Norm-ID for Person

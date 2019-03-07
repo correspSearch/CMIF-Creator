@@ -3,11 +3,6 @@
 const webpack = require('webpack');
 const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const path = require('path');
-
-// function resolve(dir) {
-//   return path.join(__dirname, '..', dir)
-// }
 
 module.exports = {
   entry: ['babel-polyfill', './src/index.js'],
@@ -38,11 +33,6 @@ module.exports = {
           'css-loader',
         ],
       },
-      // {
-      //   test: /\.(js|vue)$/,
-      //   use: 'eslint-loader',
-      //   enforce: 'pre'
-      // }
     ],
   },
   plugins: [

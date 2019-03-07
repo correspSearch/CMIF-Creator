@@ -11,13 +11,8 @@ function resolve(dir) {
 }
 
 module.exports = {
+  entry: ['babel-polyfill', './src/index.js'],
   mode: 'production',
-  devServer: {
-    hot: true,
-    watchOptions: {
-      poll: true,
-    },
-  },
   module: {
     rules: [
       {
@@ -38,11 +33,6 @@ module.exports = {
           'css-loader',
         ],
       },
-      // {
-      //   test: /\.(js|vue)$/,
-      //   use: 'eslint-loader',
-      //   enforce: 'pre'
-      // }
     ],
   },
   plugins: [
@@ -54,8 +44,8 @@ module.exports = {
       inject: true,
     }),
     new CopyWebpackPlugin([{
-      from: resolve('static/img'),
-      to: resolve('dist/static/img'),
+      from: resolve('static'),
+      to: resolve('dist/static/'),
       toType: 'dir',
     }]),
   ],

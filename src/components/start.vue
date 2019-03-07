@@ -401,25 +401,25 @@ export default {
 
       this.$parent.metaData.editor = [];
       this.$parent.metaState.editor = [];
+
+      console.log(json.titleStmt.editor);
       if (
         json.titleStmt
         && json.titleStmt.editor
       ) {
         if (Array.isArray(json.titleStmt.editor)) {
           json.titleStmt.editor.forEach((e) => {
-            // Validation
             this.$parent.metaState.editor.push({
               name: (e['#text'] !== ''),
               email: (e.email !== '' && this.$parent.check('email', e.email)),
             });
-            // /Validation
+
             this.$parent.metaData.editor.push({
               name: e['#text'],
               email: e.email,
             });
           });
-        } else { // Backward compatibility
-          // Validation
+        } else if (typeof json.titleStmt.editor !== 'string') { // Backward compatibility
           this.$parent.metaState.editor.push({
             name: (json.titleStmt.editor['#text'] !== undefined && json.titleStmt.editor['#text'] !== ''),
             email: (
@@ -428,19 +428,26 @@ export default {
               && this.$parent.check('email', json.titleStmt.editor.email)
             ),
           });
-          // /Validation
+
           this.$parent.metaData.editor.push({
             name: json.titleStmt.editor['#text'],
             email: json.titleStmt.editor.email,
           });
+        } else if (json.titleStmt.editor.email === undefined) {
+          this.$parent.metaState.editor.push({
+            name: (json.titleStmt.editor !== undefined && json.titleStmt.editor !== ''),
+            email: false,
+          });
+          this.$parent.metaData.editor.push({
+            name: json.titleStmt.editor,
+            email: '',
+          });
         }
       } else {
-        // Validation
         this.$parent.metaState.editor.push({
           name: false,
           email: false,
         });
-        // /Validation
         this.$parent.metaData.editor.push({
           name: '',
           email: '',

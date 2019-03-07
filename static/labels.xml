@@ -137,6 +137,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
         <label for="errors">Fehler</label>
         <label for="letterErrors">fehlerhafte Briefe</label>
         <label for="letterError">fehlerhafter Brief</label>
+        <label for="feedbackWarning">Datum nach dem Jahr 2000</label>
         <label for="errorURLFormat">Bitte geben Sie eine URL an, die mit http:// oder https:// anfängt</label>
         <label for="errorMetaTitle">Bitte geben Sie einen Titel an</label>
         <label for="errorMetaEditor">Bitte geben Sie einen Namen an</label>
@@ -269,6 +270,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
         <label for="errors">Errors</label>
         <label for="letterErrors">Invalid letters</label>
         <label for="letterError">Invalid letter</label>
+        <label for="feedbackWarning">Date after the year 2000</label>
         <label for="errorURLFormat">Please enter a URL starting with http:// or https://</label>
         <label for="errorMetaTitle">Please specify a title</label>
         <label for="errorMetaEditor">Please enter a name</label>

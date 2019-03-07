@@ -1,7 +1,7 @@
 {
   "name": "CMIF-Creator",
-  "version": "2.0.0",
-  "description": "Visualizing Correspondence Networks",
+  "version": "2.1.0",
+  "description": "Creating a digital index of letters",
   "main": "index.js",
   "scripts": {
     "build": "webpack --config build/webpack.config.prod.js",
@@ -32,6 +32,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^5.0.0",
     "html-webpack-plugin": "^3.2.0",
+    "uglifyjs-webpack-plugin": "^2.1.2",
     "vue-loader": "^15.4.2",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.5.17",
