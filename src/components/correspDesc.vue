@@ -1192,17 +1192,17 @@ export default {
       }
       // ** Set other entries accordingly **
       // Optional: Comment out to increase performance
-      // if (this.correspDesc[id][target].persName[persKey].text) {
-      //   for (let j = 0; j < this.correspDesc.length; j += 1) {
-      //     this.type.forEach((e) => {
-      //       for (let i = 0; i < this.correspDesc[j][e].persName.length; i += 1) {
-      //         if (this.correspDesc[j][e].persName[i].ref === this.correspDesc[id][target].persName[persKey].ref) {
-      //           this.correspDesc[j][e].persName[i].organisation = this.correspDesc[id][target].persName[persKey].organisation;
-      //         }
-      //       }
-      //     });
-      //   }
-      // }
+      if (this.correspDesc[id][target].persName[persKey].text) {
+        for (let j = 0; j < this.correspDesc.length; j += 1) {
+          this.type.forEach((e) => {
+            for (let i = 0; i < this.correspDesc[j][e].persName.length; i += 1) {
+              if (this.correspDesc[j][e].persName[i].ref === this.correspDesc[id][target].persName[persKey].ref) {
+                this.correspDesc[j][e].persName[i].organisation = this.correspDesc[id][target].persName[persKey].organisation;
+              }
+            }
+          });
+        }
+      }
     },
 
     // Add Norm-ID for Person
