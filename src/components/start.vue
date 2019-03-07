@@ -402,7 +402,6 @@ export default {
       this.$parent.metaData.editor = [];
       this.$parent.metaState.editor = [];
 
-      console.log(json.titleStmt.editor);
       if (
         json.titleStmt
         && json.titleStmt.editor
