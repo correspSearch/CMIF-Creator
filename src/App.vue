@@ -728,4 +728,52 @@ p {
 #downloadAsJSON + .custom-control-label:before, #downloadAsJSON + .custom-control-label:after {
   margin-left: -23px;
 }
+
+#fullscreen {
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  padding: 0px;
+  margin: 0px;
+}
+#bluescreen p {
+  font-size: 2em;
+  font-weight: bold;
+  font-family: 'courier' !important;
+  margin-bottom: 2em;
+}
+#bluescreen span {
+  font-weight: bold;
+  font-family: 'courier' !important;
+}
+#bluescreen  {
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 30%;
+
+	background: #010080;
+	color: white;
+	cursor: none;
+	font-size: 12px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+  width: 100%;
+  height: 100%;
+}
+
+:-webkit-full-screen {
+	display: block !important;
+}
+:-moz-full-screen {
+	display: block !important;
+}
+:full-screen {
+	display: block !important;
+}
+:-moz-full-screen #bluescreen {
+}
+
 </style>

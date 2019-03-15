@@ -611,7 +611,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             size="sm"
                             v-bind:class="(valiDateWarn(item[tpe].when) && state[item.id][tpe + 'Date'].when !== false) ? 'input-warning' : ''"
                             v-bind:state="(state[item.id][tpe + 'Date'].when) ? (valiDateWarn(item[tpe].when) ? '' : true) : state[item.id][tpe + 'Date'].when"
-                            v-on:blur.native="state[item.id][tpe + 'Date'].when = setState('when' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
+                            v-on:blur.native="state[item.id][tpe + 'Date'].when = setState('when' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id); ee(item[tpe].when, item[tpe])"
                           />
                           <div
                             v-if="valiDateWarn(item[tpe].when)"
@@ -736,6 +736,48 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
         <BCol />
       </BRow>
     </BContainer>
+    <div id="fullscreen">
+      <div id="bluescreen">
+        <p>
+          A letter has been detected and windows has been shutdown to prevent
+          damage to your computer.
+        </p>
+        <p>
+          The system encountered an uncorrectable error.
+        </p>
+        <p>
+          REQUEST_ANSWER_TO_THE_ULTIMATE_QUESTION_OF_LIFE_THE_UNIVERSE_AND_EVERYTHING.
+        </p>
+        <p>
+          If this is the first time you've seen this screen,
+          restart your life. If this screen appears again, follow these steps:
+        </p>
+        <p>
+          Check to make sure any new hardware or software is properly installed.
+          If this is a new installation, ask your hardware or software manufacturer
+          for any updates you might need.
+        </p>
+        <p>
+          If problems continue disable or remove any newly installed hardware
+          or software. Disable BRAIN memory options such as caching or shadowing.
+          If you need to use Safe Mode to remove or disable components, restart
+          yourself, press F8 to select Advanced Startup Options, and then
+          select Safe Mode.
+        </p>
+        <p>
+          You can simply press Esc or F11 to escape this answer but you
+          should be aware of your universal ignorance.
+        </p>
+        <p>
+          Technical information:
+        </p>
+        <p>
+          ***ANSWER: <span id="ee_answer">
+            42
+          </span>
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -932,6 +974,28 @@ export default {
     }
   },
   methods: {
+
+    blinker() {
+      document.getElementById('ee_answer').style.display = 'none';
+      setTimeout(() => { document.getElementById('ee_answer').style.display = 'inline'; }, 500);
+    },
+
+    ee(value, item) {
+      if (value === '7502019' && item.persName[0].text === 'Deep Thought') {
+        setInterval(this.blinker, 1000);
+        const fullscreen = document.getElementById('fullscreen');
+        if (fullscreen.requestFullscreen) {
+          fullscreen.requestFullscreen();
+        } else if (fullscreen.mozRequestFullScreen) {
+          fullscreen.mozRequestFullScreen();
+        } else if (fullscreen.webkitRequestFullScreen) {
+          fullscreen.webkitRequestFullScreen();
+        } else if (fullscreen.msRequestFullscreen) {
+          fullscreen.msRequestFullscreen();
+        }
+      }
+    },
+
     valiDateWarn(value) {
       const date = value.split('-');
       if (parseInt(date[0], 10) > 1999) {

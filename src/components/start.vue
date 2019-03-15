@@ -408,15 +408,27 @@ export default {
       ) {
         if (Array.isArray(json.titleStmt.editor)) {
           json.titleStmt.editor.forEach((e) => {
-            this.$parent.metaState.editor.push({
-              name: (e['#text'] !== ''),
-              email: (e.email !== '' && this.$parent.check('email', e.email)),
-            });
+            if ('ref' in e) {
+              this.$parent.metaState.editor.push({
+                name: (e.ref['#text'] !== ''),
+                email: (e.ref.email !== '' && this.$parent.check('email', e.ref.email)),
+              });
 
-            this.$parent.metaData.editor.push({
-              name: e['#text'],
-              email: e.email,
-            });
+              this.$parent.metaData.editor.push({
+                name: e.ref['#text'],
+                email: e.ref.email,
+              });
+            } else {
+              this.$parent.metaState.editor.push({
+                name: (e['#text'] !== ''),
+                email: (e.email !== '' && this.$parent.check('email', e.email)),
+              });
+
+              this.$parent.metaData.editor.push({
+                name: e['#text'],
+                email: e.email,
+              });
+            }
           });
         } else if (typeof json.titleStmt.editor !== 'string') { // Backward compatibility
           this.$parent.metaState.editor.push({
@@ -1128,8 +1140,19 @@ export default {
           && json.correspAction[who]
           && json.correspAction[who].date
           && json.correspAction[who].date['#text'] !== ''
+          && (typeof json.correspAction[who].date['#text'] !== 'object')
         ) dateAsTextVal = json.correspAction[who].date['#text'];
-        else if (json.correspAction[who].date !== '') dateAsTextVal = json.correspAction[0].date;
+        else if (
+          json.correspAction[who].date !== ''
+          && typeof json.correspAction[who].date === 'string'
+        ) dateAsTextVal = json.correspAction[0].date;
+        else if (
+          json.correspAction
+          && json.correspAction[who]
+          && json.correspAction[who].date
+          && json.correspAction[who].date['#text'] !== ''
+          && typeof json.correspAction[who].date['#text'] === 'object'
+        ) dateAsTextVal = json.correspAction[who].date['#text'][Object.keys(json.correspAction[who].date['#text'])[0]];
 
         return dateAsTextVal;
       }

@@ -250,7 +250,7 @@ export default {
         json: '',
         xml: '',
       },
-      downloadType: 'xml',
+      downloadType: 'json',
 
       validationResults: {
         meta: false,
@@ -709,20 +709,25 @@ export default {
       }
 
       json = this.clear(json);
-      this.downloadLink.json = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(json))}`;
-
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'https://correspSearch.net/api/v1.1/converter/json2xml.xql', true);
-      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          this.downloadLink.xml = `data:text/xml;charset=utf-8,${encodeURIComponent(xhr.responseText)}`;
-        } else {
-          this.downloadType = 'json';
-          document.getElementById('downloadAsJSON').disabled = true;
-        }
-      };
-      xhr.send(`json-data=${JSON.stringify(json)}`);
+      console.log(this.metaFails.length, this.biblFails.length, this.correspDescFails.length);
+      if (this.metaFails.length === 0 && this.biblFails.length === 0 && this.correspDescFails.length === 0) {
+        console.log('test');
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://correspSearch.net/api/v1.1/converter/json2xml.xql', true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            this.downloadType = 'xml';
+            this.downloadLink.xml = `data:text/xml;charset=utf-8,${encodeURIComponent(xhr.responseText)}`;
+          }
+        };
+        xhr.send(`json-data=${JSON.stringify(json)}`);
+      } else {
+        document.getElementById('downloadAsJSON').disabled = true;
+      }
+      if (this.downloadType === 'json') {
+        this.downloadLink.json = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(json))}`;
+      }
 
       this.downloadFileName = {
         json: `${this.meta.title.replace(/ /g, '_')}-${now}.json`,
