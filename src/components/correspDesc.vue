@@ -636,6 +636,13 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-bind:state="(state[item.id][tpe + 'Date'].notBefore) ? (valiDateWarn(item[tpe].notBefore) ? '' : true) : state[item.id][tpe + 'Date'].notBefore"
                             v-on:blur.native="state[item.id][tpe + 'Date'].notBefore = setState('notBefore' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
                           />
+
+                          <div
+                            v-if="valiDateWarn(item[tpe].notBefore)"
+                            class="input-warning feedback-warning"
+                          >
+                            {{ label.feedbackWarning }}
+                          </div>
                         </BFormGroup>
                         <BFormGroup
                           v-if="item[tpe].date === 'nba'"
@@ -653,6 +660,12 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-bind:state="(state[item.id][tpe + 'Date'].notAfter) ? (valiDateWarn(item[tpe].notAfter) ? '' : true) : state[item.id][tpe + 'Date'].notAfter"
                             v-on:blur.native="state[item.id][tpe + 'Date'].notAfter = setState('notAfter' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
                           />
+                          <div
+                            v-if="valiDateWarn(item[tpe].notAfter)"
+                            class="input-warning feedback-warning"
+                          >
+                            {{ label.feedbackWarning }}
+                          </div>
                         </BFormGroup>
                         <BFormGroup
                           v-if="item[tpe].date === 'span'"
@@ -670,6 +683,12 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-bind:state="(state[item.id][tpe + 'Date'].spanFrom) ? (valiDateWarn(item[tpe].spanFrom) ? '' : true) : state[item.id][tpe + 'Date'].spanFrom"
                             v-on:blur.native="state[item.id][tpe + 'Date'].from = setState('spanFrom' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
                           />
+                          <div
+                            v-if="valiDateWarn(item[tpe].spanFrom)"
+                            class="input-warning feedback-warning"
+                          >
+                            {{ label.feedbackWarning }}
+                          </div>
                         </BFormGroup>
                         <BFormGroup
                           v-if="item[tpe].date === 'span'"
@@ -687,6 +706,12 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-bind:state="(state[item.id][tpe + 'Date'].spanTo) ? (valiDateWarn(item[tpe].spanTo) ? '' : true) : state[item.id][tpe + 'Date'].spanTo"
                             v-on:blur.native="state[item.id][tpe + 'Date'].to = setState('spanTo' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
                           />
+                          <div
+                            v-if="valiDateWarn(item[tpe].spanTo)"
+                            class="input-warning feedback-warning"
+                          >
+                            {{ label.feedbackWarning }}
+                          </div>
                         </BFormGroup>
                         <BButton
                           size="sm"
