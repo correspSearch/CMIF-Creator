@@ -503,17 +503,17 @@ export default {
 body {
   background-color: #606060;
   color: #fff;
-  font-family: 'PT Serif';
+  font-family: 'PTSerif';
 }
 
 html, body, p, span, input, label, button, a, h1, h2, h3, h4, h5 {
-  font-family: 'PT Serif' !important;
+  font-family: 'PTSerif' !important;
 }
 
 h1 {
   font-size: 2.0em;
   font-weight: bold;
-  font-family: 'PT Serif';
+  font-family: 'PTSerif';
 }
 h2 {
   font-size: 1.5em;
@@ -593,7 +593,7 @@ p {
 }
 
 #app {
-  font-family: 'PT Serif';
+  font-family: 'PTSerif';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
