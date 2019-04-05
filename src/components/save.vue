@@ -709,9 +709,7 @@ export default {
       }
 
       json = this.clear(json);
-      console.log(this.metaFails.length, this.biblFails.length, this.correspDescFails.length);
       if (this.metaFails.length === 0 && this.biblFails.length === 0 && this.correspDescFails.length === 0) {
-        console.log('test');
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'https://correspSearch.net/api/v1.1/converter/json2xml.xql', true);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');

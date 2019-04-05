@@ -1159,9 +1159,9 @@ export default {
       if (type === 'bool') {
         return !(
           json.correspAction
-          && json.correspAction[1]
-          && json.correspAction[1].date
-          && (json.correspAction[1].date['#text'] !== '' || json.correspAction[1].date !== '')
+          && json.correspAction[who]
+          && json.correspAction[who].date
+          && json.correspAction[who].date['#text'] !== undefined
         );
       }
       return 0;
