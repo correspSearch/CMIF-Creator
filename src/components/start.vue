@@ -1139,21 +1139,16 @@ export default {
           json.correspAction
           && json.correspAction[who]
           && json.correspAction[who].date
-          && json.correspAction[who].date['#text'] !== ''
-          && (typeof json.correspAction[who].date['#text'] !== 'object')
-        ) dateAsTextVal = json.correspAction[who].date['#text'];
-        else if (
-          json.correspAction[who].date !== ''
-          && typeof json.correspAction[who].date === 'string'
-        ) dateAsTextVal = json.correspAction[0].date;
-        else if (
-          json.correspAction
-          && json.correspAction[who]
-          && json.correspAction[who].date
-          && json.correspAction[who].date['#text'] !== ''
-          && typeof json.correspAction[who].date['#text'] === 'object'
-        ) dateAsTextVal = json.correspAction[who].date['#text'][Object.keys(json.correspAction[who].date['#text'])[0]];
-
+        ) {
+          const { date } = json.correspAction[who];
+          if (typeof date === 'object'
+              && date['#text']) {
+            dateAsTextVal = date['#text'];
+          } else if (typeof date === 'string'
+              && date) {
+            dateAsTextVal = date;
+          }
+        }
         return dateAsTextVal;
       }
       if (type === 'bool') {
@@ -1161,7 +1156,10 @@ export default {
           json.correspAction
           && json.correspAction[who]
           && json.correspAction[who].date
-          && json.correspAction[who].date['#text'] !== undefined
+          && (
+            (typeof json.correspAction[who].date === 'string' && json.correspAction[who].date)
+            || (typeof json.correspAction[who].date === 'object' && json.correspAction[who].date['#text'])
+          )
         );
       }
       return 0;

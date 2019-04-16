@@ -490,6 +490,11 @@ export default {
 .custom-control-label::after {
   left: 0rem;
 }
+
+.custom-control {
+  padding-left: 1.2rem;
+}
+
 .custom-checkbox input {
   margin: 6px -21px 0px 0px;
 }
@@ -690,10 +695,6 @@ p {
 
 .page-item {
   margin-top: 0px;
-}
-
-.custom-checkbox {
-  padding-left: 1.5rem;
 }
 
 .custom-control-label:before{
