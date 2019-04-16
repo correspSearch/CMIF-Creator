@@ -717,6 +717,8 @@ export default {
           if (xhr.status === 200) {
             this.downloadType = 'xml';
             this.downloadLink.xml = `data:text/xml;charset=utf-8,${encodeURIComponent(xhr.responseText)}`;
+          } else {
+            console.log(xhr.status, xhr.responseText);
           }
         };
         xhr.send(`json-data=${JSON.stringify(json)}`);
