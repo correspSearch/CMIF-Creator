@@ -290,7 +290,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-bind:state="state[item.id][tpe][key].name"
                             size="sm"
                             v-on:blur.native="addPersonToPool(tpe, item.id, key); state[item.id][tpe][key].name = setState(tpe + 'Name', item.id, key)"
-                            v-on:keyup.native="onInput(tpe, item.id, key, false); setHeader(item.id);"
+                            v-on:keyup.native="onInput(tpe, item.id, key, false);"
                             v-on:keydown.esc.native="s.open = false"
                             v-on:keydown.down.native="moveDown(tpe, item.id, key)"
                             v-on:keydown.up.native="moveUp(tpe, item.id, key)"
@@ -1072,6 +1072,7 @@ export default {
 
     // Change header of items according to content
     setHeader(id) {
+      console.log(id);
       this.correspDesc[id].header = (this.correspDesc[id].key)
         ? `<span class="badge badge-info mr-1">${
           this.correspDesc[id].key
@@ -1465,6 +1466,8 @@ export default {
             if (fieldValue !== this.correspDesc[id][target].persName[key].text
               && this.correspDesc[id][target].persName[key].text.includes(fieldValue)
               && targetKey > -1) this.persons.splice(targetKey, 1);
+
+            this.setHeader(id);
           });
         }
       } else if (this.correspDesc[id][target].placeName[key].text.length > 2) {

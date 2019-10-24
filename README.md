@@ -1,5 +1,5 @@
 # CMIF Creator - Creating a digital index of letters.
-v2.1.0
+v2.1.1
 
 With the CMIF Creator you can create a digital index of letters in the "Correspondence Metadata Interchange Format" (CMIF) of your printed scholarly edition. You have the possibility to start a new CMIF file or edit an existing CMIF file on your computer.
 
