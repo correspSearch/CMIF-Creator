@@ -596,7 +596,7 @@ export default {
         availability: {
           licence: {
             '#text': (this.meta.licence === 'CC0' || this.meta.licence === 'CC-BY 4.0') ? this.meta.licence : null,
-            target: `https://creativecommons.org/licenses/by/${this.meta.licence.match(/[0-9]\.[0-9]/g)}/`,
+            target: (this.meta.licence === 'CC0') ? 'https://creativecommons.org/publicdomain/zero/1.0/' : 'https://creativecommons.org/licenses/by/4.0/',
           },
         },
         date: {
