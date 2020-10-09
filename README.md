@@ -12,11 +12,11 @@ for the purpose of the DFG project
 `correspSearch - Briefeditionen vernetzen`
 at Berlin-Brandenburg Academy of Sciences and Humanities (BBAW).
 
-Copyright (C) 2018 Berlin-Brandenburg Academy of Sciences and Humanities.
+Copyright (C) 2020 Berlin-Brandenburg Academy of Sciences and Humanities.
 
 ## License
 
-Copyright (C) 2018 Berlin-Brandenburg Academy of Sciences and Humanities.
+Copyright (C) 2020 Berlin-Brandenburg Academy of Sciences and Humanities.
 
 csLink is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
