@@ -571,20 +571,20 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                                 class="pr-0 pt-1"
                               >
                                 <BFormCheckbox
-                                  v-bind:id="tpe + 'DateUncertain' + item.id"
-                                  v-model="item[tpe].dateCert.uncertain"
-                                  class="labelOnTop float-right"
-                                >
-                                  {{ label.uncertain }}
-                                </BFormCheckbox>
-                              </BCol>
-                              <BCol class="pt-1">
-                                <BFormCheckbox
                                   v-bind:id="tpe + 'DateConjecture' + item.id"
                                   v-model="item[tpe].dateCert.conjecture"
                                   class="labelOnTop float-right"
                                 >
                                   {{ label.conjecture }}
+                                </BFormCheckbox>
+                              </BCol>
+                              <BCol class="pt-1">
+                                <BFormCheckbox
+                                  v-bind:id="tpe + 'DateUncertain' + item.id"
+                                  v-model="item[tpe].dateCert.uncertain"
+                                  class="labelOnTop float-right"
+                                >
+                                  {{ label.uncertain }}
                                 </BFormCheckbox>
                               </BCol>
                             </BRow>
