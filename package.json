@@ -1,6 +1,6 @@
 {
   "name": "CMIF-Creator",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Creating a digital index of letters",
   "private": true,
   "scripts": {
