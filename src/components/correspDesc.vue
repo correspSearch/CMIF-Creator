@@ -293,6 +293,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-on:keyup.native="onInput(tpe, item.id, key, false);"
                             v-on:keydown.esc.native="s.open = false"
                             v-on:keydown.down.native="moveDown(tpe, item.id, key)"
+                            v-on:change="setHeader(item.id)"
                             v-on:keydown.up.native="moveUp(tpe, item.id, key)"
                             v-on:keydown.enter.native="select(tpe, item.id, key)"
                           />
@@ -1072,7 +1073,6 @@ export default {
 
     // Change header of items according to content
     setHeader(id) {
-      console.log(id);
       this.correspDesc[id].header = (this.correspDesc[id].key)
         ? `<span class="badge badge-info mr-1">${
           this.correspDesc[id].key
@@ -1082,12 +1082,16 @@ export default {
           this.label.headBy
         }</span><small class="mr-2 ml-1">${
           this.correspDesc[id].sender.persName[0].text
+        } ${
+          (this.correspDesc[id].sender.persName.length > 1) ? 'et al.' : ''
         }</small>` : '';
       this.correspDesc[id].header += (this.correspDesc[id].receiver.persName[0].text)
         ? `<span class="badge badge-secondary mr-1">${
           this.label.headTo
         }</span><small class="mr-2 ml-1">${
           this.correspDesc[id].receiver.persName[0].text
+        } ${
+          (this.correspDesc[id].receiver.persName.length > 1) ? 'et al.' : ''
         }</small>` : '';
     },
 
@@ -1791,10 +1795,10 @@ export default {
       for (let i = 0; i < this.filteredCorrespDesc.paginatedResults.length - 1; i += 1) {
         this.filteredCorrespDesc.paginatedResults[i].visible = false;
       }
-      setTimeout(() => {
+      this.$nextTick(() => {
         window.location.hash = `#${(this.nextKey - 1)}`;
         document.getElementById(`correspDescKey${(this.nextKey - 1)}`).focus();
-      }, 1000);
+      });
     },
 
     // Delete correspDesc-Item

@@ -295,9 +295,9 @@ export default {
       if (!regMatch) {
         state = (value !== '');
       } else if (optional) {
-        if (value === '') state = null;
-        if (value !== '' && this.$parent.check(regMatch, value)) state = true;
-        if (value !== '' && !this.$parent.check(regMatch, value)) state = false;
+        if (value === '' || value === undefined) state = null;
+        if ((value !== '' && value !== undefined) && this.$parent.check(regMatch, value)) state = true;
+        if ((value !== '' && value !== undefined) && !this.$parent.check(regMatch, value)) state = false;
       } else {
         state = this.$parent.check(regMatch, value);
       }

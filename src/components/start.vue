@@ -492,18 +492,33 @@ export default {
           // Validation
           this.$parent.metaState.publisher.push({
             name: (
-              json.publicationStmt.publisher.ref['#text'] !== undefined
-              && json.publicationStmt.publisher.ref['#text'] !== ''
+              (
+                json.publicationStmt.publisher.ref['#text'] !== undefined
+                && json.publicationStmt.publisher.ref['#text'] !== ''
+              ) || (
+                // When URL is not given, ref = string
+                json.publicationStmt.publisher.ref !== undefined
+                && json.publicationStmt.publisher.ref !== ''
+              )
             ),
-            url: (
+            url: null, // this should not matter when URL is not mandatory
+            /* (
               json.publicationStmt.publisher.ref.target !== undefined
               && json.publicationStmt.publisher.ref.target !== ''
               && this.$parent.check('url', json.publicationStmt.publisher.ref.target)
-            ),
+            ), */
           });
           // /Validation
+          let publisherName = '';
+          if (json.publicationStmt.publisher.ref['#text'] !== undefined
+            && json.publicationStmt.publisher.ref['#text'] !== '') {
+            publisherName = json.publicationStmt.publisher.ref['#text'];
+          } else if (json.publicationStmt.publisher.ref !== undefined
+            && json.publicationStmt.publisher.ref !== '') {
+            publisherName = json.publicationStmt.publisher.ref;
+          }
           this.$parent.metaData.publisher.push({
-            name: json.publicationStmt.publisher.ref['#text'],
+            name: publisherName,
             url: json.publicationStmt.publisher.ref.target,
           });
         }
