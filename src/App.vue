@@ -394,27 +394,6 @@ export default {
           }
         });
       });
-    /*
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'static/labels.xml');
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        this.lang = window.location.search.match(/\?l=en/) ? 'en' : 'de';
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(xhr.responseText, 'application/xml');
-        for (let i = 0; i < xml.children[0].children.length; i += 1) {
-          if (xml.children[0].children[i].attributes[0].value === String(this.lang)) {
-            for (let j = 0; j < xml.children[0].children[i].children.length; j += 1) {
-              this.labels[xml.children[0].children[i].children[j].attributes[0].value] = xml.children[0].children[i].children[j].innerHTML;
-            }
-          }
-        }
-      } else {
-        console.error(xhr.status);
-      }
-    };
-    xhr.send();
-      */
   },
 
   // Give Warning instead of CMIF Creator when Internet Explorer is detected

@@ -1149,24 +1149,6 @@ export default {
             this.$refs[`${target}PersID${id}${key}`][0].$el.focus();
           });
         });
-      /*
-      const xhr = new XMLHttpRequest();
-      const filterType = (this.correspDesc[id][target].persName[key].organisation === 'true') ? 'CorporateBody' : 'Person';
-      xhr.open('GET', `https://lobid.org/gnd/search?q=${this.correspDesc[id][target].persName[key].text}&format=json:suggest&filter=type:${filterType}`);
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          this.correspDesc[id][target].persName[key].gnd.suggestions = JSON.parse(xhr.responseText);
-          this.correspDesc[id][target].persName[key].gnd.all = JSON.parse(xhr.responseText).length;
-          this.correspDesc[id][target].persName[key].gnd.open = true;
-          this.$nextTick(() => {
-            this.$refs[`${target}PersID${id}${key}`][0].$el.focus();
-          });
-        } else {
-          console.error(xhr.status);
-        }
-      };
-      xhr.send();
-      */
     },
 
     // Add link to Lobid to Dropdown
@@ -1204,28 +1186,6 @@ export default {
             this.$refs[`${target}PlaceID${id}${key}`][0].$el.focus();
           });
         });
-      /*
-      const xhr = new XMLHttpRequest();
-      let json = '';
-      // TODO: Parameter hinzufügen
-      xhr.open('GET', `https://correspsearch.net/api/v1.1/services/getGeonames.xql?q=${this.correspDesc[id][target].placeName[key].text}&fc=${this.correspDesc[id][target].placeName[key].geo.parameter}`);
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          json = JSON.parse(xhr.responseText);
-          this.correspDesc[id][target].placeName[key].geo.suggestions = json.geonames;
-          this.correspDesc[id][target].placeName[key].geo.all = json.totalResultsCount;
-          if (json.totalResultsCount > 0) {
-            this.correspDesc[id][target].placeName[key].geo.open = true;
-          }
-          this.$nextTick(() => {
-            this.$refs[`${target}PlaceID${id}${key}`][0].$el.focus();
-          });
-        } else {
-          console.error(xhr.status);
-        }
-      };
-      xhr.send();
-      */
     },
 
     // Select-Routine for Geoname-Suggestions
@@ -1252,7 +1212,6 @@ export default {
         for (let i = 0; i < this.persons.length; i += 1) {
           if (
             this.persons[i].text.toUpperCase().match(regEx)
-            //  && this.persons[i].text.toUpperCase() !== persName.toUpperCase()
             && this.persons[i].text !== ''
           ) {
             results.push(this.persons[i].text);
@@ -1264,7 +1223,6 @@ export default {
         for (let i = 0; i < this.places.length; i += 1) {
           if (
             this.places[i].text !== undefined
-            //  && this.places[i].text.toUpperCase() !== placeName.toUpperCase()
             && this.places[i].text !== ''
             && this.places[i].text.toUpperCase().match(regEx)
           ) {

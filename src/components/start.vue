@@ -502,11 +502,6 @@ export default {
               )
             ),
             url: null, // this should not matter when URL is not mandatory
-            /* (
-              json.publicationStmt.publisher.ref.target !== undefined
-              && json.publicationStmt.publisher.ref.target !== ''
-              && this.$parent.check('url', json.publicationStmt.publisher.ref.target)
-            ), */
           });
           // /Validation
           let publisherName = '';

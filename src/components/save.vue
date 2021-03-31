@@ -650,10 +650,6 @@ export default {
               });
             }
           }
-          /* *** */
-          /* persNames[t] = (persNames[t].length === 1) ? persNames[t][0] : persNames[t];
-          /* orgNames[t] = (orgNames[t].length === 1) ? orgNames[t][0] : orgNames[t];
-          /* *** */
         });
 
         ['sender', 'receiver'].forEach((t) => {
@@ -668,7 +664,7 @@ export default {
         });
 
         json.teiHeader.profileDesc.correspDesc.push({
-          source: `#${this.getUuid(this.correspDesc[i].bibl)}`, // CHECK uuid -> Has to be changed
+          source: `#${this.getUuid(this.correspDesc[i].bibl)}`, // TODO: CHECK uuid -> Has to be changed
           ref: this.correspDesc[i].ref,
           key: this.correspDesc[i].key,
           correspAction: [
@@ -733,7 +729,6 @@ export default {
         json: `${this.meta.title.replace(/ /g, '_')}-${now}.json`,
         xml: `${this.meta.title.replace(/ /g, '_')}-${now}.xml`,
       };
-      // }
     },
 
     // Clear empty properties
