@@ -1248,7 +1248,10 @@ export default {
         for (let j = 0; j < this.correspDesc.length; j += 1) {
           this.type.forEach((e) => {
             for (let i = 0; i < this.correspDesc[j][e].persName.length; i += 1) {
-              if (this.correspDesc[j][e].persName[i].ref === this.correspDesc[id][target].persName[persKey].ref) {
+              if (
+                this.correspDesc[id][target].persName[persKey].ref !== ''
+                && (this.correspDesc[j][e].persName[i].ref === this.correspDesc[id][target].persName[persKey].ref)
+              ) {
                 this.correspDesc[j][e].persName[i].organisation = this.correspDesc[id][target].persName[persKey].organisation;
               }
             }
