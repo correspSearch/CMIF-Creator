@@ -1,29 +1,27 @@
 # CMIF Creator - Creating a digital index of letters.
-v2.1.3
+v2.1.4
 
-With the CMIF Creator you can create a digital index of letters in the "Correspondence Metadata Interchange Format" (CMIF) of your printed scholarly edition. You have the possibility to start a new CMIF file or edit an existing CMIF file on your computer.
+With the CMIF Creator you can create a digital index of letters in the "Correspondence Metadata Interchange Format" (CMIF) of your printed scholarly edition.
 
 ## Copyright
-Developed by
-Jonas Müller-Laackman
-jonas.mueller-laackman@bbaw.de
 
-for the purpose of the DFG project
-`correspSearch - Briefeditionen vernetzen`
-at Berlin-Brandenburg Academy of Sciences and Humanities (BBAW).
+Developed by Jonas Müller-Laackman
 
-Copyright (C) 2020 Berlin-Brandenburg Academy of Sciences and Humanities.
+for the purpose of the project [correspSearch - Connect scholarly editions of letters](https://correspsearch.net/en/home.html)
+at Berlin-Brandenburg Academy of Sciences and Humanities (BBAW), funded by the Deutsche Forschungsgemeinschaft (DFG).
+
+If you use this software, please cite it using the metadata in the CFF file.
 
 ## License
 
-Copyright (C) 2020 Berlin-Brandenburg Academy of Sciences and Humanities.
+Copyright (C) 2018-2022 Berlin-Brandenburg Academy of Sciences and Humanities.
 
-csLink is free software: you can redistribute it and/or modify
+CMIF Creator is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-csLink is distributed in the hope that it will be useful,
+CMIF Creator is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
