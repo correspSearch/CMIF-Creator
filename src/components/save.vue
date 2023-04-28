@@ -215,6 +215,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
 
 <script>
 export default {
+  /* eslint-disable-next-line */
   name: 'Save',
   props: {
     labels: {
@@ -707,7 +708,7 @@ export default {
       json = this.clear(json);
       if (this.metaFails.length === 0 && this.biblFails.length === 0 && this.correspDescFails.length === 0) {
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://correspSearch.net/api/v1.1/converter/json2xml.xql', true);
+        xhr.open('POST', 'https://correspsearch.net/api/v1.2/converter/json2xml.xql', true);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.onload = () => {
           if (xhr.status === 200) {

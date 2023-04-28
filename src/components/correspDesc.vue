@@ -306,6 +306,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             button
                             v-on:mousedown="select(tpe, item.id, key)"
                             v-on:mouseenter="s.highlighted = suKey"
+                            v-on:focus="s.highlighted = suKey"
                           >
                             {{ suggestion }}
                           </BListGroupItem>
@@ -352,6 +353,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             button
                             v-on:mousedown="selectGnd(tpe, item.id, key, suggestion)"
                             v-on:mouseenter="item[tpe].persName[key].gnd.highlighted = kee"
+                            v-on:focus="item[tpe].persName[key].gnd.highlighted = kee"
                           >
                             {{ suggestion.label }}
                           </BListGroupItem>
@@ -461,6 +463,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-bind:class="{'highlighted': suKey === place.highlighted}"
                             v-on:mousedown="select(tpe, item.id, key, true)"
                             v-on:mouseenter="place.highlighted = suKey"
+                            v-on:focus="place.highlighted = suKey"
                           >
                             {{ suggestion }}
                           </BListGroupItem>
@@ -524,6 +527,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-bind:class="{'highlighted': suKey === place.geo.highlighted}"
                             v-on:mousedown="selectGeoname(tpe, item.id, key, suggestion)"
                             v-on:mouseenter="place.geo.highlighted = suKey"
+                            v-on:focus="place.geo.highlighted = suKey"
                           >
                             {{ suggestion.name }}, {{ suggestion.adminName1 }} ({{ suggestion.countryCode }})
                           </BListGroupItem>

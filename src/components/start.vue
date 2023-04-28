@@ -84,6 +84,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
 
 <script>
 export default {
+  /* eslint-disable-next-line */
   name: 'Start',
   props: {
     labels: {
@@ -364,7 +365,7 @@ export default {
         const fileExtension = this.file.name.split('.').pop();
         if (fileExtension === 'xml') {
           const xhr = new XMLHttpRequest();
-          xhr.open('POST', 'https://correspSearch.net/api/v1.1/converter/xml2json.xql', true);
+          xhr.open('POST', 'https://correspsearch.net/api/v1.2/converter/xml2json.xql', true);
           xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
           xhr.onload = () => {
             if (xhr.status === 200) {
@@ -1178,10 +1179,15 @@ export default {
     // Get id from uuid
     getRealBibId(uuid) {
       let result = '';
-      for (let i = 0; i < this.$parent.biblData.length; i += 1) {
-        result = (this.$parent.biblData[i].uuid === uuid) ? i : 0;
-        break;
+      // for (let i = 0; i < this.$parent.biblData.length; i += 1) {
+      //   result = (this.$parent.biblData[i].uuid === uuid) ? i : 0;
+      //   break;
+      // }
+      result = this.$parent.biblData.findIndex((element) => element.uuid === uuid);
+      if (result === -1) {
+        result = 0;
       }
+      console.log('result', result);
       return result;
     },
   },

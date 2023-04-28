@@ -399,7 +399,7 @@ export default {
   // Give Warning instead of CMIF Creator when Internet Explorer is detected
   mounted() {
     if (
-      navigator.userAgent.match(new RegExp('MSIE ([0-9]{1,}[\.0-9]{0,})'))
+      navigator.userAgent.match(/MSIE ([0-9]{1,}[\.0-9]{0,})/)
       || navigator.userAgent.match(/Trident.*rv\:11\./)
     ) {
       this.isInternetExplorer = true;
@@ -423,23 +423,23 @@ export default {
       let rp = new RegExp();
       switch (target) {
         case 'url': {
-          rp = new RegExp(/^http(s)?\:\/\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/gi);
+          rp = /^http(s)?\:\/\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/gi;
           return rp.test(string);
         }
         case 'email': {
-          rp = new RegExp(/^[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+          rp = /^[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
           return rp.test(string);
         }
         case 'person': {
-          rp = new RegExp(/^(http(s)?\:\/\/correspSearch\.net\/unknown?)|^(http(s)?\:\/\/d\-nb\.info\/gnd\/?)|^(http(s)?\:\/\/viaf\.org\/viaf\/?)|^(http(s)?\:\/\/catalogue\.bnf\.fr\/?)|^(http(s)?\:\/\/lccn\.loc\.gov\/?)|^(http(s)?\:\/\/correspSearch\.net\/?)/g);
+          rp = /^(http(s)?\:\/\/correspSearch\.net\/unknown?)|^(http(s)?\:\/\/d\-nb\.info\/gnd\/?)|^(http(s)?\:\/\/viaf\.org\/viaf\/?)|^(http(s)?\:\/\/catalogue\.bnf\.fr\/?)|^(http(s)?\:\/\/lccn\.loc\.gov\/?)|^(http(s)?\:\/\/correspSearch\.net\/?)/g;
           return rp.test(string);
         }
         case 'place': {
-          rp = new RegExp(/^http\:\/\/www\.geonames\.org\/?/g);
+          rp = /^http(s)?\:\/\/www\.geonames\.org\/?/g;
           return rp.test(string);
         }
         case 'date': {
-          rp = new RegExp(/^(([0-2][0-9][0-9][0-9])$)|^(([0-2][0-9][0-9][0-9])\-([0][1-9]|[1][0-2])$)|^(([0-2][0-9][0-9][0-9])\-([0][1-9]|[1][0-2])\-([0-9][1-9]|[1-2][0-9]|[3][0-1])$)/g);
+          rp = /^(([0-2][0-9][0-9][0-9])$)|^(([0-2][0-9][0-9][0-9])\-([0][1-9]|[1][0-2])$)|^(([0-2][0-9][0-9][0-9])\-([0][1-9]|[1][0-2])\-([0-9][1-9]|[1-2][0-9]|[3][0-1])$)/g;
           let result = rp.test(string);
           const date = string.split('-');
           if (date[1] !== undefined && date[2] !== undefined) {
