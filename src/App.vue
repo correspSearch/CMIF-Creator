@@ -635,6 +635,10 @@ p {
   margin-top: .25rem;
 }
 
+.tooltip *{
+  font-size: 85%;
+}
+
 .alert {
   margin-bottom: 0.3rem;
   padding: 0.3rem 0.5rem;

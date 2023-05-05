@@ -129,6 +129,19 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                         />
                       </BButton>
                       <BButton
+                        v-bind:id="'switchButton' + item.id"
+                        class="border-right border-left"
+                        size="sm"
+                        v-on:click="switchCorrespData(item.id)"
+                      >
+                        <i
+                          class="fa fa-exchange-alt"
+                        />
+                      </BButton>
+                      <BTooltip v-bind:target="'switchButton' + item.id" triggers="hover" variant="secondary">
+                        {{ label.tooltipSwitch }}
+                      </BTooltip>
+                      <BButton
                         v-if="correspDesc.length > 1"
                         size="sm"
                         class="border-left"
@@ -614,15 +627,15 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-bind:id="tpe + 'DateWhen' + item.id"
                             v-model="item[tpe].when"
                             size="sm"
-                            v-bind:class="(valiDateWarn(item[tpe].when) && state[item.id][tpe + 'Date'].when !== false) ? 'input-warning' : ''"
-                            v-bind:state="(state[item.id][tpe + 'Date'].when) ? (valiDateWarn(item[tpe].when) ? '' : true) : state[item.id][tpe + 'Date'].when"
+                            v-bind:class="(valiDateWarn(item[tpe].when, item.id, tpe).showWarning && state[item.id][tpe + 'Date'].when !== false) ? 'input-warning' : ''"
+                            v-bind:state="(state[item.id][tpe + 'Date'].when) ? (valiDateWarn(item[tpe].when, item.id, tpe).showWarning ? '' : true) : state[item.id][tpe + 'Date'].when"
                             v-on:blur.native="state[item.id][tpe + 'Date'].when = setState('when' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id); ee(item[tpe].when, item[tpe])"
                           />
                           <div
-                            v-if="valiDateWarn(item[tpe].when)"
+                            v-if="valiDateWarn(item[tpe].when, item.id, tpe).showWarning"
                             class="input-warning feedback-warning"
                           >
-                            {{ label.feedbackWarning }}
+                            {{ valiDateWarn(item[tpe].when, item.id, tpe).warningText }}
                           </div>
                         </BFormGroup>
                         <BFormGroup
@@ -637,16 +650,16 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-bind:id="tpe + 'DateNb' + item.id"
                             v-model="item[tpe].notBefore"
                             size="sm"
-                            v-bind:class="(valiDateWarn(item[tpe].notBefore) && state[item.id][tpe + 'Date'].notBefore !== false) ? 'input-warning' : ''"
-                            v-bind:state="(state[item.id][tpe + 'Date'].notBefore) ? (valiDateWarn(item[tpe].notBefore) ? '' : true) : state[item.id][tpe + 'Date'].notBefore"
+                            v-bind:class="(valiDateWarn(item[tpe].notBefore, item.id, tpe).showWarning && state[item.id][tpe + 'Date'].notBefore !== false) ? 'input-warning' : ''"
+                            v-bind:state="(state[item.id][tpe + 'Date'].notBefore) ? (valiDateWarn(item[tpe].notBefore, item.id, tpe).showWarning ? '' : true) : state[item.id][tpe + 'Date'].notBefore"
                             v-on:blur.native="state[item.id][tpe + 'Date'].notBefore = setState('notBefore' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
                           />
 
                           <div
-                            v-if="valiDateWarn(item[tpe].notBefore)"
+                            v-if="valiDateWarn(item[tpe].notBefore, item.id, tpe).showWarning"
                             class="input-warning feedback-warning"
                           >
-                            {{ label.feedbackWarning }}
+                            {{ valiDateWarn(item[tpe].notBefore, item.id, tpe).warningText }}
                           </div>
                         </BFormGroup>
                         <BFormGroup
@@ -661,15 +674,15 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-bind:id="tpe +'DateNa' + item.id"
                             v-model="item[tpe].notAfter"
                             size="sm"
-                            v-bind:class="(valiDateWarn(item[tpe].notAfter) && state[item.id][tpe + 'Date'].notAfter !== false) ? 'input-warning' : ''"
-                            v-bind:state="(state[item.id][tpe + 'Date'].notAfter) ? (valiDateWarn(item[tpe].notAfter) ? '' : true) : state[item.id][tpe + 'Date'].notAfter"
+                            v-bind:class="(valiDateWarn(item[tpe].notAfter, item.id, tpe).showWarning && state[item.id][tpe + 'Date'].notAfter !== false) ? 'input-warning' : ''"
+                            v-bind:state="(state[item.id][tpe + 'Date'].notAfter) ? (valiDateWarn(item[tpe].notAfter, item.id, tpe).showWarning ? '' : true) : state[item.id][tpe + 'Date'].notAfter"
                             v-on:blur.native="state[item.id][tpe + 'Date'].notAfter = setState('notAfter' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
                           />
                           <div
-                            v-if="valiDateWarn(item[tpe].notAfter)"
+                            v-if="valiDateWarn(item[tpe].notAfter, item.id, tpe).showWarning"
                             class="input-warning feedback-warning"
                           >
-                            {{ label.feedbackWarning }}
+                            {{ valiDateWarn(item[tpe].notAfter, item.id, tpe).warningText }}
                           </div>
                         </BFormGroup>
                         <BFormGroup
@@ -684,15 +697,15 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-bind:id="tpe + 'DateFrom' + item.id"
                             v-model="item[tpe].spanFrom"
                             size="sm"
-                            v-bind:class="(valiDateWarn(item[tpe].spanFrom) && state[item.id][tpe + 'Date'].spanFrom !== false) ? 'input-warning' : ''"
-                            v-bind:state="(state[item.id][tpe + 'Date'].spanFrom) ? (valiDateWarn(item[tpe].spanFrom) ? '' : true) : state[item.id][tpe + 'Date'].spanFrom"
+                            v-bind:class="(valiDateWarn(item[tpe].spanFrom, item.id, tpe).showWarning && state[item.id][tpe + 'Date'].spanFrom !== false) ? 'input-warning' : ''"
+                            v-bind:state="(state[item.id][tpe + 'Date'].spanFrom) ? (valiDateWarn(item[tpe].spanFrom, item.id, tpe).showWarning ? '' : true) : state[item.id][tpe + 'Date'].spanFrom"
                             v-on:blur.native="state[item.id][tpe + 'Date'].from = setState('spanFrom' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
                           />
                           <div
-                            v-if="valiDateWarn(item[tpe].spanFrom)"
+                            v-if="valiDateWarn(item[tpe].spanFrom, item.id, tpe).showWarning"
                             class="input-warning feedback-warning"
                           >
-                            {{ label.feedbackWarning }}
+                            {{ valiDateWarn(item[tpe].spanFrom, item.id, tpe).warningText }}
                           </div>
                         </BFormGroup>
                         <BFormGroup
@@ -707,15 +720,15 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                             v-bind:id="tpe + 'DateTo' + item.id"
                             v-model="item[tpe].spanTo"
                             size="sm"
-                            v-bind:class="(valiDateWarn(item[tpe].spanTo) && state[item.id][tpe + 'Date'].spanTo !== false) ? 'input-warning' : ''"
-                            v-bind:state="(state[item.id][tpe + 'Date'].spanTo) ? (valiDateWarn(item[tpe].spanTo) ? '' : true) : state[item.id][tpe + 'Date'].spanTo"
+                            v-bind:class="(valiDateWarn(item[tpe].spanTo, item.id, tpe).showWarning && state[item.id][tpe + 'Date'].spanTo !== false) ? 'input-warning' : ''"
+                            v-bind:state="(state[item.id][tpe + 'Date'].spanTo) ? (valiDateWarn(item[tpe].spanTo, item.id, tpe).showWarning ? '' : true) : state[item.id][tpe + 'Date'].spanTo"
                             v-on:blur.native="state[item.id][tpe + 'Date'].to = setState('spanTo' + tpe.charAt(0).toUpperCase() + tpe.slice(1), item.id)"
                           />
                           <div
-                            v-if="valiDateWarn(item[tpe].spanTo)"
+                            v-if="valiDateWarn(item[tpe].spanTo, item.id, tpe).showWarning"
                             class="input-warning feedback-warning"
                           >
-                            {{ label.feedbackWarning }}
+                            {{ valiDateWarn(item[tpe].spanTo, item.id, tpe).warningText }}
                           </div>
                         </BFormGroup>
                         <BButton
@@ -739,6 +752,22 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                   </BCol>
                 </BRow>
               </BCardBody>
+              <BButton
+                class="m-2"
+                size="sm"
+                variant="secondary"
+                v-on:click="addCorrespDescItemWithTemplate(item.id)"
+              >
+                <i class="fa fa-copy" /> {{label.addCorrespDescItemWithTemplate}}
+              </BButton>
+              <BButton
+                class=""
+                size="sm"
+                variant="secondary"
+                v-on:click="addCorrespDescItemWithSwitchedTemplate(item.id)"
+              >
+              <i class="fa fa-random" /> {{label.addCorrespDescItemWithSwitchedTemplate}}
+              </BButton>
             </BCollapse>
           </BCard>
         </BCol>
@@ -1026,12 +1055,17 @@ export default {
       }
     },
 
-    valiDateWarn(value) {
+    valiDateWarn(value, key, type) {
+      if (key > 0 && value !== '') {
+        if (value === (this.correspDesc[key - 1][type].when || this.correspDesc[key - 1][type].notBefore || this.correspDesc[key - 1][type].notAfter || this.correspDesc[key - 1][type].spanFrom || this.correspDesc[key - 1][type].spanTo)) {
+          return { showWarning: true, warningText: this.label.sameDateWarning };
+        }
+      }
       const date = value.split('-');
       if (parseInt(date[0], 10) > 1999) {
-        return true;
+        return { showWarning: true, warningText: this.label.feedbackWarning };
       }
-      return false;
+      return { showWarning: false, warningText: '' };
     },
     // Wrapper for debug console
     console(string) {
@@ -1179,7 +1213,7 @@ export default {
 
     // Get Data from Geonames
     getGeodata(target, id, key) {
-      this.asyncDataRequest(`https://correspsearch.net/api/v1.1/services/getGeonames.xql?q=${this.correspDesc[id][target].placeName[key].text}&fc=${this.correspDesc[id][target].placeName[key].geo.parameter}`)
+      this.asyncDataRequest(`https://correspsearch.net/api/v1.2/services/getGeonames.xql?q=${this.correspDesc[id][target].placeName[key].text}&fc=${this.correspDesc[id][target].placeName[key].geo.parameter}`)
         .then((json) => {
           this.correspDesc[id][target].placeName[key].geo.suggestions = json.geonames;
           this.correspDesc[id][target].placeName[key].geo.all = json.totalResultsCount;
@@ -1532,7 +1566,7 @@ export default {
       }
     },
 
-    // Add new Person
+    // Add new Place
     addPlace(target, key) {
       this.state[key][`${target}Place`].push({
         name: null,
@@ -1561,9 +1595,9 @@ export default {
       });
     },
 
-    // Delete Person
+    // Delete Place
     rmPlace(target, id, key) {
-      this.state[key][`${target}Place`].splice(key, 1);
+      this.state[id][`${target}Place`].splice(key, 1);
       this.correspDesc[id][target].placeName.splice(key, 1);
       for (let i = 0; i < this.correspDesc[id][target].placeName.length; i += 1) {
         this.correspDesc[id][target].placeName[i].selected = true;
@@ -1780,6 +1814,158 @@ export default {
         this.correspDesc[i].id = i;
       }
       this.nextKey = this.correspDesc.length;
+    },
+
+    switchCorrespData(key) {
+      // Needs to be parsed as JSON to get a deep copy of the object
+      const correspData = JSON.parse(JSON.stringify(this.correspDesc[key]));
+
+      // Store length of persName- and placeName-Arrays for comparing
+      const receiverPersonsLength = correspData.receiver.persName.length;
+      const senderPersonsLength = correspData.sender.persName.length;
+      const receiverPlacesLength = correspData.receiver.placeName.length;
+      const senderPlacesLength = correspData.sender.placeName.length;
+
+      // Get receiver-/sender-Data
+      const newSender = correspData.receiver;
+      const newReceiver = correspData.sender;
+
+      // Check if one side has more persons, than the other and add the missing objects
+      if (receiverPersonsLength < senderPersonsLength) {
+        for (let i = receiverPersonsLength; i < senderPersonsLength; i += 1) {
+          this.addPerson('receiver', key);
+        }
+      } else if (receiverPersonsLength > senderPersonsLength) {
+        for (let i = senderPersonsLength; i < receiverPersonsLength; i += 1) {
+          this.addPerson('sender', key);
+        }
+      }
+      // Same for places
+      if (receiverPlacesLength < senderPlacesLength) {
+        for (let i = receiverPlacesLength; i < senderPlacesLength; i += 1) {
+          this.addPlace('receiver', key);
+        }
+      } else if (receiverPlacesLength > senderPlacesLength) {
+        for (let i = senderPlacesLength; i < receiverPlacesLength; i += 1) {
+          this.addPlace('sender', key);
+        }
+      }
+
+      // Switch sender and receiver data
+      this.correspDesc[key].sender = newSender;
+      this.correspDesc[key].receiver = newReceiver;
+
+      // Remove the surplus objects on the opposite side
+      if (receiverPersonsLength < senderPersonsLength) {
+        for (let i = receiverPersonsLength; i < senderPersonsLength; i += 1) {
+          this.rmPerson('sender', key, 1);
+        }
+      } else if (receiverPersonsLength > senderPersonsLength) {
+        for (let i = senderPersonsLength; i < receiverPersonsLength; i += 1) {
+          this.rmPerson('receiver', key, 1);
+        }
+      }
+
+      if (receiverPlacesLength < senderPlacesLength) {
+        for (let i = receiverPlacesLength; i < senderPlacesLength; i += 1) {
+          this.rmPlace('sender', key, 1);
+        }
+      } else if (receiverPlacesLength > senderPlacesLength) {
+        for (let i = senderPlacesLength; i < receiverPlacesLength; i += 1) {
+          this.rmPlace('receiver', key, 1);
+        }
+      }
+    },
+
+    addCorrespDescItemWithTemplate() {
+      // Create new correspDescItem
+      this.addCorrespDescItem();
+
+      // Get the new object and it's key
+      const newCorrespDescItemKey = this.correspDesc.length - 1;
+      // Get the object before and it's key
+      const correspDescItemBefore = this.correspDesc[this.correspDesc.length - 2];
+      const correspDescItemBeforeKey = this.correspDesc.length - 2;
+
+      // Get the amount of person and place objects from the before-object
+      const receiverPersonsLength = correspDescItemBefore.receiver.persName.length;
+      const senderPersonsLength = correspDescItemBefore.sender.persName.length;
+      const receiverPlacesLength = correspDescItemBefore.receiver.placeName.length;
+      const senderPlacesLength = correspDescItemBefore.sender.placeName.length;
+
+      // Add missing person objects to the new correspDescObject
+      if (receiverPersonsLength > 1) {
+        for (let i = 1; i < receiverPersonsLength; i += 1) {
+          this.addPerson('receiver', newCorrespDescItemKey);
+        }
+      }
+      if (senderPersonsLength > 1) {
+        for (let i = 1; i < senderPersonsLength; i += 1) {
+          this.addPerson('sender', newCorrespDescItemKey);
+        }
+      }
+
+      // Add missing place objects to the new correspDescObject
+      if (receiverPlacesLength > 1) {
+        for (let i = 1; i < receiverPlacesLength; i += 1) {
+          this.addPlace('receiver', newCorrespDescItemKey);
+        }
+      }
+      if (senderPlacesLength > 1) {
+        for (let i = 1; i < senderPlacesLength; i += 1) {
+          this.addPlace('sender', newCorrespDescItemKey);
+        }
+      }
+      // Assign values to the new object
+      // Needs to be parsed as JSON to get a deep copy of the object
+      this.correspDesc[newCorrespDescItemKey].sender = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender));
+      this.correspDesc[newCorrespDescItemKey].receiver = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver));
+    },
+
+    addCorrespDescItemWithSwitchedTemplate() {
+      // Create new correspDescItem
+      this.addCorrespDescItem();
+
+      // Get the new object and it's key
+      const newCorrespDescItemKey = this.correspDesc.length - 1;
+      // Get the object before and it's key
+      const correspDescItemBefore = this.correspDesc[this.correspDesc.length - 2];
+      const correspDescItemBeforeKey = this.correspDesc.length - 2;
+
+      // Get the amount of person and place objects from the before-object
+      const receiverPersonsLength = correspDescItemBefore.receiver.persName.length;
+      const senderPersonsLength = correspDescItemBefore.sender.persName.length;
+      const receiverPlacesLength = correspDescItemBefore.receiver.placeName.length;
+      const senderPlacesLength = correspDescItemBefore.sender.placeName.length;
+
+      // Add missing person objects to the new correspDescObject, but on the opposite side
+      if (receiverPersonsLength > 1) {
+        for (let i = 1; i < receiverPersonsLength; i += 1) {
+          this.addPerson('sender', newCorrespDescItemKey);
+        }
+      }
+      if (senderPersonsLength > 1) {
+        for (let i = 1; i < senderPersonsLength; i += 1) {
+          this.addPerson('receiver', newCorrespDescItemKey);
+        }
+      }
+
+      // Add missing place objects to the new correspDescObject
+      if (receiverPlacesLength > 1) {
+        for (let i = 1; i < receiverPlacesLength; i += 1) {
+          this.addPlace('sender', newCorrespDescItemKey);
+        }
+      }
+      if (senderPlacesLength > 1) {
+        for (let i = 1; i < senderPlacesLength; i += 1) {
+          this.addPlace('receiver', newCorrespDescItemKey);
+        }
+      }
+
+      // Assign values to the new object
+      // Needs to be parsed as JSON to get a deep copy of the object
+      this.correspDesc[newCorrespDescItemKey].sender = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver));
+      this.correspDesc[newCorrespDescItemKey].receiver = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender));
     },
 
     // Collapse / Expand all Items
