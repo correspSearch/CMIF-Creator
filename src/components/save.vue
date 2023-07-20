@@ -554,13 +554,12 @@ export default {
       } else {
         timezoneString = String(timezone);
       }
-
       let now = `${currentDate.getFullYear()}-`;
       now += `${(`0${(currentDate.getMonth() + 1)}`).slice(-2)}-`;
-      now += `${(`0${(currentDate.getDate() + 1)}`).slice(-2)}T`;
-      now += `${(`0${(currentDate.getHours() + 1)}`).slice(-2)}:`;
-      now += `${(`0${(currentDate.getMinutes() + 1)}`).slice(-2)}:`;
-      now += `${(`0${(currentDate.getSeconds() + 1)}`).slice(-2)}.`;
+      now += `${(`0${(currentDate.getDate())}`).slice(-2)}T`;
+      now += `${(`0${(currentDate.getHours())}`).slice(-2)}:`;
+      now += `${(`0${(currentDate.getMinutes())}`).slice(-2)}:`;
+      now += `${(`0${(currentDate.getSeconds())}`).slice(-2)}.`;
       now += currentDate.getMilliseconds();
       now += `${timezoneString}:00`;
 
