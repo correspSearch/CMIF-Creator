@@ -159,6 +159,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
         <label for="errorNoPlaceId">Kein Eintrag mit einer URI aus GeoNames gefunden. Mindestens ein Ort mit einer URI aus GeoNames muss angegeben sein.</label>
         <label for="errorName">Bitte geben Sie einen Namen an. Falls die Person unbekannt ist, markieren Sie diese bitte entsprechend.</label>
         <label for="tooltipSwitch">Tausche Absender- und Empfängerdaten</label>
+        <label for="deleteCorrespDesc">Brief wirklich löschen?</label>
     </language>
     <language xml:id="en">
         <label for="head1">CMIF Creator</label>
@@ -248,6 +249,9 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
         <label for="headBy">by</label>
         <label for="headTo">to</label>
         <label for="addPlace">Add new place</label>
+        <label for="switchCorrespData">Swap Data</label>
+        <label for="addCorrespDescItemWithTemplate">Use as template</label>
+        <label for="addCorrespDescItemWithSwitchedTemplate">Swap data and use as template</label>
         <label for="jumpToMeta">Jump to Step 1: Metadata</label>
         <label for="jumpToBibl">Jump to Step 2: Bibliography</label>
         <label for="jumpToLetter">Jump to Letter record</label>
@@ -294,5 +298,6 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
         <label for="errorNoPlaceId">No entry with an URI from GeoNames is found. At least one entry with an URI from Geonames is required.</label>
         <label for="errorName">Please enter a name. If the person is unknown, please mark it as such.</label>
         <label for="tooltipSwitch">Swap sender and recipient data</label>
+        <label for="deleteCorrespDesc">Really delete letter?</label>
     </language>
 </labels>

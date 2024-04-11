@@ -145,7 +145,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                         v-if="correspDesc.length > 1"
                         size="sm"
                         class="border-left"
-                        v-on:click="rmCorrespDescItem(item.id)"
+                        v-b-modal="`my-modal-${item.id}`"
                       >
                         <i class="fa fa-trash-alt" />
                       </BButton>
@@ -156,6 +156,19 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                   class="float-left"
                   v-html="item.header"
                 />
+                <b-modal size="sm" :id="`my-modal-${item.id}`" body-text-variant="dark">
+                  <div class="text-center">
+                  {{label.deleteCorrespDesc}}
+                  </div>
+                  <template #modal-footer="{ ok, cancel }">
+                    <b-button size="sm" variant="success" @click="rmCorrespDescItem(item.id);ok()">
+                      OK
+                    </b-button>
+                    <b-button size="sm" variant="danger" @click="cancel()">
+                      Cancel
+                    </b-button>
+                  </template>
+                  </b-modal>
               </BRow>
             </BCardHeader>
             <BCollapse
@@ -895,6 +908,8 @@ export default {
       uriUnknown: 'http://correspSearch.net/unknown',
 
       state: this.correspDescState,
+
+      modalShow: false,
     };
   },
   computed: {
@@ -1213,7 +1228,7 @@ export default {
 
     // Get Data from Geonames
     getGeodata(target, id, key) {
-      this.asyncDataRequest(`https://correspsearch.net/api/v1.2/services/getGeonames.xql?q=${this.correspDesc[id][target].placeName[key].text}&fc=${this.correspDesc[id][target].placeName[key].geo.parameter}`)
+      this.asyncDataRequest(`https://correspsearch.net/api/v1.1/services/getGeonames.xql?q=${this.correspDesc[id][target].placeName[key].text}&fc=${this.correspDesc[id][target].placeName[key].geo.parameter}`)
         .then((json) => {
           this.correspDesc[id][target].placeName[key].geo.suggestions = json.geonames;
           this.correspDesc[id][target].placeName[key].geo.all = json.totalResultsCount;
@@ -1826,9 +1841,34 @@ export default {
       const receiverPlacesLength = correspData.receiver.placeName.length;
       const senderPlacesLength = correspData.sender.placeName.length;
 
-      // Get receiver-/sender-Data
-      const newSender = correspData.receiver;
-      const newReceiver = correspData.sender;
+      // Switch Names and Places, but keep Dates
+      const newSender = {};
+      newSender.persName = correspData.receiver.persName;
+      newSender.placeName = correspData.receiver.placeName;
+
+      newSender.date = correspData.sender.date;
+      newSender.dateAsText = correspData.sender.dateAsText;
+      newSender.dateAsTextHidden = correspData.sender.dateAsTextHidden;
+      newSender.dateCert = correspData.sender.dateCert;
+      newSender.notAfter = correspData.sender.notAfter;
+      newSender.notBefore = correspData.sender.notBefore;
+      newSender.spanFrom = correspData.sender.spanFrom;
+      newSender.spanTo = correspData.sender.spanTo;
+      newSender.when = correspData.sender.when;
+
+      const newReceiver = {};
+      newReceiver.persName = correspData.sender.persName;
+      newReceiver.placeName = correspData.sender.placeName;
+
+      newReceiver.date = correspData.receiver.date;
+      newReceiver.dateAsText = correspData.receiver.dateAsText;
+      newReceiver.dateAsTextHidden = correspData.receiver.dateAsTextHidden;
+      newReceiver.dateCert = correspData.receiver.dateCert;
+      newReceiver.notAfter = correspData.receiver.notAfter;
+      newReceiver.notBefore = correspData.receiver.notBefore;
+      newReceiver.spanFrom = correspData.receiver.spanFrom;
+      newReceiver.spanTo = correspData.receiver.spanTo;
+      newReceiver.when = correspData.receiver.when;
 
       // Check if one side has more persons, than the other and add the missing objects
       if (receiverPersonsLength < senderPersonsLength) {
@@ -1877,15 +1917,15 @@ export default {
       }
     },
 
-    addCorrespDescItemWithTemplate() {
+    addCorrespDescItemWithTemplate(itemID) {
       // Create new correspDescItem
       this.addCorrespDescItem();
 
       // Get the new object and it's key
       const newCorrespDescItemKey = this.correspDesc.length - 1;
       // Get the object before and it's key
-      const correspDescItemBefore = this.correspDesc[this.correspDesc.length - 2];
-      const correspDescItemBeforeKey = this.correspDesc.length - 2;
+      const correspDescItemBefore = this.correspDesc[itemID];
+      const correspDescItemBeforeKey = itemID;
 
       // Get the amount of person and place objects from the before-object
       const receiverPersonsLength = correspDescItemBefore.receiver.persName.length;
@@ -1922,15 +1962,15 @@ export default {
       this.correspDesc[newCorrespDescItemKey].receiver = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver));
     },
 
-    addCorrespDescItemWithSwitchedTemplate() {
+    addCorrespDescItemWithSwitchedTemplate(itemID) {
       // Create new correspDescItem
       this.addCorrespDescItem();
 
       // Get the new object and it's key
       const newCorrespDescItemKey = this.correspDesc.length - 1;
       // Get the object before and it's key
-      const correspDescItemBefore = this.correspDesc[this.correspDesc.length - 2];
-      const correspDescItemBeforeKey = this.correspDesc.length - 2;
+      const correspDescItemBefore = this.correspDesc[itemID];
+      const correspDescItemBeforeKey = itemID;
 
       // Get the amount of person and place objects from the before-object
       const receiverPersonsLength = correspDescItemBefore.receiver.persName.length;
@@ -1964,8 +2004,35 @@ export default {
 
       // Assign values to the new object
       // Needs to be parsed as JSON to get a deep copy of the object
-      this.correspDesc[newCorrespDescItemKey].sender = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver));
-      this.correspDesc[newCorrespDescItemKey].receiver = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender));
+
+      // Switch Names
+      this.correspDesc[newCorrespDescItemKey].sender.persName = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.persName));
+      this.correspDesc[newCorrespDescItemKey].receiver.persName = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.persName));
+
+      // Switch Places
+      this.correspDesc[newCorrespDescItemKey].sender.placeName = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.placeName));
+      this.correspDesc[newCorrespDescItemKey].receiver.placeName = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.placeName));
+
+      // Keep dates as is, because Receiver rarely contains date
+      this.correspDesc[newCorrespDescItemKey].sender.date = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.date));
+      this.correspDesc[newCorrespDescItemKey].sender.dateAsText = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.dateAsText));
+      this.correspDesc[newCorrespDescItemKey].sender.dateAsTextHidden = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.dateAsTextHidden));
+      this.correspDesc[newCorrespDescItemKey].sender.dateCert = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.dateCert));
+      this.correspDesc[newCorrespDescItemKey].sender.notAfter = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.notAfter));
+      this.correspDesc[newCorrespDescItemKey].sender.notBefore = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.notBefore));
+      this.correspDesc[newCorrespDescItemKey].sender.spanFrom = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.spanFrom));
+      this.correspDesc[newCorrespDescItemKey].sender.spanTo = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.spanTo));
+      this.correspDesc[newCorrespDescItemKey].sender.when = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.when));
+
+      this.correspDesc[newCorrespDescItemKey].receiver.date = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.date));
+      this.correspDesc[newCorrespDescItemKey].receiver.dateAsText = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.dateAsText));
+      this.correspDesc[newCorrespDescItemKey].receiver.dateAsTextHidden = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.dateAsTextHidden));
+      this.correspDesc[newCorrespDescItemKey].receiver.dateCert = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.dateCert));
+      this.correspDesc[newCorrespDescItemKey].receiver.notAfter = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.notAfter));
+      this.correspDesc[newCorrespDescItemKey].receiver.notBefore = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.notBefore));
+      this.correspDesc[newCorrespDescItemKey].receiver.spanFrom = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.spanFrom));
+      this.correspDesc[newCorrespDescItemKey].receiver.spanTo = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.spanTo));
+      this.correspDesc[newCorrespDescItemKey].receiver.when = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.when));
     },
 
     // Collapse / Expand all Items

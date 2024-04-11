@@ -380,7 +380,8 @@ export default {
     fetch('../labels.xml')
       .then((response) => {
         response.text().then((result) => {
-          this.lang = window.location.search.match(/\?l=en/) ? 'en' : 'de';
+          console.log('url', window.location.pathname.split('/')[1]);
+          this.lang = window.location.pathname.match(/\/en\//) ? 'en' : 'de';
           const parser = new DOMParser();
           const xml = parser.parseFromString(result, 'application/xml');
           for (let i = 0; i < xml.children[0].children.length; i += 1) {

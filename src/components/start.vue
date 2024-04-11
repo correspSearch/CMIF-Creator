@@ -539,8 +539,10 @@ export default {
       this.$parent.metaData.date = (json.publicationStmt.date)
         ? json.publicationStmt.date.when : '';
 
-      this.$parent.metaData.licence = (json.publicationStmt.availability)
-        ? json.publicationStmt.availability.licence['#text'] : '';
+      if (json.publicationStmt.availability) {
+        if (Array.isArray(json.publicationStmt.availability.licence)) this.$parent.metaData.licence = json.publicationStmt.availability.licence[0]['#text'];
+        else this.$parent.metaData.licence = json.publicationStmt.availability.licence['#text'];
+      } else this.$parent.metaData.licence = '';
       // Validation
       this.$parent.metaState.licence = (this.$parent.metaData.licence !== undefined && this.$parent.metaData.licence !== '');
     },
@@ -597,11 +599,11 @@ export default {
               && json[i].correspAction[t]
               && json[i].correspAction[t].date
             ) {
-              if (json[i].correspAction[t].date.when) {
+              if (json[i].correspAction[t].date[0].when) {
                 dateForm[e] = 'when';
-              } else if (json[i].correspAction[t].date.notBefore || json[i].correspAction[t].date.notAfter) {
+              } else if (json[i].correspAction[t].date[0].notBefore || json[i].correspAction[t].date[0].notAfter) {
                 dateForm[e] = 'nba';
-              } else if (json[i].correspAction[t].date.from) {
+              } else if (json[i].correspAction[t].date[0].from) {
                 dateForm[e] = 'span';
               } else {
                 dateForm[e] = 'na';
@@ -943,36 +945,36 @@ export default {
                 && json[i].correspAction
                 && json[i].correspAction[0]
                 && json[i].correspAction[0].date
-                && json[i].correspAction[0].date.when
-              ) ? (this.$parent.check('date', json[i].correspAction[0].date.when)) : null,
+                && json[i].correspAction[0].date[0].when
+              ) ? (this.$parent.check('date', json[i].correspAction[0].date[0].when)) : null,
               notBefore: (
                 json[i]
                 && json[i].correspAction
                 && json[i].correspAction[0]
                 && json[i].correspAction[0].date
-                && json[i].correspAction[0].date.notBefore
-              ) ? (this.$parent.check('date', json[i].correspAction[0].date.notBefore)) : null,
+                && json[i].correspAction[0].date[0].notBefore
+              ) ? (this.$parent.check('date', json[i].correspAction[0].date[0].notBefore)) : null,
               notAfter: (
                 json[i]
                 && json[i].correspAction
                 && json[i].correspAction[0]
                 && json[i].correspAction[0].date
-                && json[i].correspAction[0].date.notAfter
-              ) ? (this.$parent.check('date', json[i].correspAction[0].date.notAfter)) : null,
+                && json[i].correspAction[0].date[0].notAfter
+              ) ? (this.$parent.check('date', json[i].correspAction[0].date[0].notAfter)) : null,
               from: (
                 json[i]
                 && json[i].correspAction
                 && json[i].correspAction[0]
                 && json[i].correspAction[0].date
-                && json[i].correspAction[0].date.from
-              ) ? (this.$parent.check('date', json[i].correspAction[0].date.from)) : null,
+                && json[i].correspAction[0].date[0].from
+              ) ? (this.$parent.check('date', json[i].correspAction[0].date[0].from)) : null,
               to: (
                 json[i]
                 && json[i].correspAction
                 && json[i].correspAction[0]
                 && json[i].correspAction[0].date
-                && json[i].correspAction[0].date.to
-              ) ? (this.$parent.check('date', json[i].correspAction[0].date.to)) : null,
+                && json[i].correspAction[0].date[0].to
+              ) ? (this.$parent.check('date', json[i].correspAction[0].date[0].to)) : null,
             },
             receiverDate: {
               when: (
@@ -980,36 +982,36 @@ export default {
                 && json[i].correspAction
                 && json[i].correspAction[1]
                 && json[i].correspAction[1].date
-                && json[i].correspAction[1].date.when
-              ) ? (this.$parent.check('date', json[i].correspAction[1].date.when)) : null,
+                && json[i].correspAction[1].date[0].when
+              ) ? (this.$parent.check('date', json[i].correspAction[1].date[0].when)) : null,
               notBefore: (
                 json[i]
                 && json[i].correspAction
                 && json[i].correspAction[1]
                 && json[i].correspAction[1].date
-                && json[i].correspAction[1].date.notBefore
-              ) ? (this.$parent.check('date', json[i].correspAction[1].date.notBefore)) : null,
+                && json[i].correspAction[1].date[0].notBefore
+              ) ? (this.$parent.check('date', json[i].correspAction[1].date[0].notBefore)) : null,
               notAfter: (
                 json[i]
                 && json[i].correspAction
                 && json[i].correspAction[1]
                 && json[i].correspAction[1].date
-                && json[i].correspAction[1].date.notAfter
-              ) ? (this.$parent.check('date', json[i].correspAction[1].date.notAfter)) : null,
+                && json[i].correspAction[1].date[0].notAfter
+              ) ? (this.$parent.check('date', json[i].correspAction[1].date[0].notAfter)) : null,
               from: (
                 json[i]
                 && json[i].correspAction
                 && json[i].correspAction[1]
                 && json[i].correspAction[1].date
-                && json[i].correspAction[1].date.from
-              ) ? (this.$parent.check('date', json[i].correspAction[1].date.from)) : null,
+                && json[i].correspAction[1].date[0].from
+              ) ? (this.$parent.check('date', json[i].correspAction[1].date[0].from)) : null,
               to: (
                 json[i]
                 && json[i].correspAction
                 && json[i].correspAction[1]
                 && json[i].correspAction[1].date
-                && json[i].correspAction[1].date.to
-              ) ? (this.$parent.check('date', json[i].correspAction[1].date.to)) : null,
+                && json[i].correspAction[1].date[0].to
+              ) ? (this.$parent.check('date', json[i].correspAction[1].date[0].to)) : null,
             },
           });
 
@@ -1037,46 +1039,46 @@ export default {
                   && json[i].correspAction
                   && json[i].correspAction[0]
                   && json[i].correspAction[0].date
-                  && json[i].correspAction[0].date.evidence === 'conjecture'
+                  && json[i].correspAction[0].date[0].evidence === 'conjecture'
                 ),
                 uncertain: (
                   json[i]
                   && json[i].correspAction
                   && json[i].correspAction[0]
                   && json[i].correspAction[0].date
-                  && json[i].correspAction[0].date.cert === 'low'
+                  && json[i].correspAction[0].date[0].cert === 'low'
                 ),
               },
               when: (
                 json[i].correspAction
                 && json[i].correspAction[0]
                 && json[i].correspAction[0].date
-                && json[i].correspAction[0].date.when
-              ) ? json[i].correspAction[0].date.when : '',
+                && json[i].correspAction[0].date[0].when
+              ) ? json[i].correspAction[0].date[0].when : '',
               notBefore: (
                 json[i].correspAction
                 && json[i].correspAction[0]
                 && json[i].correspAction[0].date
-                && json[i].correspAction[0].date.notBefore
-              ) ? json[i].correspAction[0].date.notBefore : '',
+                && json[i].correspAction[0].date[0].notBefore
+              ) ? json[i].correspAction[0].date[0].notBefore : '',
               notAfter: (
                 json[i].correspAction
                 && json[i].correspAction[0]
                 && json[i].correspAction[0].date
-                && json[i].correspAction[0].date.notAfter
-              ) ? json[i].correspAction[0].date.notAfter : '',
+                && json[i].correspAction[0].date[0].notAfter
+              ) ? json[i].correspAction[0].date[0].notAfter : '',
               spanFrom: (
                 json[i].correspAction
                 && json[i].correspAction[0]
                 && json[i].correspAction[0].date
-                && json[i].correspAction[0].date.from
-              ) ? json[i].correspAction[0].date.from : '',
+                && json[i].correspAction[0].date[0].from
+              ) ? json[i].correspAction[0].date[0].from : '',
               spanTo: (
                 json[i].correspAction
                 && json[i].correspAction[0]
                 && json[i].correspAction[0].date
-                && json[i].correspAction[0].date.to
-              ) ? json[i].correspAction[0].date.to : '',
+                && json[i].correspAction[0].date[0].to
+              ) ? json[i].correspAction[0].date[0].to : '',
               dateAsText: this.getDateAsTextSpecs(json[i], 0),
               dateAsTextHidden: this.getDateAsTextSpecs(json[i], 0, 'bool'),
             },
@@ -1091,46 +1093,46 @@ export default {
                   && json[i].correspAction
                   && json[i].correspAction[1]
                   && json[i].correspAction[1].date
-                  && json[i].correspAction[1].date.evidence === 'conjecture'
+                  && json[i].correspAction[1].date[0].evidence === 'conjecture'
                 ),
                 uncertain: (
                   json[i]
                   && json[i].correspAction
                   && json[i].correspAction[1]
                   && json[i].correspAction[1].date
-                  && json[i].correspAction[1].date.cert === 'low'
+                  && json[i].correspAction[1].date[0].cert === 'low'
                 ),
               },
               when: (
                 json[i].correspAction
                 && json[i].correspAction[1]
                 && json[i].correspAction[1].date
-                && json[i].correspAction[1].date.when
-              ) ? json[i].correspAction[1].date.when : '',
+                && json[i].correspAction[1].date[0].when
+              ) ? json[i].correspAction[1].date[0].when : '',
               notBefore: (
                 json[i].correspAction
                 && json[i].correspAction[1]
                 && json[i].correspAction[1].date
-                && json[i].correspAction[1].date.notBefore
-              ) ? json[i].correspAction[1].date.notBefore : '',
+                && json[i].correspAction[1].date[0].notBefore
+              ) ? json[i].correspAction[1].date[0].notBefore : '',
               notAfter: (
                 json[i].correspAction
                 && json[i].correspAction[1]
                 && json[i].correspAction[1].date
-                && json[i].correspAction[1].date.notAfter
-              ) ? json[i].correspAction[1].date.notAfter : '',
+                && json[i].correspAction[1].date[0].notAfter
+              ) ? json[i].correspAction[1].date[0].notAfter : '',
               spanFrom: (
                 json[i].correspAction
                 && json[i].correspAction[1]
                 && json[i].correspAction[1].date
-                && json[i].correspAction[1].date.from
-              ) ? json[i].correspAction[1].date.from : '',
+                && json[i].correspAction[1].date[0].from
+              ) ? json[i].correspAction[1].date[0].from : '',
               spanTo: (
                 json[i].correspAction
                 && json[i].correspAction[1]
                 && json[i].correspAction[1].date
-                && json[i].correspAction[1].date.to
-              ) ? json[i].correspAction[1].date.to : '',
+                && json[i].correspAction[1].date[0].to
+              ) ? json[i].correspAction[1].date[0].to : '',
               dateAsText: this.getDateAsTextSpecs(json[i], 1),
               dateAsTextHidden: this.getDateAsTextSpecs(json[i], 1, 'bool'),
             },
@@ -1153,11 +1155,12 @@ export default {
         ) {
           const { date } = json.correspAction[who];
           if (typeof date === 'object'
-              && date['#text']) {
-            dateAsTextVal = date['#text'];
-          } else if (typeof date === 'string'
-              && date) {
-            dateAsTextVal = date;
+              && date[0]['#text']) {
+            dateAsTextVal = date[0]['#text'];
+          } else if (typeof date[0] === 'string'
+              && date[0]) {
+            // eslint-disable-next-line prefer-destructuring
+            dateAsTextVal = date[0];
           }
         }
         return dateAsTextVal;
@@ -1168,8 +1171,8 @@ export default {
           && json.correspAction[who]
           && json.correspAction[who].date
           && (
-            (typeof json.correspAction[who].date === 'string' && json.correspAction[who].date)
-            || (typeof json.correspAction[who].date === 'object' && json.correspAction[who].date['#text'])
+            (typeof json.correspAction[who].date[0] === 'string' && json.correspAction[who].date)
+            || (typeof json.correspAction[who].date === 'object' && json.correspAction[who].date[0]['#text'])
           )
         );
       }
@@ -1187,7 +1190,6 @@ export default {
       if (result === -1) {
         result = 0;
       }
-      console.log('result', result);
       return result;
     },
   },
