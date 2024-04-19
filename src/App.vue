@@ -18,86 +18,37 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <div id="app">
-    <BNav
-      v-if="!isInternetExplorer"
-      tabs
-      class="ml-0"
-    >
-      <BNavItem
-        v-bind:active="(nav === 'start')"
-        v-on:click="nav = 'start'"
-      >
+    <BNav v-if="!isInternetExplorer" tabs class="ml-0">
+      <BNavItem v-bind:active="(nav === 'start')" v-on:click="nav = 'start'">
         {{ labels.start }}
       </BNavItem>
-      <BNavItem
-        v-bind:active="(nav === 'meta')"
-        v-on:click="nav ='meta'"
-      >
+      <BNavItem v-bind:active="(nav === 'meta')" v-on:click="nav = 'meta'">
         {{ labels.step1 }}
       </BNavItem>
-      <BNavItem
-        v-bind:active="(nav === 'bibl')"
-        v-on:click="nav = 'bibl'"
-      >
+      <BNavItem v-bind:active="(nav === 'bibl')" v-on:click="nav = 'bibl'">
         {{ labels.step2 }}
       </BNavItem>
-      <BNavItem
-        v-bind:active="(nav === 'correspDesc')"
-        v-on:click="nav = 'correspDesc'"
-      >
+      <BNavItem v-bind:active="(nav === 'correspDesc')" v-on:click="nav = 'correspDesc'">
         {{ labels.step3 }}
       </BNavItem>
-      <BNavItem
-        v-bind:active="(nav === 'save')"
-        v-on:click="nav = 'save'"
-      >
+      <BNavItem v-bind:active="(nav === 'save')" v-on:click="nav = 'save'">
         {{ labels.step4 }}
       </BNavItem>
     </BNav>
 
-    <div
-      v-if="!isInternetExplorer"
-      class="container pt-5 pb-5 bg-white"
-    >
-      <Start
-        v-if="nav === 'start'"
-        v-bind:labels="labels"
-        v-bind:p-arrays="pArrays"
-      />
-      <MetaData
-        v-if="nav === 'meta'"
-        v-bind:labels="labels"
-        v-bind:meta-data="metaData"
-        v-bind:meta-state="metaState"
-      />
-      <BiblData
-        v-if="nav === 'bibl'"
-        v-bind:labels="labels"
-        v-bind:bibl-data="biblData"
-        v-bind:bibl-state="biblState"
-      />
-      <CorrespDesc
-        v-if="nav === 'correspDesc'"
-        v-bind:labels="labels"
-        v-bind:corresp-desc-data="correspDescData"
-        v-bind:p-arrays="pArrays"
-        v-bind:filter-specs="filter"
-        v-bind:corresp-desc-state="correspDescState"
-      />
-      <Save
-        v-if="nav === 'save'"
-        v-bind:labels="labels"
-        v-bind:meta-data="metaData"
-        v-bind:bibl-data="biblData"
-        v-bind:corresp-desc-data="correspDescData"
-      />
+    <div v-if="!isInternetExplorer" class="container pt-5 pb-5 bg-white">
+      <Start v-if="nav === 'start'" v-bind:labels="labels" v-bind:p-arrays="pArrays" />
+      <MetaData v-if="nav === 'meta'" v-bind:labels="labels" v-bind:meta-data="metaData"
+        v-bind:meta-state="metaState" />
+      <BiblData v-if="nav === 'bibl'" v-bind:labels="labels" v-bind:bibl-data="biblData"
+        v-bind:bibl-state="biblState" />
+      <CorrespDesc v-if="nav === 'correspDesc'" v-bind:labels="labels" v-bind:corresp-desc-data="correspDescData"
+        v-bind:p-arrays="pArrays" v-bind:filter-specs="filter" v-bind:corresp-desc-state="correspDescState" />
+      <Save v-if="nav === 'save'" v-bind:labels="labels" v-bind:meta-data="metaData" v-bind:bibl-data="biblData"
+        v-bind:corresp-desc-data="correspDescData" />
     </div>
 
-    <BAlert
-      v-if="isInternetExplorer"
-      variant="warning"
-      show
-    >
+    <BAlert v-if="isInternetExplorer" variant="warning" show>
       {{ ieAlert[lang] }}
     </BAlert>
   </div>
@@ -129,6 +80,7 @@ export default {
       labels: {
         start: '',
       },
+      languages: {},
       nav: 'start',
       metaState: {
         title: null,
@@ -395,6 +347,23 @@ export default {
           }
         });
       });
+    fetch('../languages.xml')
+      .then((response) => {
+        response.text().then((result) => {
+          this.lang = window.location.pathname.match(/\/en\//) ? 'en' : 'de';
+          const parser = new DOMParser();
+          const xml = parser.parseFromString(result, 'application/xml');
+          for (let i = 0; i < xml.children[0].children.length; i += 1) {
+            if (xml.children[0].children[i].attributes[0].value === String(this.lang)) {
+              for (let j = 0; j < xml.children[0].children[i].children.length; j += 1) {
+                if (xml.children[0].children[i].children[j].attributes[0].value) {
+                  this.languages[xml.children[0].children[i].children[j].attributes[0].value] = xml.children[0].children[i].children[j].innerHTML;
+                }
+              }
+            }
+          }
+        });
+      });
   },
 
   // Give Warning instead of CMIF Creator when Internet Explorer is detected
@@ -482,7 +451,6 @@ export default {
 </script>
 
 <style>
-
 /* Checkbox fix */
 .custom-control-label::after {
   left: 0rem;
@@ -495,6 +463,7 @@ export default {
 .custom-checkbox input {
   margin: 6px -21px 0px 0px;
 }
+
 /* *** */
 
 .header {
@@ -508,7 +477,19 @@ body {
   font-family: 'PTSerif';
 }
 
-html, body, p, span, input, label, button, a, h1, h2, h3, h4, h5 {
+html,
+body,
+p,
+span,
+input,
+label,
+button,
+a,
+h1,
+h2,
+h3,
+h4,
+h5 {
   font-family: 'PTSerif' !important;
 }
 
@@ -517,15 +498,18 @@ h1 {
   font-weight: bold;
   font-family: 'PTSerif';
 }
+
 h2 {
   font-size: 1.5em;
   font-weight: bold;
 }
+
 h3 {
   font-size: 1.2em;
   font-weight: bold;
   margin-bottom: 0.5em;
 }
+
 h4 {
   font-size: 1.2em;
   margin-bottom: 0.5em;
@@ -564,7 +548,8 @@ p {
   margin-bottom: 0;
 }
 
-.navbar .nav-item:hover, .navbar .nav-item.active {
+.navbar .nav-item:hover,
+.navbar .nav-item.active {
   background-color: #545454;
 }
 
@@ -626,7 +611,7 @@ p {
   font-size: 0.8rem;
 }
 
-.input-warning  {
+.input-warning {
   border-color: #ffc107 !important;
   color: #ffc107 !important;
 }
@@ -636,7 +621,7 @@ p {
   margin-top: .25rem;
 }
 
-.tooltip *{
+.tooltip * {
   font-size: 85%;
 }
 
@@ -651,7 +636,7 @@ p {
 
 .card-body {
   padding: 0.5rem;
-  background-color: rgba(0,0,0,.03);
+  background-color: rgba(0, 0, 0, .03);
 }
 
 .card-body .custom-control-label {
@@ -685,9 +670,9 @@ p {
   padding-left: 11px;
 }
 
-.labelOnTop > label {
+.labelOnTop>label {
   position: static;
-  padding-top:2px;
+  padding-top: 2px;
 }
 
 .highlighted {
@@ -698,7 +683,7 @@ p {
   margin-top: 0px;
 }
 
-.custom-control-label:before{
+.custom-control-label:before {
   background-color: #fff;
   border: 1px solid #ccc;
   left: 0rem;
@@ -727,7 +712,8 @@ p {
   color: #fff;
 }
 
-#downloadAsJSON + .custom-control-label:before, #downloadAsJSON + .custom-control-label:after {
+#downloadAsJSON+.custom-control-label:before,
+#downloadAsJSON+.custom-control-label:after {
   margin-left: -23px;
 }
 
@@ -738,17 +724,20 @@ p {
   padding: 0px;
   margin: 0px;
 }
+
 #bluescreen p {
   font-size: 2em;
   font-weight: bold;
   font-family: 'courier' !important;
   margin-bottom: 2em;
 }
+
 #bluescreen span {
   font-weight: bold;
   font-family: 'courier' !important;
 }
-#bluescreen  {
+
+#bluescreen {
   padding-top: 20px;
   padding-left: 20px;
   padding-right: 30%;
@@ -768,13 +757,14 @@ p {
 :-webkit-full-screen {
   display: block !important;
 }
+
 :-moz-full-screen {
   display: block !important;
 }
+
 :full-screen {
   display: block !important;
 }
-:-moz-full-screen #bluescreen {
-}
 
+:-moz-full-screen #bluescreen {}
 </style>

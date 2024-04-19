@@ -1,0 +1,12 @@
+<labels default="de">
+  <language xml:id="de">
+    <label for="unknown">Unbekannt</label>
+    <label for="en">Englisch</label>
+    <label for="fr">Französisch</label>
+  </language>
+  <language xml:id="en">
+    <label for="unknown">Unknown</label>
+    <label for="en">English</label>
+    <label for="fr">French</label>
+  </language>
+</labels>

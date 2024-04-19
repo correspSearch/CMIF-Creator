@@ -243,6 +243,25 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                     </option>
                   </BFormSelect>
                 </BFormGroup>
+                <BFormGroup
+                  v-bind:label-cols="2"
+                  v-bind:label="label.language"
+                  label-size="sm"
+                  label-for="correspDescLang"
+                >
+                  <BFormSelect
+                    v-model="item.language"
+                    size="sm"
+                  >
+                    <b-form-select-option
+                      v-for="[key, value] of Object.entries($parent.languages)"
+                      v-bind:key="key"
+                      v-bind:value="key"
+                    >
+                      {{ value }}
+                    </b-form-select-option>
+                  </BFormSelect>
+                </BFormGroup>
                 <BRow>
                   <BCol
                     v-for="(tpe, tKey) in type"
@@ -1670,6 +1689,8 @@ export default {
         id: this.nextKey,
         visible: true,
 
+        language: 'unknown',
+
         header: '',
 
         ref: '',
@@ -1958,6 +1979,7 @@ export default {
       }
       // Assign values to the new object
       // Needs to be parsed as JSON to get a deep copy of the object
+      this.correspDesc[newCorrespDescItemKey].language = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].language));
       this.correspDesc[newCorrespDescItemKey].sender = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender));
       this.correspDesc[newCorrespDescItemKey].receiver = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver));
     },
@@ -2004,6 +2026,8 @@ export default {
 
       // Assign values to the new object
       // Needs to be parsed as JSON to get a deep copy of the object
+      // Add language
+      this.correspDesc[newCorrespDescItemKey].language = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].language));
 
       // Switch Names
       this.correspDesc[newCorrespDescItemKey].sender.persName = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.persName));

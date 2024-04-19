@@ -160,6 +160,8 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
         <label for="errorName">Bitte geben Sie einen Namen an. Falls die Person unbekannt ist, markieren Sie diese bitte entsprechend.</label>
         <label for="tooltipSwitch">Tausche Absender- und Empfängerdaten</label>
         <label for="deleteCorrespDesc">Brief wirklich löschen?</label>
+        <label for="language">Sprache:</label>
+        <label for="noLanguage">Bitte wählen Sie die Sprache des Briefes</label>
     </language>
     <language xml:id="en">
         <label for="head1">CMIF Creator</label>
@@ -299,5 +301,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
         <label for="errorName">Please enter a name. If the person is unknown, please mark it as such.</label>
         <label for="tooltipSwitch">Swap sender and recipient data</label>
         <label for="deleteCorrespDesc">Really delete letter?</label>
+        <label for="language">Language:</label>
+        <label for="noLanguage">Please select the language of the letter</label>
     </language>
 </labels>

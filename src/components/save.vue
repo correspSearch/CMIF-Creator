@@ -662,11 +662,13 @@ export default {
             });
           }
         });
-
         json.teiHeader.profileDesc.correspDesc.push({
           source: `#${this.getUuid(this.correspDesc[i].bibl)}`, // TODO: CHECK uuid -> Has to be changed
           ref: this.correspDesc[i].ref,
           key: this.correspDesc[i].key,
+          note: {
+            ref: { type: 'https://lod.academy/cmif/ns/terms#hasLanguage', target: this.correspDesc[i].language },
+          },
           correspAction: [
             {
               type: 'sent',

@@ -148,6 +148,7 @@ export default {
         {
           id: 0,
           visible: false,
+          language: 'unknown',
 
           header: '',
 
@@ -1014,10 +1015,17 @@ export default {
               ) ? (this.$parent.check('date', json[i].correspAction[1].date[0].to)) : null,
             },
           });
-
+          // if exists get language of the letter
+          let letterLanguage = 'unknown';
+          if (json[i]
+              && json[i].note
+              && json[i].note.ref) {
+            letterLanguage = json[i].note.ref[0].target;
+          }
           this.$parent.correspDescData.push({
             id: i,
             visible: false,
+            language: letterLanguage,
 
             header: head,
 
