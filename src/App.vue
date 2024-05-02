@@ -329,10 +329,9 @@ export default {
 
   // Load labels from labels.xml according to language-parameter
   beforeCreate() {
-    fetch('../labels.xml')
+    fetch('../resources/labels.xml')
       .then((response) => {
         response.text().then((result) => {
-          console.log('url', window.location.pathname.split('/')[1]);
           this.lang = window.location.pathname.match(/\/en\//) ? 'en' : 'de';
           const parser = new DOMParser();
           const xml = parser.parseFromString(result, 'application/xml');
@@ -347,7 +346,7 @@ export default {
           }
         });
       });
-    fetch('../languages.xml')
+    fetch('../resources/languages.xml')
       .then((response) => {
         response.text().then((result) => {
           this.lang = window.location.pathname.match(/\/en\//) ? 'en' : 'de';
@@ -374,6 +373,7 @@ export default {
     ) {
       this.isInternetExplorer = true;
     }
+    window.onbeforeunload = () => true;
   },
 
   methods: {

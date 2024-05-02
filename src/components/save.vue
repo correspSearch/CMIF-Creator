@@ -667,7 +667,7 @@ export default {
           ref: this.correspDesc[i].ref,
           key: this.correspDesc[i].key,
           note: {
-            ref: { type: 'https://lod.academy/cmif/ns/terms#hasLanguage', target: this.correspDesc[i].language },
+            ref: (this.correspDesc[i].language !== 'unknown') ? { type: 'https://lod.academy/cmif/vocab/terms#hasLanguage', target: this.correspDesc[i].language } : null,
           },
           correspAction: [
             {
