@@ -675,7 +675,7 @@ export default {
               persName: persNames.sender,
               orgName: orgNames.sender,
               placeName: placeNames.sender,
-              date: {
+              date: [{
                 when: (this.correspDesc[i].sender.date === 'when') ? this.correspDesc[i].sender.when : null,
                 from: (this.correspDesc[i].sender.date === 'span') ? this.correspDesc[i].sender.spanFrom : null,
                 to: (this.correspDesc[i].sender.date === 'span') ? this.correspDesc[i].sender.spanTo : null,
@@ -684,14 +684,14 @@ export default {
                 '#text': this.correspDesc[i].sender.dateAsText,
                 cert: (this.correspDesc[i].sender.dateCert.uncertain) ? 'low' : null,
                 evidence: (this.correspDesc[i].sender.dateCert.conjecture) ? 'conjecture' : null,
-              },
+              }],
             },
             {
               type: 'received',
               persName: persNames.receiver,
               orgName: orgNames.receiver,
               placeName: placeNames.receiver,
-              date: {
+              date: [{
                 when: (this.correspDesc[i].receiver.date === 'when') ? this.correspDesc[i].receiver.when : null,
                 from: (this.correspDesc[i].receiver.date === 'span') ? this.correspDesc[i].receiver.spanFrom : null,
                 to: (this.correspDesc[i].receiver.date === 'span') ? this.correspDesc[i].receiver.spanTo : null,
@@ -700,7 +700,7 @@ export default {
                 '#text': this.correspDesc[i].receiver.dateAsText,
                 cert: (this.correspDesc[i].receiver.dateCert.uncertain) ? 'low' : null,
                 evidence: (this.correspDesc[i].receiver.dateCert.conjecture) ? 'conjecture' : null,
-              },
+              }],
             },
           ],
         });
