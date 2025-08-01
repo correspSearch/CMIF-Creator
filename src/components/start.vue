@@ -27,11 +27,7 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
       </BRow>
       <BRow>
         <BCol>
-          <BAlert
-            variant="danger"
-            class="mt-2"
-            v-bind:show="error"
-          >
+          <BAlert variant="danger" class="mt-2" v-bind:show="error">
             {{ errorMsg }}
           </BAlert>
         </BCol>
@@ -39,43 +35,22 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
       <BRow class="mt-2">
         <BCol>
           <h4>{{ label.startNew }}</h4>
-          <BButton
-            v-if="!this.$parent.metaData.title"
-            class="btn-block"
-            v-on:click="startNew(); $parent.nav = 'meta';"
-          >
+          <BButton v-if="!this.$parent.metaData.title" class="btn-block" v-on:click="startNew(); $parent.nav = 'meta';">
             {{ label.start }}
           </BButton>
-          <BButton
-            v-if="this.$parent.metaData.title"
-            v-b-modal.modalStartNew
-            class="btn-block"
-          >
+          <BButton v-if="this.$parent.metaData.title" v-b-modal.modalStartNew class="btn-block">
             {{ label.start }}
           </BButton>
-          <BModal
-            v-if="this.$parent.metaData.title"
-            id="modalStartNew"
-            ref="modal"
-            v-bind:title="label.alertrestarthead"
-            v-on:ok="startNew(); $parent.nav = 'meta';"
-          >
-            <BAlert
-              show
-              variant="danger"
-            >
+          <BModal v-if="this.$parent.metaData.title" id="modalStartNew" ref="modal"
+            v-bind:title="label.alertrestarthead" v-on:ok="startNew(); $parent.nav = 'meta';">
+            <BAlert show variant="danger">
               {{ label.alertrestart }}
             </BAlert>
           </BModal>
         </BCol>
         <BCol>
           <h4>{{ label.loadJson }}</h4>
-          <BFormFile
-            v-model="file"
-            accept=".xml, .json"
-            class="file-upload-text-overflow"
-            v-on:input="load"
-          />
+          <BFormFile v-model="file" accept=".xml, .json" class="file-upload-text-overflow" v-on:input="load" />
         </BCol>
       </BRow>
     </BContainer>
@@ -84,15 +59,16 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
 
 <script>
 export default {
+  /* eslint-disable */
   /* eslint-disable-next-line */
   name: 'Start',
   props: {
     labels: {
-      default: () => {},
+      default: () => { },
       type: Object,
     },
     pArrays: {
-      default: () => {},
+      default: () => { },
       type: Object,
       twoWays: true,
     },
@@ -103,6 +79,8 @@ export default {
       label: this.labels,
       persons: this.pArrays.persons,
       places: this.pArrays.places,
+      formatAndPages: this.pArrays.formatAndPages,
+      comments: this.pArrays.comments,
       beginAnew: false,
 
       state: {
@@ -283,6 +261,8 @@ export default {
             dateAsText: '',
             dateAsTextHidden: true,
           },
+          formatAndPages: '',
+          comment: '',
         },
       ];
 
@@ -327,6 +307,8 @@ export default {
             from: null,
             to: null,
           },
+          formatAndPages: null,
+          comment: null,
         },
       ];
 
@@ -567,7 +549,7 @@ export default {
             (json[i].type === 'print')
             && json[i].ref === ''
           ) ? null : (
-              json[i].ref !== undefined
+            json[i].ref !== undefined
             && this.$parent.check('url', json[i].ref.target)),
         });
         // /Validation
@@ -772,8 +754,8 @@ export default {
                   this.persons[this.persons.length - 1].ref === ''
                   || this.persons[this.persons.length - 1].ref === undefined
                 ) ? null : (
-                    this.$parent.check('person', this.persons[this.persons.length - 1].ref)
-                  ),
+                  this.$parent.check('person', this.persons[this.persons.length - 1].ref)
+                ),
               });
             }
           });
@@ -920,16 +902,12 @@ export default {
           });
           let head = '';
           head = (json[i].key) ? `<span class="badge badge-info mr-1">${json[i].key}</span>` : '';
-          head += (persNames.sender[0].text) ? `<span class="badge badge-secondary mr-1">${
-            this.label.headBy
-          }</span><small class="mr-2 ml-1">${
-            persNames.sender[0].text
-          }</small>` : '';
-          head += (persNames.receiver[0].text) ? `<span class="badge badge-secondary mr-1">${
-            this.label.headTo
-          }</span><small class="mr-2 ml-1">${
-            persNames.receiver[0].text
-          }</small>` : '';
+          head += (persNames.sender[0].text) ? `<span class="badge badge-secondary mr-1">${this.label.headBy
+            }</span><small class="mr-2 ml-1">${persNames.sender[0].text
+            }</small>` : '';
+          head += (persNames.receiver[0].text) ? `<span class="badge badge-secondary mr-1">${this.label.headTo
+            }</span><small class="mr-2 ml-1">${persNames.receiver[0].text
+            }</small>` : '';
 
           this.$parent.correspDescState.push({
             urlToXml: (
@@ -1018,14 +996,30 @@ export default {
           // if exists get language of the letter
           let letterLanguage = 'unknown';
           if (json[i]
-              && json[i].note
-              && json[i].note.ref) {
+            && json[i].note
+            && json[i].note.ref) {
             letterLanguage = json[i].note.ref[0].target;
+          }
+          // if exists get format and pages of the letter
+          let letterFormatAndPages = '';
+          if (json[i]
+            && json[i].note
+            && json[i].note.formatAndPages) {
+            letterFormatAndPages = json[i].note.formatAndPages;
+          }
+          // if exists get commentary of the letter
+          let letterComment = '';
+          if (json[i]
+            && json[i].note
+            && json[i].note.comment) {
+            letterComment = json[i].note.comment;
           }
           this.$parent.correspDescData.push({
             id: i,
             visible: false,
             language: letterLanguage,
+            formatAndPages: letterFormatAndPages,
+            comment: letterComment,
 
             header: head,
 
@@ -1163,10 +1157,10 @@ export default {
         ) {
           const { date } = json.correspAction[who];
           if (typeof date === 'object'
-              && date[0]['#text']) {
+            && date[0]['#text']) {
             dateAsTextVal = date[0]['#text'];
           } else if (typeof date[0] === 'string'
-              && date[0]) {
+            && date[0]) {
             // eslint-disable-next-line prefer-destructuring
             dateAsTextVal = date[0];
           }

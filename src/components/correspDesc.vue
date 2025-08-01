@@ -262,6 +262,34 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                     </b-form-select-option>
                   </BFormSelect>
                 </BFormGroup>
+                <BFormGroup
+                  v-bind:label-cols="2"
+                  v-bind:label="label.letterFormatAndPages"
+                  v-bind:label-for="'correspDescFormatAndPages' + item.id"
+                  label-size="sm"
+                  class="mb-1"
+                >
+                  <BFormInput
+                    v-bind:id="'correspDescFormatAndPages' + item.id"
+                    v-model="item.formatAndPages"
+                    size="sm"
+                  />
+                </BFormGroup>
+                <BFormGroup
+                  v-bind:label-cols="2"
+                  v-bind:label="label.letterComment"
+                  v-bind:label-for="'correspDescComment' + item.id"
+                  label-size="sm"
+                  class="mb-1"
+                >
+                  <BFormTextarea
+                    v-bind:id="'correspDescComment' + item.id"
+                    v-model="item.comment"
+                    rows="2"
+                    max-rows="4"
+                    size="sm"
+                  />
+                </BFormGroup>
                 <BRow>
                   <BCol
                     v-for="(tpe, tKey) in type"
@@ -1970,6 +1998,8 @@ export default {
       // Assign values to the new object
       // Needs to be parsed as JSON to get a deep copy of the object
       this.correspDesc[newCorrespDescItemKey].language = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].language));
+      this.correspDesc[newCorrespDescItemKey].formatAndPages = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].formatAndPages));
+      this.correspDesc[newCorrespDescItemKey].comment = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].comment));
       this.correspDesc[newCorrespDescItemKey].sender = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender));
       this.correspDesc[newCorrespDescItemKey].receiver = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver));
     },
@@ -2018,7 +2048,8 @@ export default {
       // Needs to be parsed as JSON to get a deep copy of the object
       // Add language
       this.correspDesc[newCorrespDescItemKey].language = (this.correspDesc[correspDescItemBeforeKey].language) ? JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].language)) : 'unknown';
-
+      this.correspDesc[newCorrespDescItemKey].formatAndPages = (this.correspDesc[correspDescItemBeforeKey].formatAndPages) ? JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].formatAndPages)) : '';
+      this.correspDesc[newCorrespDescItemKey].comment = (this.correspDesc[correspDescItemBeforeKey].comment) ? JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].comment)) : '';
       // Switch Names
       this.correspDesc[newCorrespDescItemKey].sender.persName = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.persName));
       this.correspDesc[newCorrespDescItemKey].receiver.persName = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.persName));

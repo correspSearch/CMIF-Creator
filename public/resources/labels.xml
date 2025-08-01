@@ -60,6 +60,8 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
         <label for="reflink">URL zum Brief</label>
         <label for="key">Briefnummer</label>
         <label for="letterKey">Briefnummer</label>
+        <label for="letterFormatAndPages">Format/Blattzahl</label>
+        <label for="letterComment">Kommentar</label>
         <label for="sender">Absender*in</label>
         <label for="receiver">Empfänger*in</label>
         <label for="name">Name</label>
@@ -190,6 +192,8 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
         <label for="publisherWebsite">Website of publisher</label>
         <label for="urlToXml">URL to CMIF file</label>
         <label for="letterKey">Entry Key</label>
+        <label for="letterFormatAndPages">Format/Page count</label>
+        <label for="letterComment">Commentary</label>
         <label for="id">Entry ID</label>
         <label for="licence">Licence</label>
         <label for="selectLicence">Choose licence</label>
