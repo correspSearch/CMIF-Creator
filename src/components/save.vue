@@ -30,89 +30,55 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
             <BListGroupItem v-bind:variant="(validationResults.meta) ? 'success' : 'danger'">
               <h3>
                 {{ labels.step1 }}:
-                <BBadge
-                  variant="light"
-                  class="ml-1 mr-1"
-                >
+                <BBadge variant="light" class="ml-1 mr-1">
                   {{ metaFails.length }}
                 </BBadge>
                 {{ label.errors }}
-                <i
-                  v-if="validationResults.meta"
-                  class="fas fa-check ml-3"
-                />
+                <i v-if="validationResults.meta" class="fas fa-check ml-3" />
               </h3>
               <ul v-if="metaFails.length > 0">
-                <li
-                  v-for="(item, errKey) in metaFails"
-                  v-bind:key="'meta' + errKey"
-                >
+                <li v-for="(item, errKey) in metaFails" v-bind:key="'meta' + errKey">
                   <span class="font-weight-bold mr-1">
                     {{ item.split(/:(.+)/)[0] }}:
                   </span>
                   {{ item.split(/:(.+)/)[1] }}
                 </li>
               </ul>
-              <BButton
-                v-if="!validationResults.meta"
-                size="sm"
-                variant="danger"
-                class="text-white"
-                v-on:click="$parent.navigate('meta')"
-              >
+              <BButton v-if="!validationResults.meta" size="sm" variant="danger" class="text-white"
+                v-on:click="$parent.navigate('meta')">
                 <i class="fas fa-edit" /> {{ label.jumpToMeta }}
               </BButton>
             </BListGroupItem>
             <BListGroupItem v-bind:variant="(validationResults.bibl) ? 'success' : 'danger'">
               <h3>
                 {{ labels.step2 }}:
-                <BBadge
-                  variant="light"
-                  class="ml-1 mr-1"
-                >
+                <BBadge variant="light" class="ml-1 mr-1">
                   {{ biblFails.length }}
                 </BBadge>
                 {{ label.errors }}
-                <i
-                  v-if="validationResults.bibl"
-                  class="fas fa-check ml-3"
-                />
+                <i v-if="validationResults.bibl" class="fas fa-check ml-3" />
               </h3>
               <ul v-if="biblFails.length > 0">
-                <li
-                  v-for="(item, errKey) in biblFails"
-                  v-bind:key="'bibl' + errKey"
-                >
+                <li v-for="(item, errKey) in biblFails" v-bind:key="'bibl' + errKey">
                   <span class="font-weight-bold mr-1">
                     {{ item.split(/:(.+)/)[0] }}:
                   </span>
                   {{ item.split(/:(.+)/)[1] }}
                 </li>
               </ul>
-              <BButton
-                v-if="!validationResults.bibl"
-                size="sm"
-                class="text-white"
-                variant="danger"
-                v-on:click="$parent.navigate('bibl')"
-              >
+              <BButton v-if="!validationResults.bibl" size="sm" class="text-white" variant="danger"
+                v-on:click="$parent.navigate('bibl')">
                 <i class="fas fa-edit" /> {{ label.jumpToBibl }}
               </BButton>
             </BListGroupItem>
             <BListGroupItem v-bind:variant="(validationResults.correspDesc) ? 'success' : 'danger'">
               <h3>
                 {{ labels.step3 }}:
-                <BBadge
-                  variant="light"
-                  class="ml-1 mr-1"
-                >
+                <BBadge variant="light" class="ml-1 mr-1">
                   {{ correspDescFails.length }}
                 </BBadge>
                 {{ (correspDescFails.length === 1) ? label.letterError : label.letterErrors }}
-                <i
-                  v-if="validationResults.correspDesc"
-                  class="fas fa-check ml-3"
-                />
+                <i v-if="validationResults.correspDesc" class="fas fa-check ml-3" />
               </h3>
               <ul v-if="errorNoIds.place || errorNoIds.pers">
                 <li v-if="errorNoIds.pers">
@@ -122,65 +88,40 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                   {{ label.errorNoPlaceId }}
                 </li>
               </ul>
-              <BButton
-                v-if="!validationResults.correspDesc"
-                size="sm"
-                class="text-white mb-3"
-                variant="danger"
-                v-on:click="$parent.navigate('correspDesc')"
-              >
+              <BButton v-if="!validationResults.correspDesc" size="sm" class="text-white mb-3" variant="danger"
+                v-on:click="$parent.navigate('correspDesc')">
                 <i class="fas fa-edit" /> {{ label.jumpToCd }}
               </BButton>
               <BListGroup v-if="correspDescFails.length > 0">
-                <BListGroupItem
-                  v-for="(item, errKey) in correspDescFails"
-                  v-bind:key="'correspDesc' + errKey"
-                  variant="danger"
-                  class="danger-light"
-                >
+                <BListGroupItem v-for="(item, errKey) in correspDescFails" v-bind:key="'correspDesc' + errKey"
+                  variant="danger" class="danger-light">
                   <span class="font-weight-bold">
                     {{ (item.key) ? label.letterKey : label.id }} {{ (!item.key) ? item.id : '' }}
                   </span>
-                  <span
-                    v-if="item.key !== ''"
-                    class="font-weight-bold"
-                  >
+                  <span v-if="item.key !== ''" class="font-weight-bold">
                     {{ item.key }}
                   </span>
                   <span v-if="item.sender !== ''">
                     {{ label.headBy }}
                   </span>
-                  <span
-                    v-if="item.sender !== ''"
-                    class="font-weight-bold"
-                  >
+                  <span v-if="item.sender !== ''" class="font-weight-bold">
                     {{ item.sender }}
                   </span>
                   <span v-if="item.receiver !== ''">
                     {{ label.headTo }}
                   </span>
-                  <span
-                    v-if="item.receiver !== ''"
-                    class="font-weight-bold"
-                  >
+                  <span v-if="item.receiver !== ''" class="font-weight-bold">
                     {{ item.receiver }}
                   </span>
                   <ul v-if="item.fields.length">
-                    <li
-                      v-for="f in item.fields"
-                      v-bind:key="item.fields.indexOf(f)"
-                    >
+                    <li v-for="f in item.fields" v-bind:key="item.fields.indexOf(f)">
                       <span class="font-weight-bold">
                         {{ f.split(/:(.+)/)[0] }}
                       </span>: {{ f.split(/:(.+)/)[1] }}
                     </li>
                   </ul>
-                  <BButton
-                    size="sm"
-                    variant="danger"
-                    class="text-white ml-1"
-                    v-on:click="goToInvalidLetter(item.id, item.key)"
-                  >
+                  <BButton size="sm" variant="danger" class="text-white ml-1"
+                    v-on:click="goToInvalidLetter(item.id, item.key)">
                     <i class="fas fa-edit" /> {{ label.jumpToLetter }}
                   </BButton>
                 </BListGroupItem>
@@ -191,21 +132,13 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
       </BRow>
       <BRow>
         <BCol class="mt-3">
-          <BFormCheckbox
-            id="downloadAsJSON"
-            v-model="downloadType"
-            value="json"
-            unchecked-value="xml"
-          >
+          <BFormCheckbox id="downloadAsJSON" v-model="downloadType" value="json" unchecked-value="xml">
             {{ label.downloadAsJson }}
           </BFormCheckbox>
-          <BButton
-            v-bind:href="downloadLink[downloadType]"
-            v-bind:download="downloadFileName[downloadType]"
-            class="text-white btn-block mt-3"
-            size="lg"
-          >
-            {{ (validationResults.meta && validationResults.bibl && validationResults.correspDesc) ? label.download : label.draft }}
+          <BButton v-bind:href="downloadLink[downloadType]" v-bind:download="downloadFileName[downloadType]"
+            class="text-white btn-block mt-3" size="lg">
+            {{ (validationResults.meta && validationResults.bibl && validationResults.correspDesc) ? label.download :
+              label.draft }}
           </BButton>
         </BCol>
       </BRow>
@@ -220,11 +153,11 @@ export default {
   props: {
     labels: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
     metaData: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
     biblData: {
       type: Array,
@@ -668,8 +601,14 @@ export default {
           key: this.correspDesc[i].key,
           note: {
             ref: (this.correspDesc[i].language !== 'unknown') ? { type: 'https://lod.academy/cmif/vocab/terms#hasLanguage', target: this.correspDesc[i].language } : null,
-            formatAndPages: (this.correspDesc[i].formatAndPages) ? JSON.parse(JSON.stringify(this.correspDesc[i].formatAndPages)) : '',
-            comment: (this.correspDesc[i].comment) ? JSON.parse(JSON.stringify(this.correspDesc[i].comment)) : '',
+            note: [{
+              type: 'formatAndPages',
+              '#text': (this.correspDesc[i].formatAndPages) ? JSON.parse(JSON.stringify(this.correspDesc[i].formatAndPages)) : '',
+            },
+            {
+              type: 'comment',
+              '#text': (this.correspDesc[i].comment) ? JSON.parse(JSON.stringify(this.correspDesc[i].comment)) : '',
+            }],
           },
           correspAction: [
             {

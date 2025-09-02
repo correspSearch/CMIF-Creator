@@ -1004,15 +1004,16 @@ export default {
           let letterFormatAndPages = '';
           if (json[i]
             && json[i].note
-            && json[i].note.formatAndPages) {
-            letterFormatAndPages = json[i].note.formatAndPages;
+            && json[i].note.note
+          ) {
+            letterFormatAndPages = json[i].note.note.find((element) => element.type === 'formatAndPages')['#text'];
           }
           // if exists get commentary of the letter
           let letterComment = '';
           if (json[i]
             && json[i].note
-            && json[i].note.comment) {
-            letterComment = json[i].note.comment;
+            && json[i].note.note) {
+            letterComment = json[i].note.note.find((element) => element.type === 'comment')['#text'];
           }
           this.$parent.correspDescData.push({
             id: i,
