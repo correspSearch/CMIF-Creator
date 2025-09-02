@@ -1987,8 +1987,8 @@ export default {
       // Get the amount of person and place objects from the before-object
       const receiverPersonsLength = correspDescItemBefore.receiver.persName.length;
       const senderPersonsLength = correspDescItemBefore.sender.persName.length;
-      // const receiverPlacesLength = correspDescItemBefore.receiver.placeName.length;
-      // const senderPlacesLength = correspDescItemBefore.sender.placeName.length;
+      const receiverPlacesLength = correspDescItemBefore.receiver.placeName.length;
+      const senderPlacesLength = correspDescItemBefore.sender.placeName.length;
 
       // Add missing person objects to the new correspDescObject, but on the opposite side
       if (receiverPersonsLength > 1) {
@@ -2002,17 +2002,24 @@ export default {
         }
       }
 
-      // // Add missing place objects to the new correspDescObject
-      // if (receiverPlacesLength > 1) {
-      //   for (let i = 1; i < receiverPlacesLength; i += 1) {
-      //     this.addPlace('sender', newCorrespDescItemKey);
-      //   }
-      // }
-      // if (senderPlacesLength > 1) {
-      //   for (let i = 1; i < senderPlacesLength; i += 1) {
-      //     this.addPlace('receiver', newCorrespDescItemKey);
-      //   }
-      // }
+      // Add missing place objects to the new correspDescObject
+      if (receiverPlacesLength > 1 && senderPlacesLength > 1) {
+        for (let i = 1; i < receiverPlacesLength; i += 1) {
+          this.addPlace('sender', newCorrespDescItemKey);
+        }
+        for (let i = 1; i < senderPlacesLength; i += 1) {
+          this.addPlace('receiver', newCorrespDescItemKey);
+        }
+      }
+
+      const receiverPlaceNames = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.placeName));
+      const senderPlaceNames = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.placeName));
+
+      if (receiverPlacesLength >= 1 && senderPlacesLength >= 1 && receiverPlaceNames[0].text !== '' && senderPlaceNames[0].text !== '') {
+        // Switch Places
+        this.correspDesc[newCorrespDescItemKey].sender.placeName = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.placeName));
+        this.correspDesc[newCorrespDescItemKey].receiver.placeName = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.placeName));
+      }
 
       // Assign values to the new object
       // Needs to be parsed as JSON to get a deep copy of the object
@@ -2026,53 +2033,53 @@ export default {
       // Switch Places
       // this.correspDesc[newCorrespDescItemKey].sender.placeName = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].receiver.placeName));
       // this.correspDesc[newCorrespDescItemKey].receiver.placeName = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.placeName));
-      this.correspDesc[newCorrespDescItemKey].sender.placeName = [
-        {
-          text: '',
-          ref: '',
+      // this.correspDesc[newCorrespDescItemKey].sender.placeName = [
+      //   {
+      //     text: '',
+      //     ref: '',
 
-          conjecture: false,
-          uncertain: false,
+      //     conjecture: false,
+      //     uncertain: false,
 
-          // Autocomplete
-          open: false,
-          highlighted: 0,
-          selected: false,
+      //     // Autocomplete
+      //     open: false,
+      //     highlighted: 0,
+      //     selected: false,
 
-          // Geonames Suggestions
-          geo: {
-            open: false,
-            highlighted: 0,
-            suggestions: [],
-            all: 0,
-            parameter: 'P',
-          },
-        },
-      ];
+      //     // Geonames Suggestions
+      //     geo: {
+      //       open: false,
+      //       highlighted: 0,
+      //       suggestions: [],
+      //       all: 0,
+      //       parameter: 'P',
+      //     },
+      //   },
+      // ];
 
-      this.correspDesc[newCorrespDescItemKey].receiver.placeName = [
-        {
-          text: '',
-          ref: '',
+      // this.correspDesc[newCorrespDescItemKey].receiver.placeName = [
+      //   {
+      //     text: '',
+      //     ref: '',
 
-          conjecture: false,
-          uncertain: false,
+      //     conjecture: false,
+      //     uncertain: false,
 
-          // Autocomplete
-          open: false,
-          highlighted: 0,
-          selected: false,
+      //     // Autocomplete
+      //     open: false,
+      //     highlighted: 0,
+      //     selected: false,
 
-          // Geonames Suggestions
-          geo: {
-            open: false,
-            highlighted: 0,
-            suggestions: [],
-            all: 0,
-            parameter: 'P',
-          },
-        },
-      ];
+      //     // Geonames Suggestions
+      //     geo: {
+      //       open: false,
+      //       highlighted: 0,
+      //       suggestions: [],
+      //       all: 0,
+      //       parameter: 'P',
+      //     },
+      //   },
+      // ];
 
       // Keep dates as is, because Receiver rarely contains date
       this.correspDesc[newCorrespDescItemKey].sender.date = JSON.parse(JSON.stringify(this.correspDesc[correspDescItemBeforeKey].sender.date));
