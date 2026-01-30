@@ -291,7 +291,6 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                                 <BFormCheckbox
                                   v-bind:id="tpe + 'Conjecture' + item.id + key"
                                   v-model="s.conjecture"
-                                  unchecked-value="false"
                                   class="labelOnTop float-right"
                                 >
                                   {{ label.conjecture }}
@@ -301,7 +300,6 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                                 <BFormCheckbox
                                   v-bind:id="tpe + 'Uncertain' + item.id + key"
                                   v-model="s.uncertain"
-                                  unchecked-value="false"
                                   class="labelOnTop float-right"
                                 >
                                   {{ label.uncertain }}
@@ -460,7 +458,6 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                                   v-bind:id="tpe + 'PlaceConjecture' + item.id + key"
                                   v-model="place.conjecture"
                                   v-bind:disabled="place.text === ''"
-                                  unchecked-value="false"
                                   class="labelOnTop float-right"
                                 >
                                   {{ label.conjecture }}
@@ -471,7 +468,6 @@ along with CMIF Creator.  If not, see <http://www.gnu.org/licenses/>.
                                   v-bind:id="tpe + 'PlaceUncertain' + item.id + key"
                                   v-model="place.uncertain"
                                   v-bind:disabled="place.text === ''"
-                                  unchecked-value="false"
                                   class="labelOnTop float-right"
                                 >
                                   {{ label.uncertain }}
